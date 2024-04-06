@@ -11,6 +11,7 @@ import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.bukkit.util.RayTraceResult;
+import org.bukkit.Material;
 
 import com.github.yuqingliu.extraenchants.utils.UtilityMethods;
 
@@ -26,7 +27,7 @@ public class Homing implements Listener {
         if (!(event.getEntity() instanceof Player)) return;
         Player player = (Player) event.getEntity();
         ItemStack bow = event.getBow();
-        if (bow == null) return;
+        if (bow == null || bow.getType() != Material.BOW) return;
         if (UtilityMethods.hasEnchantment(bow, "Homing", 1)) {
             Arrow arrow = (Arrow) event.getProjectile();
             setHomingArrow(player, arrow);

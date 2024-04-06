@@ -176,6 +176,18 @@ public class EnchantmentTableMenu {
         }
     }
 
+    private static boolean isEnchantable(ItemStack item, Enchantment enchant) {
+        final Set<Enchantment> ALLOWED_CROSSBOW_ENCHANTS = new HashSet<>(Arrays.asList(
+            Enchantment.ARROW_DAMAGE
+        ));
+
+        if(item.getType() == Material.CROSSBOW && ALLOWED_CROSSBOW_ENCHANTS.contains(enchant)) {
+            return true;
+        } else {
+            return enchant.canEnchantItem(item);
+        }
+    }
+
     private static List<Enchantment> getEnchants(ItemStack item) {
         final Set<Enchantment> BANNED_ENCHANTS = new HashSet<>(Arrays.asList(
             Enchantment.VANISHING_CURSE, 
@@ -185,13 +197,36 @@ public class EnchantmentTableMenu {
 
         List<Enchantment> applicableEnchants = new ArrayList<>();
         for (Enchantment enchantment : Registry.ENCHANTMENT) {
-            if ((enchantment.canEnchantItem(item) || item.getType() == Material.BOOK) && !BANNED_ENCHANTS.contains(enchantment)) {
+            boolean enchantable = isEnchantable(item, enchantment);
+            if ((enchantable || item.getType() == Material.BOOK) && !BANNED_ENCHANTS.contains(enchantment)) {
                 applicableEnchants.add(enchantment);
             }
         }
         return applicableEnchants;
     }
-    
+
+    private static int calculateEnchantmentLevel(Enchantment selectedEnchantment, double enchantmentLevel, double maxEnchantmentLevel) {
+        final Set<Enchantment> UNCAPPED_ENCHANTS = new HashSet<>(Arrays.asList(
+            Enchantment.PROTECTION_ENVIRONMENTAL, 
+            Enchantment.PROTECTION_FALL,
+            Enchantment.PROTECTION_EXPLOSIONS,
+            Enchantment.PROTECTION_PROJECTILE,
+            Enchantment.PROTECTION_FIRE,
+            Enchantment.DAMAGE_ALL,
+            Enchantment.ARROW_DAMAGE,
+            Enchantment.DAMAGE_UNDEAD,
+            Enchantment.DAMAGE_ARTHROPODS,
+            Enchantment.DURABILITY,
+            Enchantment.DIG_SPEED
+        ));
+
+        if(UNCAPPED_ENCHANTS.contains(selectedEnchantment)) {
+            return (int) Math.min(maxEnchantmentLevel, UtilityMethods.RandomIntBetween((int)(enchantmentLevel - 1), (int)(enchantmentLevel + 1)));
+        } else {
+            return (int) Math.min(selectedEnchantment.getMaxLevel(), maxEnchantmentLevel);
+        }
+    }
+
     private static EnchantmentOffer[] generateEnchantmentOffers(int numOffers, double enchantmentLevel, ItemStack item) {
         Random random = new Random();
         List<Enchantment> availableEnchants = getEnchants(item);
@@ -220,7 +255,8 @@ public class EnchantmentTableMenu {
 
             if (selectedEnchantment != null) {
                 usedEnchantments.add(selectedEnchantment);
-                offers[i] = new EnchantmentOffer(selectedEnchantment, (int) Math.min(UtilityMethods.RandomIntBetween((int) enchantmentLevel - 1, (int) enchantmentLevel + 1), maxEnchantmentLevel), (int) ((i + 1) * enchantmentLevel));
+                int selectedEnchantmentLevel = calculateEnchantmentLevel(selectedEnchantment, enchantmentLevel, maxEnchantmentLevel);
+                offers[i] = new EnchantmentOffer(selectedEnchantment, selectedEnchantmentLevel, (int) ((i + 1) * enchantmentLevel));
                 // Now remove the selected and incompatible enchantments from the list
                 availableEnchants.remove(selectedEnchantment);
                 availableEnchants.removeAll(incompatibleEnchants);
@@ -230,6 +266,7 @@ public class EnchantmentTableMenu {
         return Arrays.stream(offers).filter(Objects::nonNull).toArray(EnchantmentOffer[]::new);
     }
 
+    
     private static List<EnchantmentOffer[]> generateTableOffers(int numOffers, double maxEnchantmentLevel, ItemStack item) {
         List<EnchantmentOffer[]> offers = new ArrayList<>();
         double step = maxEnchantmentLevel / (double) numOffers;

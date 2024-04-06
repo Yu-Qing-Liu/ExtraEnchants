@@ -10,8 +10,14 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.stream.Collectors;
+
+import com.github.yuqingliu.extraenchants.database.Constants;
 
 public class UtilityMethods {
     public static String toRoman(int number) {
@@ -107,29 +113,57 @@ public class UtilityMethods {
     }
 
     public static boolean addEnchantment(ItemStack item, String enchantmentName, int level) {
+        final Set<String> NOT_UPGRADABLE = new HashSet<>(Arrays.asList(
+            "Homing",
+            "Flame"
+        ));
+        final Set<String> ENCHANTS_LIST = new HashSet<>(Arrays.asList(
+            "Homing",
+            "Flame",
+            "Growth",
+            "Mitigation",
+            "Snipe",
+            "Venom",
+            "Wither",
+            "Replant"
+        ));
+
+        final int MAX_LEVEL = Constants.getMaxCustomEnchantLevel();
+
         ItemMeta meta = item.getItemMeta();
-        if (meta != null) {
-            List<Component> existingLore = meta.lore();
-            if (existingLore == null) {
-                existingLore = new ArrayList<>();
+        if (meta != null && ENCHANTS_LIST.contains(enchantmentName)) {
+            List<Component> existingLore = meta.lore() != null ? meta.lore() : new ArrayList<>();
+            PlainTextComponentSerializer plainTextSerializer = PlainTextComponentSerializer.plainText();
+
+            // Determine if the enchantment already exists and its level
+            int prevLevel = getEnchantmentLevel(item, enchantmentName);
+
+            if (prevLevel > 0) {
+                // The enchantment already exists, determine action based on level comparison
+                if (NOT_UPGRADABLE.contains(enchantmentName) || level > MAX_LEVEL) {
+                    // If the enchantment is not upgradable or the new level exceeds max, do nothing
+                    return true;
+                } else if (level == prevLevel && level <= MAX_LEVEL) {
+                    // If the new level is the same and it's below max, upgrade by 1
+                    level++;
+                } else if (level <= prevLevel) {
+                    // If the new level is not greater, do nothing
+                    return true;
+                }
+                // Remove the old enchantment lore
+                existingLore = existingLore.stream()
+                        .filter(loreComponent -> !plainTextSerializer.serialize(loreComponent).contains(enchantmentName))
+                        .collect(Collectors.toList());
             }
 
-            // Prepare the enchantment text you're planning to add
+            // Add or upgrade the enchantment
             Component newEnchantText = Component.text(enchantmentName + " " + toRoman(level), NamedTextColor.GOLD);
+            existingLore.add(newEnchantText);
 
-            // Check if the lore already contains this enchantment
-            boolean alreadyHasEnchant = existingLore.stream().anyMatch(line -> line.equals(newEnchantText));
-
-            if (!alreadyHasEnchant) {
-                // Add your new lore since it's not a duplicate
-                existingLore.add(newEnchantText);
-                // Set the updated lore back to the item
-                meta.lore(existingLore);
-                item.setItemMeta(meta);
-                return true;
-            } else {
-                return false;
-            }
+            // Update the lore
+            meta.lore(existingLore);
+            item.setItemMeta(meta);
+            return true;
         }
         return false;
     }
@@ -147,12 +181,16 @@ public class UtilityMethods {
                materialName.endsWith("_CAP");
     }
 
-    public static boolean isSword(ItemStack item) {
+    public static boolean isWeapon(ItemStack item) {
         if (item == null || item.getType() == Material.AIR) {
             return false;
         }
 
         String materialName = item.getType().name();
-        return materialName.endsWith("_SWORD");
+        return materialName.endsWith("_SWORD") ||
+               materialName.endsWith("_AXE") ||
+               materialName.equals("BOW") ||
+               materialName.equals("CROSSBOW") ||
+               materialName.equals("TRIDENT");
     }
 }

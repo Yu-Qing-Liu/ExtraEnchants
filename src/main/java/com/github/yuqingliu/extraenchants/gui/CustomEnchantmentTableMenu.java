@@ -28,8 +28,8 @@ public class CustomEnchantmentTableMenu {
     public static final int ITEM_SLOT = 16;
     private static final int START_SLOT = 37;
     private static final int CONFIRM_SLOT = 46;
-    private static final int MAX_ENCHANTMENT_LEVEL = Constants.getMaxEnchantLevel();
-    private static final int BOOKSHELF_MULTIPLIER = Constants.getBookshelfMultiplier();
+    private static final int MAX_ENCHANTMENT_LEVEL = Constants.getMaxCustomEnchantLevel();
+    private static final int BOOKSHELF_MULTIPLIER = Constants.getBookshelfMultiplierCustom();
     private static final int MAX_BOOKSHELVES = Constants.getMaxBookshelves();
     private static final int NUM_OFFERS = 5;
     private static List<EnchantmentOffer[]> tableOffers;
@@ -135,7 +135,7 @@ public class CustomEnchantmentTableMenu {
             for (EnchantmentOffer offer : offers) {
                 if (offer != null) {
                     if (!UtilityMethods.addEnchantment(item, offer.getEnchantment().getName(), offer.getEnchantmentLevel())) {
-                        player.sendMessage(Component.text("You cannot add the same custom enchantment"));
+                        player.sendMessage(Component.text("Illegal upgrade"));
                         return;
                     }
                 }
@@ -152,18 +152,43 @@ public class CustomEnchantmentTableMenu {
         List<Enchantment> applicableEnchants = new ArrayList<>();
         // Bows
         Enchantment homing = new Enchantment("Homing", 1);
+        // Crossbows
+        Enchantment snipe = new Enchantment("Snipe", MAX_ENCHANTMENT_LEVEL);
+        Enchantment flame = new Enchantment("Flame", 1);
         // Armor
-        Enchantment mitigation = new Enchantment("Mitigation", 5);
-        // Sword
+        Enchantment mitigation = new Enchantment("Mitigation", MAX_ENCHANTMENT_LEVEL);
+        Enchantment growth = new Enchantment("Growth", MAX_ENCHANTMENT_LEVEL);
+        // Weapons
+        Enchantment wither = new Enchantment("Wither", 2);
+        Enchantment venom = new Enchantment("Venom", 2);
+        // Hoes
+        Enchantment replant = new Enchantment("Replant", 1);
         
         if(item.getType() == Material.BOW) {
             applicableEnchants.add(homing);
         }
+        if(item.getType() == Material.CROSSBOW) {
+            applicableEnchants.add(snipe);
+            applicableEnchants.add(flame);
+        }
         if(UtilityMethods.isArmor(item)) {
             applicableEnchants.add(mitigation);
+            applicableEnchants.add(growth);
+        }
+        if(UtilityMethods.isWeapon(item)) {
+            applicableEnchants.add(wither);
+            applicableEnchants.add(venom);
+        }
+        if(item.getType().name().endsWith("_HOE")) {
+            applicableEnchants.add(replant);
         }
 
         return applicableEnchants;
+    }
+
+    private static int calculateEnchantmentLevel(Enchantment selectedEnchantment, double enchantmentLevel, double maxEnchantmentLevel) {
+        int calculatedEnchantmentLevel = Math.min(UtilityMethods.RandomIntBetween((int) enchantmentLevel - 1, (int) enchantmentLevel + 1), selectedEnchantment.getMaxLevel());
+        return Math.max(1, calculatedEnchantmentLevel);
     }
     
     private static EnchantmentOffer[] generateEnchantmentOffers(int numOffers, double enchantmentLevel, ItemStack item) {
@@ -194,7 +219,7 @@ public class CustomEnchantmentTableMenu {
 
             if (selectedEnchantment != null) {
                 usedEnchantments.add(selectedEnchantment);
-                offers[i] = new EnchantmentOffer(selectedEnchantment, Math.min(UtilityMethods.RandomIntBetween((int) enchantmentLevel - 1, (int) enchantmentLevel + 1), selectedEnchantment.getMaxLevel()), (int) ((i + 1) * enchantmentLevel));
+                offers[i] = new EnchantmentOffer(selectedEnchantment, calculateEnchantmentLevel(selectedEnchantment, enchantmentLevel, maxEnchantmentLevel), (int) ((i + 1) * enchantmentLevel));
                 // Now remove the selected and incompatible enchantments from the list
                 availableEnchants.remove(selectedEnchantment);
                 availableEnchants.removeAll(incompatibleEnchants);

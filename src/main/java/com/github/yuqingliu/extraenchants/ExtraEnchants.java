@@ -3,9 +3,13 @@ package com.github.yuqingliu.extraenchants;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.yuqingliu.extraenchants.enchants.bow.*;
+import com.github.yuqingliu.extraenchants.enchants.crossbow.*;
 import com.github.yuqingliu.extraenchants.enchants.armor.*;
+import com.github.yuqingliu.extraenchants.enchants.weapons.*;
+import com.github.yuqingliu.extraenchants.enchants.tools.*;
 import com.github.yuqingliu.extraenchants.events.*;
 import com.github.yuqingliu.extraenchants.database.Constants;
+import com.github.yuqingliu.extraenchants.commands.*;
 
 public class ExtraEnchants extends JavaPlugin {
     @Override
@@ -19,6 +23,8 @@ public class ExtraEnchants extends JavaPlugin {
         if(!this.getConfig().contains("MaxEnchantLevel")) this.getConfig().set("MaxEnchantLevel", 10);
         if(!this.getConfig().contains("BookshelfMultiplier")) this.getConfig().set("BookshelfMultiplier", 5);
         if(!this.getConfig().contains("MaxBookshelves")) this.getConfig().set("MaxBookshelves", 15);
+        if(!this.getConfig().contains("MaxCustomEnchantLevel")) this.getConfig().set("MaxCustomEnchantLevel", 5);
+        if(!this.getConfig().contains("BookshelfMultiplierCustom")) this.getConfig().set("BookshelfMultiplierCustom", 10);
 
         Constants.setAllowReEnchanting(
             this.getConfig().getBoolean("AllowReEnchanting")
@@ -35,13 +41,27 @@ public class ExtraEnchants extends JavaPlugin {
         Constants.setMaxBookshelves(
             this.getConfig().getInt("MaxBookshelves")
         );
+        Constants.setMaxCustomEnchantLevel(
+            this.getConfig().getInt("MaxCustomEnchantLevel")
+        );
+        Constants.setBookshelfMultiplierCustom (
+            this.getConfig().getInt("BookshelfMultiplierCustom")
+        );
 
         /*Commands*/
+        this.getCommand("ee").setExecutor(new EECommand(this));
 
         /*Events*/
         getServer().getPluginManager().registerEvents(new PlayerInteractsWithEnchantmentTable(this), this);
         getServer().getPluginManager().registerEvents(new Homing(this), this);
         getServer().getPluginManager().registerEvents(new Mitigation(this), this);
+        getServer().getPluginManager().registerEvents(new Growth(this), this);
+        getServer().getPluginManager().registerEvents(new Snipe(this), this);
+        getServer().getPluginManager().registerEvents(new Flame(this), this);
+        getServer().getPluginManager().registerEvents(new Power(this), this);
+        getServer().getPluginManager().registerEvents(new Wither(this), this);
+        getServer().getPluginManager().registerEvents(new Venom(this), this);
+        getServer().getPluginManager().registerEvents(new Replant(this), this);
 
     }
 
