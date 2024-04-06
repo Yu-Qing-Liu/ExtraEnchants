@@ -14,6 +14,8 @@ import com.github.yuqingliu.extraenchants.commands.*;
 public class ExtraEnchants extends JavaPlugin {
     @Override
     public void onEnable() {
+        /*Database*/
+
         /*Configuration*/
         this.saveDefaultConfig();
 

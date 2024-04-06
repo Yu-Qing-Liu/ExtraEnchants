@@ -74,7 +74,7 @@ public class EnchantmentTableMenu {
                     String enchantmentName = offer.getEnchantment().getKey().getKey();
                     int level = offer.getEnchantmentLevel();
 
-                    metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName) + " " + UtilityMethods.toRoman(level), NamedTextColor.GOLD));
+                    metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName) + " " + UtilityMethods.toRoman(level), NamedTextColor.AQUA));
                     offerItem.setItemMeta(metaOffer);
                 }
                 if (metaConfirm != null) {
@@ -209,9 +209,6 @@ public class EnchantmentTableMenu {
         final Set<Enchantment> UNCAPPED_ENCHANTS = new HashSet<>(Arrays.asList(
             Enchantment.PROTECTION_ENVIRONMENTAL, 
             Enchantment.PROTECTION_FALL,
-            Enchantment.PROTECTION_EXPLOSIONS,
-            Enchantment.PROTECTION_PROJECTILE,
-            Enchantment.PROTECTION_FIRE,
             Enchantment.DAMAGE_ALL,
             Enchantment.ARROW_DAMAGE,
             Enchantment.DAMAGE_UNDEAD,

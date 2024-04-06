@@ -31,7 +31,7 @@ public class Mitigation implements Listener {
             }
             
             // Calculate the total chance to negate damage
-            double chanceToNegate = totalMitigationLevels * 0.0075;
+            double chanceToNegate = totalMitigationLevels * 0.01;
             if (Math.random() < chanceToNegate) {
                 event.setCancelled(true); // Negate the damage
                 player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.0f, 1.0f);

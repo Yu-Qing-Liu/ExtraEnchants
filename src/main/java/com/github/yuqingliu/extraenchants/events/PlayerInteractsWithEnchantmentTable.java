@@ -6,11 +6,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.block.Block;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.Bukkit;
 
 import com.github.yuqingliu.extraenchants.gui.EnchantmentTableMenu;
@@ -18,6 +18,7 @@ import com.github.yuqingliu.extraenchants.gui.CustomEnchantmentTableMenu;
 
 import java.util.List;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -52,18 +53,7 @@ public class PlayerInteractsWithEnchantmentTable implements Listener {
         if (event.getView().title().equals(Component.text("Enchanting Table", NamedTextColor.DARK_PURPLE))) {
             int slot = event.getRawSlot(); // Use getRawSlot() for the actual slot clicked
             
-            boolean updateGUI = false;
-            // Check if the action involves slot 16 or is a drag that could affect it
-            if (slot == 16 || event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
-                updateGUI = true;
-            } else if (event.getAction() == InventoryAction.SWAP_WITH_CURSOR && slot == 16) {
-                updateGUI = true;
-            }
-
-            // If the item slot is involved, update the GUI accordingly
-            if (updateGUI) {
-                Bukkit.getScheduler().runTaskLater(plugin, () -> EnchantmentTableMenu.updateEnchantmentTableMenu(player), 2L);
-            }
+            Bukkit.getScheduler().runTaskLater(plugin, () -> EnchantmentTableMenu.updateEnchantmentTableMenu(player), 1L);
 
             // Distinguish between the custom GUI (top inventory) and the player inventory (bottom inventory)
             if (clickedInventory.equals(player.getOpenInventory().getTopInventory())) {
@@ -148,6 +138,33 @@ public class PlayerInteractsWithEnchantmentTable implements Listener {
                         event.setCancelled(true);
                     }
                 }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onInventoryClose(InventoryCloseEvent event) {
+        Inventory closedInventory = event.getInventory();
+        Player player = (Player) event.getPlayer();
+
+        // Check if the closed inventory is the custom enchantment table GUI
+        if (event.getView().title().equals(Component.text("Enchanting Table", NamedTextColor.DARK_PURPLE))) {
+            ItemStack itemInEnchantSlot = closedInventory.getItem(16); // Assuming slot 16 is where the item to be enchanted is placed
+
+            // If there is an item in the enchantment slot, return it to the player's inventory
+            if (itemInEnchantSlot != null && itemInEnchantSlot.getType() != Material.AIR) {
+                Inventory playerInventory = player.getInventory();
+
+                // Try to add the item back to the player's inventory
+                HashMap<Integer, ItemStack> unaddedItems = playerInventory.addItem(itemInEnchantSlot);
+
+                // If the player's inventory is full and the item cannot be added back, drop it in the world at the player's location
+                if (!unaddedItems.isEmpty()) {
+                    player.getWorld().dropItemNaturally(player.getLocation(), itemInEnchantSlot);
+                }
+
+                // Clear the slot in the custom GUI to prevent duplication
+                closedInventory.setItem(16, new ItemStack(Material.AIR));
             }
         }
     }

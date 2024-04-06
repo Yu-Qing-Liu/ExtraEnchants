@@ -143,7 +143,7 @@ public class UtilityMethods {
                 if (NOT_UPGRADABLE.contains(enchantmentName) || level > MAX_LEVEL) {
                     // If the enchantment is not upgradable or the new level exceeds max, do nothing
                     return true;
-                } else if (level == prevLevel && level <= MAX_LEVEL) {
+                } else if (level == prevLevel && level < MAX_LEVEL) {
                     // If the new level is the same and it's below max, upgrade by 1
                     level++;
                 } else if (level <= prevLevel) {
