@@ -12,6 +12,7 @@ import org.bukkit.block.Block;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.Bukkit;
+import org.bukkit.event.block.Action;
 
 import com.github.yuqingliu.extraenchants.gui.EnchantmentTableMenu;
 import com.github.yuqingliu.extraenchants.gui.CustomEnchantmentTableMenu;
@@ -34,7 +35,9 @@ public class PlayerInteractsWithEnchantmentTable implements Listener {
     public void onInteract(PlayerInteractEvent event) {
         Block block = event.getClickedBlock();
         Player player = event.getPlayer();
-        if (block != null && block.getType() == Material.ENCHANTING_TABLE) {
+        
+        // Check if the event is a right-click on a block
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && block != null && block.getType() == Material.ENCHANTING_TABLE) {
             event.setCancelled(true); // Prevent the default enchantment table GUI from opening
 
             int bookshelves = countEffectiveBookshelves(block);

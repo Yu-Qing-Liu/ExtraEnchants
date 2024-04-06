@@ -67,7 +67,7 @@ public class EnchantmentTableMenu {
                 EnchantmentOffer offer = offerList[UtilityMethods.RandomIntBetween(0, offerList.length - 1)];
 
                 ItemStack offerItem = new ItemStack(Material.ENCHANTED_BOOK);
-                ItemStack confirmItem = new ItemStack(Material.ENCHANTING_TABLE);
+                ItemStack confirmItem = new ItemStack(Material.OBSIDIAN);
                 ItemMeta metaOffer = offerItem.getItemMeta();
                 ItemMeta metaConfirm = confirmItem.getItemMeta();
                 if (metaOffer != null) {
@@ -95,7 +95,7 @@ public class EnchantmentTableMenu {
         int confirmSlot = CONFIRM_SLOT;
         for (int i = 0; i < NUM_OFFERS; i++) {
             ItemStack offerItem = new ItemStack(Material.ENCHANTED_BOOK);
-            ItemStack confirmItem = new ItemStack(Material.ENCHANTING_TABLE);
+            ItemStack confirmItem = new ItemStack(Material.OBSIDIAN);
 
             inv.setItem(slot++, offerItem); // Place the item in the GUI and move to the next slot
             inv.setItem(confirmSlot++, confirmItem); // Place the item in the GUI and move to the next slot
@@ -143,6 +143,7 @@ public class EnchantmentTableMenu {
         }
 
         EnchantmentOffer[] offers = tableOffers.get(offerCounter - 1); // Adjust for zero-based indexing
+        if(offers.length == 0) return;
         int playerLevel = player.getLevel();
         int requiredLevel = offerCounter * step; // Assuming 'step' is defined and accessible
 
@@ -174,6 +175,7 @@ public class EnchantmentTableMenu {
                 inv.setItem(i, purpleGlassPane);
             }
         }
+        inv.setItem(25, new ItemStack(Material.ENCHANTING_TABLE));
     }
 
     private static boolean isEnchantable(ItemStack item, Enchantment enchant) {
@@ -218,9 +220,11 @@ public class EnchantmentTableMenu {
         ));
 
         if(UNCAPPED_ENCHANTS.contains(selectedEnchantment)) {
-            return (int) Math.min(maxEnchantmentLevel, UtilityMethods.RandomIntBetween((int)(enchantmentLevel - 1), (int)(enchantmentLevel + 1)));
+            int level = (int) Math.min(maxEnchantmentLevel, UtilityMethods.RandomIntBetween((int)(enchantmentLevel - 1), (int)(enchantmentLevel + 1)));
+            return Math.max(1, level);
         } else {
-            return (int) Math.min(selectedEnchantment.getMaxLevel(), maxEnchantmentLevel);
+            int level = (int) Math.min(selectedEnchantment.getMaxLevel(), maxEnchantmentLevel);
+            return Math.max(1, level);
         }
     }
 
