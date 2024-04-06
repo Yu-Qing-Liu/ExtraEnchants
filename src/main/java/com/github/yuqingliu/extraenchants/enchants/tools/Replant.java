@@ -11,6 +11,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.entity.Player;
+import org.bukkit.enchantments.Enchantment;
 
 import com.github.yuqingliu.extraenchants.utils.UtilityMethods;
 
@@ -37,7 +38,8 @@ public class Replant implements Listener {
                 Ageable age = (Ageable) block.getBlockData();
                 if (age.getAge() == age.getMaximumAge()) {
                     event.setCancelled(true);
-                    block.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(cropType, 1));
+                    ItemStack crop = getCrop(tool, cropType);
+                    block.getWorld().dropItemNaturally(block.getLocation(), crop);
                     age.setAge(0);
                     block.setBlockData(age);
                     
@@ -53,6 +55,34 @@ public class Replant implements Listener {
             }
         }
     }
+
+    private ItemStack getCrop(ItemStack tool, Material cropType) {
+        int dropCount = UtilityMethods.RandomIntBetween(1,2);
+        // Check for Fortune enchantment on the tool
+        if (tool.hasItemMeta()) {
+            ItemMeta meta = tool.getItemMeta();
+            if (meta.hasEnchant(Enchantment.LOOT_BONUS_BLOCKS)) {
+                int fortuneLevel = meta.getEnchantLevel(Enchantment.LOOT_BONUS_BLOCKS);
+                // Adjust drop count based on fortune level (example calculation, adjust as needed)
+                dropCount += UtilityMethods.RandomIntBetween(0, fortuneLevel);
+            }
+        }
+
+        switch (cropType) {
+            case WHEAT:
+                return new ItemStack(Material.WHEAT, dropCount);
+            case CARROTS:
+                return new ItemStack(Material.CARROT, dropCount);
+            case POTATOES:
+                return new ItemStack(Material.POTATO, dropCount);
+            case NETHER_WART:
+                return new ItemStack(Material.NETHER_WART, dropCount);
+            case BEETROOTS:
+                return new ItemStack(Material.BEETROOT, dropCount);
+            default:
+                return null;
+        }
+    }
     
     private Material getSeedForCrop(Material cropType) {
         switch (cropType) {
@@ -64,7 +94,7 @@ public class Replant implements Listener {
                 return Material.POTATO;
             case NETHER_WART:
                 return Material.NETHER_WART;
-            case BEETROOT:
+            case BEETROOTS:
                 return Material.BEETROOT_SEEDS;
             default:
                 return null;
