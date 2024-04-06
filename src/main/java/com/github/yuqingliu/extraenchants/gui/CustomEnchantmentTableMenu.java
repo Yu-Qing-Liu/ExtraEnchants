@@ -150,10 +150,17 @@ public class CustomEnchantmentTableMenu {
 
     private static List<Enchantment> getEnchants(ItemStack item) {
         List<Enchantment> applicableEnchants = new ArrayList<>();
+        // Bows
         Enchantment homing = new Enchantment("Homing", 1);
+        // Armor
+        Enchantment mitigation = new Enchantment("Mitigation", 5);
+        // Sword
         
         if(item.getType() == Material.BOW) {
             applicableEnchants.add(homing);
+        }
+        if(UtilityMethods.isArmor(item)) {
+            applicableEnchants.add(mitigation);
         }
 
         return applicableEnchants;

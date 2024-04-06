@@ -3,6 +3,7 @@ package com.github.yuqingliu.extraenchants;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.yuqingliu.extraenchants.enchants.bow.*;
+import com.github.yuqingliu.extraenchants.enchants.armor.*;
 import com.github.yuqingliu.extraenchants.events.*;
 import com.github.yuqingliu.extraenchants.database.Constants;
 
@@ -40,6 +41,7 @@ public class ExtraEnchants extends JavaPlugin {
         /*Events*/
         getServer().getPluginManager().registerEvents(new PlayerInteractsWithEnchantmentTable(this), this);
         getServer().getPluginManager().registerEvents(new Homing(this), this);
+        getServer().getPluginManager().registerEvents(new Mitigation(this), this);
 
     }
 
