@@ -1,0 +1,20 @@
+api: '1.20.4'
+name: ExtraEnchants
+version: '1.0'
+main: com.github.yuqingliu.extraenchants.ExtraEnchants
+api-version: '1.13'
+commands:
+  ee:
+    description: Apply custom enchantments
+    usage: /ee <Enchantment> <Level>
+    aliases: [extraenchants]
+    permission: extraenchants.ee
+    permission-message: You do not have permission to use this command.
+  
+permissions:
+  extraenchants.ee:
+    description: Allows use of /ee
+    default: op
+
+
+

@@ -1,0 +1,10 @@
+# Allows enchanting table to enchant enchanted items.
+AllowReEnchanting: false
+# Sets the maximum number of hidden enchantments that could be applied
+HiddenEnchantsCount: 3
+# Sets the maximum enchantment level of items in the table e.g Sharpness <MaxEnchantLevel>
+MaxEnchantLevel: 10
+# Sets the bookshelf multiplier. Higher multiplier = more expensive
+BookshelfMultiplier: 5
+# Sets the maximum number of bookshelves that can be registered (Max: 24)
+MaxBookshelves: 15
