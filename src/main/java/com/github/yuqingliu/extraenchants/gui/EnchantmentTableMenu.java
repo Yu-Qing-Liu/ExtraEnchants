@@ -38,11 +38,7 @@ public class EnchantmentTableMenu {
     private static double maxEnchantmentLevel;
     private static int step;
 
-    private static final Set<Enchantment> BANNED_ENCHANTS = new HashSet<>(Arrays.asList(
-        Enchantment.VANISHING_CURSE, 
-        Enchantment.MENDING
-    ));
-
+    
     public static void openEnchantmentTableMenu(Player player, int bookshelves) {
         Inventory inv = Bukkit.createInventory(null, 54, Component.text("Enchanting Table", NamedTextColor.DARK_PURPLE));
         maxEnchantmentLevel = Math.ceil(Math.min((double) bookshelves / MAX_BOOKSHELVES, 1) * MAX_ENCHANTMENT_LEVEL); 
@@ -181,6 +177,12 @@ public class EnchantmentTableMenu {
     }
 
     private static List<Enchantment> getEnchants(ItemStack item) {
+        final Set<Enchantment> BANNED_ENCHANTS = new HashSet<>(Arrays.asList(
+            Enchantment.VANISHING_CURSE, 
+            Enchantment.MENDING,
+            Enchantment.BINDING_CURSE
+        ));
+
         List<Enchantment> applicableEnchants = new ArrayList<>();
         for (Enchantment enchantment : Registry.ENCHANTMENT) {
             if ((enchantment.canEnchantItem(item) || item.getType() == Material.BOOK) && !BANNED_ENCHANTS.contains(enchantment)) {

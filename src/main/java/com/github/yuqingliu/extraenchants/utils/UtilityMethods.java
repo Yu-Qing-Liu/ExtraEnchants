@@ -6,6 +6,7 @@ import org.bukkit.Material;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -27,26 +28,37 @@ public class UtilityMethods {
         return roman.toString();
     }
 
+    private static final Map<Character, Integer> romanNumerals = Map.of(
+        'I', 1,
+        'V', 5,
+        'X', 10,
+        'L', 50,
+        'C', 100,
+        'D', 500,
+        'M', 1000
+    );
+
     public static int fromRoman(String roman) {
-        // Mapping of Roman numerals to their integer values
-        Map<Character, Integer> romanNumerals = Map.of(
-            'I', 1,
-            'V', 5,
-            'X', 10,
-            'L', 50,
-            'C', 100,
-            'D', 500,
-            'M', 1000
-        );
-        int intValue = 0;
-        for (int i = 0; i < roman.length(); i++) {
-            if (i > 0 && romanNumerals.get(roman.charAt(i)) > romanNumerals.get(roman.charAt(i - 1))) {
-                intValue += romanNumerals.get(roman.charAt(i)) - 2 * romanNumerals.get(roman.charAt(i - 1));
+        int result = 0;
+        int prevValue = 0;
+        for (int i = roman.length() - 1; i >= 0; i--) {
+            char ch = roman.charAt(i);
+            Integer value = romanNumerals.get(ch);
+            if (value != null) {
+                if (value < prevValue) {
+                    // Subtract this value for subtractive notation
+                    result -= value;
+                } else {
+                    result += value;
+                }
+                prevValue = value;
             } else {
-                intValue += romanNumerals.get(roman.charAt(i));
+                // Handle the case where the map returns null due to an unexpected character
+                System.err.println("Unexpected character in Roman numeral: " + ch);
+                return 0; // Or throw an exception, depending on how you wish to handle this
             }
         }
-        return intValue;
+        return result;
     }
 
     public static String formatString(String original) {
@@ -74,21 +86,24 @@ public class UtilityMethods {
     }
 
     public static int getEnchantmentLevel(ItemStack item, String enchantmentName) {
-        if (item == null || !item.hasItemMeta()) return 0; // Return 0 to indicate enchantment not present
+        if (item == null || !item.hasItemMeta()) return 0;
         ItemMeta meta = item.getItemMeta();
         if (meta.hasLore()) {
+            PlainTextComponentSerializer plainTextSerializer = PlainTextComponentSerializer.plainText();
             for (Component loreComponent : meta.lore()) {
-                String loreText = loreComponent.toString(); // Convert Component to String
+                // Use PlainTextComponentSerializer to convert Component to plain text
+                String loreText = plainTextSerializer.serialize(loreComponent);
                 if (loreText.contains(enchantmentName)) {
-                    // Extract the level part of the string, assuming it's the part after the enchantment name
-                    String levelPart = loreText.substring(loreText.indexOf(enchantmentName) + enchantmentName.length()).trim();
-                    // Convert the Roman numeral to an integer
-                    int level = fromRoman(levelPart);
-                    return level;
+                    // Assuming the format "[EnchantmentName] [Level]"
+                    String[] parts = loreText.split(enchantmentName, 2);
+                    if (parts.length > 1) {
+                        String levelPart = parts[1].trim();
+                        return fromRoman(levelPart);
+                    }
                 }
             }
         }
-        return 0; // Enchantment not found
+        return 0;
     }
 
     public static boolean addEnchantment(ItemStack item, String enchantmentName, int level) {
