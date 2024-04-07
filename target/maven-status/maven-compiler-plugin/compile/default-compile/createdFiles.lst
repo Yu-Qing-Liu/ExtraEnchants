@@ -1,3 +1,4 @@
+com/github/yuqingliu/extraenchants/events/PlayerInteractsWithEnchantmentTable$1.class
 com/github/yuqingliu/extraenchants/enchants/tools/Replant$1.class
 com/github/yuqingliu/extraenchants/enchants/weapons/Venom.class
 com/github/yuqingliu/extraenchants/ExtraEnchants.class
@@ -10,7 +11,6 @@ com/github/yuqingliu/extraenchants/utils/EnchantmentOffer.class
 com/github/yuqingliu/extraenchants/enchants/armor/Mitigation.class
 com/github/yuqingliu/extraenchants/events/PlayerInteractsWithEnchantmentTable.class
 com/github/yuqingliu/extraenchants/enchants/crossbow/Flame.class
-com/github/yuqingliu/extraenchants/gui/CustomEnchantmentTableMenu.class
 com/github/yuqingliu/extraenchants/enchants/tools/Replant.class
 com/github/yuqingliu/extraenchants/enchants/bow/Homing$1.class
 com/github/yuqingliu/extraenchants/commands/EECommand.class

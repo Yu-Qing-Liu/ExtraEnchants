@@ -6,16 +6,20 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.block.Block;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.event.block.Action;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.event.inventory.InventoryAction;
 
 import com.github.yuqingliu.extraenchants.gui.EnchantmentTableMenu;
-import com.github.yuqingliu.extraenchants.gui.CustomEnchantmentTableMenu;
 
 import java.util.List;
 import java.util.Arrays;
@@ -26,6 +30,11 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class PlayerInteractsWithEnchantmentTable implements Listener {
     private JavaPlugin plugin;
+    private static final int ITEM_SLOT = 25;
+    private static final int CUSTOM_ENCHANTS_PAGE = 6;
+    private static final int NEXT_PAGE = 51;
+    List<Integer> frame = Arrays.asList(7,8,15,16,17,24,26,33,35,42,43,44,52,53);
+    List<Integer> options = Arrays.asList(0,1,2,3,4,5,9,10,11,12,13,14,18,19,20,21,22,23,27,28,29,30,31,32,36,37,38,39,40,41,45,46,47,48,49,50);
 
     public PlayerInteractsWithEnchantmentTable(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -46,101 +55,77 @@ public class PlayerInteractsWithEnchantmentTable implements Listener {
     }
 
     @EventHandler
+    public void onInventoryOpen(InventoryOpenEvent event) {
+        if (event.getView().title().equals(Component.text("Enchanting Table", NamedTextColor.DARK_PURPLE))) {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    ItemStack itemInTargetSlot = event.getInventory().getItem(ITEM_SLOT);
+                    if (itemInTargetSlot != null && itemInTargetSlot.getType() != Material.AIR) {
+                        // Item detected in the target slot, update the UI accordingly
+                        EnchantmentTableMenu.displayEnchantmentOptions(event.getInventory(), itemInTargetSlot);
+                        cancel(); // Stop this task from running again
+                    }
+                }
+            }.runTaskTimer(plugin, 0L, 10L); // Run this task every half second (10 ticks)
+        }
+    }
+    
+    @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        Player player = (Player) event.getWhoClicked(); // Cast to Player
-        Inventory clickedInventory = event.getClickedInventory(); // The inventory that was clicked in
-        if (clickedInventory == null) {
+        Player player = (Player) event.getWhoClicked();
+        Inventory clickedInventory = event.getClickedInventory();
+        Inventory actionInventory = event.getInventory();
+        ItemStack currentItem = event.getCurrentItem();
+
+        if (clickedInventory == null || currentItem == null || !event.getView().title().equals(Component.text("Enchanting Table", NamedTextColor.DARK_PURPLE))) {
             return;
         }
 
-        if (event.getView().title().equals(Component.text("Enchanting Table", NamedTextColor.DARK_PURPLE))) {
-            int slot = event.getRawSlot(); // Use getRawSlot() for the actual slot clicked
-            
-            Bukkit.getScheduler().runTaskLater(plugin, () -> EnchantmentTableMenu.updateEnchantmentTableMenu(player), 1L);
+        if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+            // Handle the shift-click case
+            ItemStack itemInTargetSlot = actionInventory.getItem(ITEM_SLOT);
+            if (itemInTargetSlot == null || itemInTargetSlot.getType() == Material.AIR) {
+                // If the ITEM_SLOT is empty, move the current item there
+                actionInventory.setItem(ITEM_SLOT, currentItem.clone());
+                clickedInventory.clear(event.getSlot()); // Clear the slot from where the item was moved
+                event.setCancelled(true); // Prevent default behavior
+                EnchantmentTableMenu.displayEnchantmentOptions(actionInventory, currentItem);
+            } else {
+                // If ITEM_SLOT is not empty, optionally handle this case, e.g., by sending a message to the player
+                player.sendMessage(Component.text("The enchantment slot is already occupied!", NamedTextColor.RED));
+                return;
+            }
+        }
 
-            // Distinguish between the custom GUI (top inventory) and the player inventory (bottom inventory)
-            if (clickedInventory.equals(player.getOpenInventory().getTopInventory())) {
-                // Clicks in the custom GUI
-                List<Integer> allowedSlots = Arrays.asList(10, 11, 12, 13, 14, 16, 19, 20, 21, 22, 23, 37, 38, 39, 40, 41, 43, 46, 47, 48, 49, 50); // List allowed slots
-                List<Integer> confirmSlots = Arrays.asList(10, 11, 12, 13, 14, 19, 20, 21, 22, 23, 37, 38, 39, 40, 41, 46, 47, 48, 49, 50); // List confirm slots
-
-                if (!allowedSlots.contains(slot)) {
-                    event.setCancelled(true); // Cancel event if slot is not allowed
-                } else {
-                    if(confirmSlots.contains(slot)) {
-                        ItemStack item = clickedInventory.getItem(16);
-                        if(item == null) {
-                            event.setCancelled(true);
-                            return;
-                        }
-                        switch (slot) {
-                            case 10:
-                                EnchantmentTableMenu.applyEnchants(1, item, player);
-                                break;
-                            case 11:
-                                EnchantmentTableMenu.applyEnchants(2, item, player);
-                                break;
-                            case 12:
-                                EnchantmentTableMenu.applyEnchants(3, item, player);
-                                break;
-                            case 13:
-                                EnchantmentTableMenu.applyEnchants(4, item, player);
-                                break;
-                            case 14:
-                                EnchantmentTableMenu.applyEnchants(5, item, player);
-                                break;
-                            case 19:
-                                EnchantmentTableMenu.applyEnchants(1, item, player);
-                                break;
-                            case 20:
-                                EnchantmentTableMenu.applyEnchants(2, item, player);
-                                break;
-                            case 21:
-                                EnchantmentTableMenu.applyEnchants(3, item, player);
-                                break;
-                            case 22:
-                                EnchantmentTableMenu.applyEnchants(4, item, player);
-                                break;
-                            case 23:
-                                EnchantmentTableMenu.applyEnchants(5, item, player);
-                                break;
-                            case 37:
-                                CustomEnchantmentTableMenu.applyEnchants(1, item, player);
-                                break;
-                            case 38:
-                                CustomEnchantmentTableMenu.applyEnchants(2, item, player);
-                                break;
-                            case 39:
-                                CustomEnchantmentTableMenu.applyEnchants(3, item, player);
-                                break;
-                            case 40:
-                                CustomEnchantmentTableMenu.applyEnchants(4, item, player);
-                                break;
-                            case 41:
-                                CustomEnchantmentTableMenu.applyEnchants(5, item, player);
-                                break;
-                            case 46:
-                                CustomEnchantmentTableMenu.applyEnchants(1, item, player);
-                                break;
-                            case 47:
-                                CustomEnchantmentTableMenu.applyEnchants(2, item, player);
-                                break;
-                            case 48:
-                                CustomEnchantmentTableMenu.applyEnchants(3, item, player);
-                                break;
-                            case 49:
-                                CustomEnchantmentTableMenu.applyEnchants(4, item, player);
-                                break;
-                            case 50:
-                                CustomEnchantmentTableMenu.applyEnchants(5, item, player);
-                                break;
-
-                            default:
-                                break;
-                        }
-                        event.setCancelled(true);
+        if (clickedInventory.equals(player.getOpenInventory().getTopInventory())) {
+            int slot = event.getSlot();
+            ItemStack item = clickedInventory.getItem(ITEM_SLOT);
+            if (frame.contains(slot)) {
+                event.setCancelled(true);
+                return;
+            }
+            if(slot == ITEM_SLOT) {
+                clickedInventory.close();
+                return;
+            } else if(slot == NEXT_PAGE) {
+                ItemStack ptr = clickedInventory.getItem(slot);
+                ItemMeta ptrMeta = ptr.getItemMeta();
+                if(ptrMeta != null) {
+                    if(ptrMeta.displayName().equals(Component.text("Next Page", NamedTextColor.RED))) {
+                        EnchantmentTableMenu.displayNextEnchantmentOptionsPage(clickedInventory, item);
+                    }
+                    else if(ptrMeta.displayName().equals(Component.text("Previous Page", NamedTextColor.RED))) {
+                        EnchantmentTableMenu.displayEnchantmentOptions(clickedInventory, item);
                     }
                 }
+                event.setCancelled(true);
+            } else if(options.contains(slot)) {
+                // Handles clicking on enchantment options
+                EnchantmentTableMenu.displaySelectedEnchantmentOptions(player, item, clickedInventory, slot);
+                event.setCancelled(true);
+            } else {
+                event.setCancelled(true);
             }
         }
     }
@@ -152,7 +137,7 @@ public class PlayerInteractsWithEnchantmentTable implements Listener {
 
         // Check if the closed inventory is the custom enchantment table GUI
         if (event.getView().title().equals(Component.text("Enchanting Table", NamedTextColor.DARK_PURPLE))) {
-            ItemStack itemInEnchantSlot = closedInventory.getItem(16); // Assuming slot 16 is where the item to be enchanted is placed
+            ItemStack itemInEnchantSlot = closedInventory.getItem(ITEM_SLOT);
 
             // If there is an item in the enchantment slot, return it to the player's inventory
             if (itemInEnchantSlot != null && itemInEnchantSlot.getType() != Material.AIR) {
@@ -167,7 +152,7 @@ public class PlayerInteractsWithEnchantmentTable implements Listener {
                 }
 
                 // Clear the slot in the custom GUI to prevent duplication
-                closedInventory.setItem(16, new ItemStack(Material.AIR));
+                closedInventory.setItem(ITEM_SLOT, new ItemStack(Material.AIR));
             }
         }
     }
