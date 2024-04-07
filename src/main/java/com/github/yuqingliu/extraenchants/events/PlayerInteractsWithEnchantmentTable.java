@@ -7,7 +7,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.inventory.InventoryView;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.block.Block;
@@ -31,8 +30,8 @@ import net.kyori.adventure.text.format.NamedTextColor;
 public class PlayerInteractsWithEnchantmentTable implements Listener {
     private JavaPlugin plugin;
     private static final int ITEM_SLOT = 25;
-    private static final int CUSTOM_ENCHANTS_PAGE = 6;
     private static final int NEXT_PAGE = 51;
+    private static int BOOKSHELVES = 1;
     List<Integer> frame = Arrays.asList(7,8,15,16,17,24,26,33,35,42,43,44,52,53);
     List<Integer> options = Arrays.asList(0,1,2,3,4,5,9,10,11,12,13,14,18,19,20,21,22,23,27,28,29,30,31,32,36,37,38,39,40,41,45,46,47,48,49,50);
 
@@ -49,8 +48,8 @@ public class PlayerInteractsWithEnchantmentTable implements Listener {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK && block != null && block.getType() == Material.ENCHANTING_TABLE) {
             event.setCancelled(true); // Prevent the default enchantment table GUI from opening
 
-            int bookshelves = countEffectiveBookshelves(block);
-            EnchantmentTableMenu.openEnchantmentTableMenu(player, bookshelves);
+            BOOKSHELVES = countEffectiveBookshelves(block);
+            EnchantmentTableMenu.openEnchantmentTableMenu(player, BOOKSHELVES);
         }
     }
 
@@ -101,12 +100,14 @@ public class PlayerInteractsWithEnchantmentTable implements Listener {
         if (clickedInventory.equals(player.getOpenInventory().getTopInventory())) {
             int slot = event.getSlot();
             ItemStack item = clickedInventory.getItem(ITEM_SLOT);
+            ItemStack itemClicked = clickedInventory.getItem(slot);
             if (frame.contains(slot)) {
                 event.setCancelled(true);
                 return;
             }
             if(slot == ITEM_SLOT) {
                 clickedInventory.close();
+                Bukkit.getScheduler().runTaskLater(plugin, () -> EnchantmentTableMenu.openEnchantmentTableMenu(player, BOOKSHELVES), 1L);
                 return;
             } else if(slot == NEXT_PAGE) {
                 ItemStack ptr = clickedInventory.getItem(slot);
@@ -121,8 +122,9 @@ public class PlayerInteractsWithEnchantmentTable implements Listener {
                 }
                 event.setCancelled(true);
             } else if(options.contains(slot)) {
-                // Handles clicking on enchantment options
-                EnchantmentTableMenu.displaySelectedEnchantmentOptions(player, item, clickedInventory, slot);
+                if(itemClicked != null && itemClicked.getType() != Material.GLASS_PANE) {
+                    EnchantmentTableMenu.displaySelectedEnchantmentOptions(player, item, clickedInventory, slot);
+                }
                 event.setCancelled(true);
             } else {
                 event.setCancelled(true);

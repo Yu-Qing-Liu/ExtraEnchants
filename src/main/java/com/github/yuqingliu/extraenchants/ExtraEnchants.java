@@ -1,6 +1,14 @@
 package com.github.yuqingliu.extraenchants;
 
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.NamespacedKey;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.Registry;
+
+import java.util.HashMap;
+import java.util.List;
 
 import com.github.yuqingliu.extraenchants.enchants.bow.*;
 import com.github.yuqingliu.extraenchants.enchants.crossbow.*;
@@ -9,46 +17,27 @@ import com.github.yuqingliu.extraenchants.enchants.weapons.*;
 import com.github.yuqingliu.extraenchants.enchants.tools.*;
 import com.github.yuqingliu.extraenchants.events.*;
 import com.github.yuqingliu.extraenchants.database.Constants;
+import com.github.yuqingliu.extraenchants.database.Database;
+import com.github.yuqingliu.extraenchants.utils.*;
 import com.github.yuqingliu.extraenchants.commands.*;
 
 public class ExtraEnchants extends JavaPlugin {
     @Override
     public void onEnable() {
         /*Database*/
+        Database.registerEnchants(this);
 
         /*Configuration*/
         this.saveDefaultConfig();
 
         // Set a default config.yml if not present
-        if(!this.getConfig().contains("AllowReEnchanting")) this.getConfig().set("AllowReEnchanting", false);
-        if(!this.getConfig().contains("HiddenEnchantsCount")) this.getConfig().set("HiddenEnchantsCount", 3);
-        if(!this.getConfig().contains("MaxEnchantLevel")) this.getConfig().set("MaxEnchantLevel", 10);
-        if(!this.getConfig().contains("BookshelfMultiplier")) this.getConfig().set("BookshelfMultiplier", 5);
-        if(!this.getConfig().contains("MaxBookshelves")) this.getConfig().set("MaxBookshelves", 15);
-        if(!this.getConfig().contains("MaxCustomEnchantLevel")) this.getConfig().set("MaxCustomEnchantLevel", 5);
-        if(!this.getConfig().contains("BookshelfMultiplierCustom")) this.getConfig().set("BookshelfMultiplierCustom", 10);
+        setDefaultEnchantmentsConfig();
 
-        Constants.setAllowReEnchanting(
-            this.getConfig().getBoolean("AllowReEnchanting")
-        );
-        Constants.setHiddenEnchantsCount(
-            this.getConfig().getInt("HiddenEnchantsCount")
-        );
-        Constants.setMaxEnchantLevel(
-            this.getConfig().getInt("MaxEnchantLevel")
-        );
         Constants.setBookshelfMultiplier(
             this.getConfig().getInt("BookshelfMultiplier")
         );
-        Constants.setMaxBookshelves(
-            this.getConfig().getInt("MaxBookshelves")
-        );
-        Constants.setMaxCustomEnchantLevel(
-            this.getConfig().getInt("MaxCustomEnchantLevel")
-        );
-        Constants.setBookshelfMultiplierCustom (
-            this.getConfig().getInt("BookshelfMultiplierCustom")
-        );
+
+        loadEnchantmentsFromConfig();
 
         /*Commands*/
         this.getCommand("ee").setExecutor(new EECommand(this));
@@ -70,6 +59,68 @@ public class ExtraEnchants extends JavaPlugin {
     @Override
     public void onDisable() {
 
+    }
+
+    private void setDefaultEnchantmentsConfig() {
+        FileConfiguration config = this.getConfig();
+        boolean changesMade = false;
+        List<CustomEnchantment> customEnchantmentRegistry = Database.getCustomEnchantmentRegistry();
+
+        // Check and set the BookshelfMultiplier settings
+        if (!config.isSet("BookshelfMultiplier")) {
+            config.set("BookshelfMultiplier", 5);
+            changesMade = true;
+        }
+
+        // Check and set the default enchantments
+        for (Enchantment enchantment : Registry.ENCHANTMENT) {
+            NamespacedKey key = enchantment.getKey();
+            String path = "Enchantments." + key.getKey();
+            if (!config.isSet(path)) {
+                config.set(path, enchantment.getMaxLevel());
+                changesMade = true; // Mark that changes have been made
+            }
+        }
+
+        // Check and set the custom enchantments
+        for (CustomEnchantment enchantment : customEnchantmentRegistry) {
+            String name = enchantment.getName();
+            String path = "CustomEnchantments." + name;
+            if (!config.isSet(path)) {
+                config.set(path, enchantment.getMaxLevel());
+                changesMade = true; // Mark that changes have been made
+            }
+        }
+
+        // Save the config if any changes have been made
+        if (changesMade) {
+            this.saveConfig();
+        }
+    }
+
+    private void loadEnchantmentsFromConfig() {
+        HashMap<NamespacedKey, Integer> enchantments = new HashMap<>();
+        HashMap<String, Integer> customEnchantments = new HashMap<>();
+        FileConfiguration config = this.getConfig();
+
+        ConfigurationSection enchantmentsSection = config.getConfigurationSection("Enchantments");
+        if (enchantmentsSection != null) {
+            for (String key : enchantmentsSection.getKeys(false)) {
+                int level = enchantmentsSection.getInt(key);
+                enchantments.put(new NamespacedKey("minecraft", key), level);
+            }
+        }
+
+        ConfigurationSection customEnchantmentsSection = config.getConfigurationSection("CustomEnchantments");
+        if (customEnchantmentsSection != null) {
+            for (String key : customEnchantmentsSection.getKeys(false)) {
+                int level = customEnchantmentsSection.getInt(key);
+                customEnchantments.put(key, level);
+            }
+        }
+
+        Constants.setEnchantments(enchantments);
+        Constants.setCustomEnchantments(customEnchantments);
     }
 }
 
