@@ -17,7 +17,7 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 
-import com.github.yuqingliu.extraenchants.database.Constants;
+import com.github.yuqingliu.extraenchants.database.*;
 
 public class UtilityMethods {
     public static String toRoman(int number) {
@@ -113,25 +113,14 @@ public class UtilityMethods {
     }
 
     public static boolean addEnchantment(ItemStack item, String enchantmentName, int level) {
-        final Set<String> NOT_UPGRADABLE = new HashSet<>(Arrays.asList(
-            "Homing",
-            "Flame"
-        ));
-        final Set<String> ENCHANTS_LIST = new HashSet<>(Arrays.asList(
-            "Homing",
-            "Flame",
-            "Growth",
-            "Mitigation",
-            "Snipe",
-            "Venom",
-            "Wither",
-            "Replant"
-        ));
-
-        final int MAX_LEVEL = Constants.getMaxCustomEnchantLevel();
+        List<CustomEnchantment> Register = Database.getCustomEnchantmentRegistry();
+        List<String> Names = new ArrayList<>();
+        for (CustomEnchantment enchantment : Register) {
+            Names.add(enchantment.getName());
+        }
 
         ItemMeta meta = item.getItemMeta();
-        if (meta != null && ENCHANTS_LIST.contains(enchantmentName)) {
+        if (meta != null && Names.contains(enchantmentName)) {
             List<Component> existingLore = meta.lore() != null ? meta.lore() : new ArrayList<>();
             PlainTextComponentSerializer plainTextSerializer = PlainTextComponentSerializer.plainText();
 
@@ -140,10 +129,7 @@ public class UtilityMethods {
 
             if (prevLevel > 0) {
                 // The enchantment already exists, determine action based on level comparison
-                if (NOT_UPGRADABLE.contains(enchantmentName) || level > MAX_LEVEL) {
-                    // If the enchantment is not upgradable or the new level exceeds max, do nothing
-                    return true;
-                } else if (level == prevLevel && level < MAX_LEVEL) {
+                if (level == prevLevel) {
                     // If the new level is the same and it's below max, upgrade by 1
                     level++;
                 } else if (level <= prevLevel) {

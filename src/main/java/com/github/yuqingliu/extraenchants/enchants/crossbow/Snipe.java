@@ -57,11 +57,11 @@ public class Snipe implements Listener {
 
     private double calculateOriginalDamage(double currentDamage, int snipeLevel) {
         // This should inversely apply the damage increase caused by the speed boost
-        return currentDamage / (1.0 + (0.4 * snipeLevel));
+        return currentDamage / (1.0 + (0.25 * snipeLevel));
     }
 
     public void setArrowSpeed(Arrow arrow, int level) {
-        double speedMultiplier = 1.0 + (0.4 * level); // 40% increase per level
+        double speedMultiplier = 1.0 + (0.25 * level); // 40% increase per level
         Vector velocity = arrow.getVelocity();
         velocity.multiply(speedMultiplier);
         arrow.setVelocity(velocity); // Apply the new velocity to the arrow
