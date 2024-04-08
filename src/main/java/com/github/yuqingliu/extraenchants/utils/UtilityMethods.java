@@ -3,6 +3,11 @@ package com.github.yuqingliu.extraenchants.utils;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.enchantments.EnchantmentOffer;
+import org.bukkit.Sound;
+import org.bukkit.NamespacedKey;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -15,6 +20,7 @@ import java.util.Random;
 import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.HashMap;
 import java.util.stream.Collectors;
 
 import com.github.yuqingliu.extraenchants.database.*;
@@ -112,6 +118,20 @@ public class UtilityMethods {
         return 0;
     }
 
+    public static Map<CustomEnchantment, Integer> getEnchantments(ItemStack item) {
+        List<CustomEnchantment> customEnchantsRegistry = Database.getCustomEnchantmentRegistry();
+        Map<CustomEnchantment, Integer> itemEnchants = new HashMap<>();
+
+        for (CustomEnchantment enchantment : customEnchantsRegistry) {
+            String registryName = enchantment.getName();
+            int level = getEnchantmentLevel(item, registryName);
+            if(level > 0) {
+                itemEnchants.put(enchantment, level);
+            }
+        }
+        return itemEnchants;
+    }
+
     public static boolean addEnchantment(ItemStack item, String enchantmentName, int level) {
         List<CustomEnchantment> Register = Database.getCustomEnchantmentRegistry();
         List<String> Names = new ArrayList<>();
@@ -154,29 +174,58 @@ public class UtilityMethods {
         return false;
     }
 
-    public static boolean isArmor(ItemStack item) {
-        if (item == null || item.getType() == Material.AIR) {
-            return false;
-        }
-
-        String materialName = item.getType().name();
-        return materialName.endsWith("_HELMET") || 
-               materialName.endsWith("_CHESTPLATE") || 
-               materialName.endsWith("_LEGGINGS") || 
-               materialName.endsWith("_BOOTS") ||
-               materialName.endsWith("_CAP");
+    public static void removeEnchantment(ItemStack item, String enchantmentName) {
+        ItemMeta meta = item.getItemMeta();
+        List<Component> existingLore = meta.lore() != null ? meta.lore() : new ArrayList<>();
+        PlainTextComponentSerializer plainTextSerializer = PlainTextComponentSerializer.plainText();
+        existingLore = existingLore.stream()
+                .filter(loreComponent -> !plainTextSerializer.serialize(loreComponent).contains(enchantmentName))
+                .collect(Collectors.toList());
+        meta.lore(existingLore);
+        item.setItemMeta(meta);
     }
 
-    public static boolean isWeapon(ItemStack item) {
-        if (item == null || item.getType() == Material.AIR) {
-            return false;
-        }
+    public static void applyVanillaEnchant(Player player, EnchantmentOffer selectedOffer, ItemStack item) {
+        HashMap<NamespacedKey, Integer> Registry = Constants.getEnchantments();
+        
+        NamespacedKey enchantmentName = selectedOffer.getEnchantment().getKey();
+        int enchantmentLevel = selectedOffer.getEnchantmentLevel();
+        int prevEnchantLevel = item.getEnchantmentLevel(selectedOffer.getEnchantment());
+        int maxEnchantmentLevel = Registry.get(enchantmentName);
 
-        String materialName = item.getType().name();
-        return materialName.endsWith("_SWORD") ||
-               materialName.endsWith("_AXE") ||
-               materialName.equals("BOW") ||
-               materialName.equals("CROSSBOW") ||
-               materialName.equals("TRIDENT");
+        int requiredLevel = selectedOffer.getCost();
+        int playerLevel = player.getLevel();
+        if(playerLevel >= requiredLevel) {
+            if(prevEnchantLevel > selectedOffer.getEnchantmentLevel()) {
+                return;
+            } else if(prevEnchantLevel == enchantmentLevel) {
+                if(prevEnchantLevel == maxEnchantmentLevel) return;
+                item.addUnsafeEnchantment(selectedOffer.getEnchantment(), selectedOffer.getEnchantmentLevel() + 1);
+                player.setLevel(playerLevel - 1);
+                player.playSound(player.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0f, 1.0f);
+            } else {
+                item.addUnsafeEnchantment(selectedOffer.getEnchantment(), selectedOffer.getEnchantmentLevel());
+                player.setLevel(playerLevel - 1);
+                player.playSound(player.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0f, 1.0f);
+            }
+        }
+    }
+
+    public static void applyCustomEnchant(Player player, CustomEnchantmentOffer selectedOfferCustom, ItemStack item) {
+        HashMap<String, Integer> Registry = Constants.getCustomEnchantments();
+
+        String enchantmentName = selectedOfferCustom.getEnchant().getName();
+        int enchantmentLevel = selectedOfferCustom.getEnchantmentLevel();
+        int prevLevel = getEnchantmentLevel(item, enchantmentName);
+        int maxEnchantmentLevel = Registry.get(enchantmentName);
+
+        int requiredLevel = selectedOfferCustom.getCost();
+        int playerLevel = player.getLevel();
+        if(playerLevel >= requiredLevel) {
+            if(prevLevel == enchantmentLevel && prevLevel == maxEnchantmentLevel) return;
+            addEnchantment(item, enchantmentName, enchantmentLevel);
+            player.setLevel(playerLevel - 1);
+            player.playSound(player.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0f, 1.0f);
+        }
     }
 }

@@ -15,10 +15,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.event.block.Action;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.event.inventory.InventoryAction;
 
-import com.github.yuqingliu.extraenchants.gui.EnchantmentTableMenu;
+import com.github.yuqingliu.extraenchants.gui.GrindstoneMenu;
 
 import java.util.List;
 import java.util.Arrays;
@@ -27,16 +26,13 @@ import java.util.HashMap;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-public class PlayerInteractsWithEnchantmentTable implements Listener {
+public class PlayerInteractsWithGrindstone implements Listener {
     private JavaPlugin plugin;
     private static final int ITEM_SLOT = 25;
-    private static final int PREVIOUS_PAGE = 6;
-    private static final int NEXT_PAGE = 51;
-    private static int BOOKSHELVES = 1;
     List<Integer> frame = Arrays.asList(7,8,15,16,17,24,26,33,35,42,43,44,52,53);
     List<Integer> options = Arrays.asList(0,1,2,3,4,5,9,10,11,12,13,14,18,19,20,21,22,23,27,28,29,30,31,32,36,37,38,39,40,41,45,46,47,48,49,50);
 
-    public PlayerInteractsWithEnchantmentTable(JavaPlugin plugin) {
+    public PlayerInteractsWithGrindstone(JavaPlugin plugin) {
         this.plugin = plugin;
     }
 
@@ -46,24 +42,22 @@ public class PlayerInteractsWithEnchantmentTable implements Listener {
         Player player = event.getPlayer();
         
         // Check if the event is a right-click on a block
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && block != null && block.getType() == Material.ENCHANTING_TABLE) {
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && block != null && block.getType() == Material.GRINDSTONE) {
             event.setCancelled(true); // Prevent the default enchantment table GUI from opening
-
-            BOOKSHELVES = countEffectiveBookshelves(block);
-            EnchantmentTableMenu.openEnchantmentTableMenu(player, BOOKSHELVES);
+            GrindstoneMenu.openGrindstoneMenu(player);
         }
     }
 
     @EventHandler
     public void onInventoryOpen(InventoryOpenEvent event) {
-        if (event.getView().title().equals(Component.text("Enchanting Table", NamedTextColor.DARK_PURPLE))) {
+        if (event.getView().title().equals(Component.text("Grindstone", NamedTextColor.GOLD))) {
             new BukkitRunnable() {
                 @Override
                 public void run() {
                     ItemStack itemInTargetSlot = event.getInventory().getItem(ITEM_SLOT);
                     if (itemInTargetSlot != null && itemInTargetSlot.getType() != Material.AIR) {
                         // Item detected in the target slot, update the UI accordingly
-                        EnchantmentTableMenu.displayEnchantmentOptions(event.getInventory(), itemInTargetSlot);
+                        GrindstoneMenu.displayOptions(event.getInventory(), itemInTargetSlot);
                         cancel(); // Stop this task from running again
                     }
                 }
@@ -78,7 +72,7 @@ public class PlayerInteractsWithEnchantmentTable implements Listener {
         Inventory actionInventory = event.getInventory();
         ItemStack currentItem = event.getCurrentItem();
 
-        if (clickedInventory == null || currentItem == null || !event.getView().title().equals(Component.text("Enchanting Table", NamedTextColor.DARK_PURPLE))) {
+        if (clickedInventory == null || currentItem == null || !event.getView().title().equals(Component.text("Grindstone", NamedTextColor.GOLD))) {
             return;
         }
 
@@ -90,10 +84,10 @@ public class PlayerInteractsWithEnchantmentTable implements Listener {
                 actionInventory.setItem(ITEM_SLOT, currentItem.clone());
                 clickedInventory.clear(event.getSlot()); // Clear the slot from where the item was moved
                 event.setCancelled(true); // Prevent default behavior
-                EnchantmentTableMenu.displayEnchantmentOptions(actionInventory, currentItem);
+                GrindstoneMenu.displayOptions(actionInventory, currentItem);
             } else {
                 // If ITEM_SLOT is not empty, optionally handle this case, e.g., by sending a message to the player
-                player.sendMessage(Component.text("The enchantment slot is already occupied!", NamedTextColor.RED));
+                player.sendMessage(Component.text("The grindstone slot is already occupied!", NamedTextColor.RED));
                 return;
             }
         }
@@ -108,25 +102,11 @@ public class PlayerInteractsWithEnchantmentTable implements Listener {
             }
             if(slot == ITEM_SLOT) {
                 clickedInventory.close();
-                Bukkit.getScheduler().runTaskLater(plugin, () -> EnchantmentTableMenu.openEnchantmentTableMenu(player, BOOKSHELVES), 1L);
+                Bukkit.getScheduler().runTaskLater(plugin, () -> GrindstoneMenu.openGrindstoneMenu(player), 1L);
                 return;
-            } else if(slot == NEXT_PAGE) {
-                ItemStack ptr = clickedInventory.getItem(slot);
-                ItemMeta ptrMeta = ptr.getItemMeta();
-                if(ptrMeta != null) {
-                    EnchantmentTableMenu.displayNextEnchantmentOptionsPage(clickedInventory, item);
-                }
-                event.setCancelled(true);
-            } else if(slot == PREVIOUS_PAGE) {
-                ItemStack ptr = clickedInventory.getItem(slot);
-                ItemMeta ptrMeta = ptr.getItemMeta();
-                if(ptrMeta != null) {
-                    EnchantmentTableMenu.displayPreviousEnchantmentOptionsPage(clickedInventory, item);
-                }
-                event.setCancelled(true);
             } else if(options.contains(slot)) {
                 if(itemClicked != null && itemClicked.getType() != Material.GLASS_PANE) {
-                    EnchantmentTableMenu.displaySelectedEnchantmentOptions(player, item, clickedInventory, slot);
+                    GrindstoneMenu.applyOption(player, clickedInventory, slot, item);
                 }
                 event.setCancelled(true);
             } else {
@@ -141,7 +121,7 @@ public class PlayerInteractsWithEnchantmentTable implements Listener {
         Player player = (Player) event.getPlayer();
 
         // Check if the closed inventory is the custom enchantment table GUI
-        if (event.getView().title().equals(Component.text("Enchanting Table", NamedTextColor.DARK_PURPLE))) {
+        if (event.getView().title().equals(Component.text("Grindstone", NamedTextColor.GOLD))) {
             ItemStack itemInEnchantSlot = closedInventory.getItem(ITEM_SLOT);
 
             // If there is an item in the enchantment slot, return it to the player's inventory
@@ -160,34 +140,5 @@ public class PlayerInteractsWithEnchantmentTable implements Listener {
                 closedInventory.setItem(ITEM_SLOT, new ItemStack(Material.AIR));
             }
         }
-    }
-
-    public int countEffectiveBookshelves(Block enchantingTableBlock) {
-        int count = 0;
-        // Coordinates relative to the enchanting table for all 24 valid bookshelf positions
-        int[][] relativePositions = {
-            {-1, 0, 2}, {0, 0, 2}, {1, 0, 2},
-            {2, 0, 1}, {2, 0, 0}, {2, 0, -1},
-            {1, 0, -2}, {0, 0, -2}, {-1, 0, -2},
-            {-2, 0, -1}, {-2, 0, 0}, {-2, 0, 1},
-            {-1, 1, 2}, {0, 1, 2}, {1, 1, 2},
-            {2, 1, 1}, {2, 1, 0}, {2, 1, -1},
-            {1, 1, -2}, {0, 1, -2}, {-1, 1, -2},
-            {-2, 1, -1}, {-2, 1, 0}, {-2, 1, 1}
-        };
-
-        for (int[] pos : relativePositions) {
-            Block checkBlock = enchantingTableBlock.getRelative(pos[0], pos[1], pos[2]);
-            if (checkBlock.getType() == Material.BOOKSHELF) {
-                Block airCheck1 = enchantingTableBlock.getRelative(pos[0], 1, pos[2]); // Directly above enchanting table
-                Block airCheck2 = enchantingTableBlock.getRelative(pos[0], 2, pos[2]); // One above the bookshelf level
-                if ((airCheck1.getType() == Material.AIR || airCheck1.getType() == Material.BOOKSHELF) && 
-                    airCheck2.getType() == Material.AIR) {
-                    count++;
-                }
-            }
-        }
-        if(count == 0) return 1;
-        return count;
     }
 }
