@@ -114,14 +114,24 @@ public class PlayerInteractsWithEnchantmentTable implements Listener {
                 ItemStack ptr = clickedInventory.getItem(slot);
                 ItemMeta ptrMeta = ptr.getItemMeta();
                 if(ptrMeta != null) {
-                    EnchantmentTableMenu.displayNextEnchantmentOptionsPage(clickedInventory, item);
+                    if(ptrMeta.displayName().equals(Component.text("Next Page", NamedTextColor.AQUA))) {
+                        EnchantmentTableMenu.displayNextEnchantmentOptionsPage(clickedInventory, item);
+                    }
+                    else if(ptrMeta.displayName().equals(Component.text("Next Page", NamedTextColor.GREEN))) {
+                        EnchantmentTableMenu.displayNextSelectedEnchantmentOptions(player, item, clickedInventory, slot);
+                    }
                 }
                 event.setCancelled(true);
             } else if(slot == PREVIOUS_PAGE) {
                 ItemStack ptr = clickedInventory.getItem(slot);
                 ItemMeta ptrMeta = ptr.getItemMeta();
                 if(ptrMeta != null) {
-                    EnchantmentTableMenu.displayPreviousEnchantmentOptionsPage(clickedInventory, item);
+                    if(ptrMeta.displayName().equals(Component.text("Previous Page", NamedTextColor.AQUA))) {
+                        EnchantmentTableMenu.displayPreviousEnchantmentOptionsPage(clickedInventory, item);
+                    }
+                    else if(ptrMeta.displayName().equals(Component.text("Previous Page", NamedTextColor.GREEN))) {
+                        EnchantmentTableMenu.displayPreviousSelectedEnchantmentOptions(player, item, clickedInventory, slot);
+                    }
                 }
                 event.setCancelled(true);
             } else if(options.contains(slot)) {

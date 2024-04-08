@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Collections;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -34,8 +35,11 @@ public class EnchantmentTableMenu {
     private static final int BOOKSHELF_MULTIPLIER = Constants.getBookshelfMultiplier();
     private static final int MAX_BOOKSHELVES = 15;
     private static int PAGE_NUMBER = 1;
+    private static int MAX_PAGES = 25;
     private static HashMap<Integer, HashMap<Integer, EnchantmentOffer>> pageDataVanillaEnchants = new HashMap<>();
     private static HashMap<Integer, HashMap<Integer, CustomEnchantmentOffer>> pageDataCustomEnchants = new HashMap<>();
+    private static EnchantmentOffer selectedVanillaOffer = null;
+    private static CustomEnchantmentOffer selectedCustomOffer = null;
     private static int experienceLevelStep;
     
     public static void openEnchantmentTableMenu(Player player, int bookshelves) {
@@ -44,7 +48,15 @@ public class EnchantmentTableMenu {
         experienceLevelStep = (bookshelves * BOOKSHELF_MULTIPLIER) / 10;
         displayItemFrame(inv);
         optionsFill(inv);
+        initializePages();
         player.openInventory(inv);
+    }
+
+    private static void initializePages() {
+        for (int i = 1; i < 25; i++) {
+            pageDataVanillaEnchants.put(i, new HashMap<>());
+            pageDataCustomEnchants.put(i, new HashMap<>());
+        }
     }
 
     public static void displayEnchantmentOptions(Inventory inv, ItemStack item) {
@@ -54,8 +66,9 @@ public class EnchantmentTableMenu {
         int slotptr = START_SLOT;
         List<EnchantmentOffer> applicableEnchants = getEnchants(item);
         List<CustomEnchantmentOffer> applicableCustomEnchants = getCustomEnchants(item);
+        MAX_PAGES = applicableEnchants.size() / 36 + applicableCustomEnchants.size() / 36 + 1;
         for (EnchantmentOffer offer : applicableEnchants) {
-            slotData.put(slotptr, offer);
+            pageDataVanillaEnchants.get(PAGE_NUMBER).put(slotptr, offer);
             ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
             ItemMeta metaOffer = enchantOption.getItemMeta();
             if (metaOffer != null) {
@@ -76,7 +89,7 @@ public class EnchantmentTableMenu {
         }
         if(slotptr < 50) {
             for (CustomEnchantmentOffer offer : applicableCustomEnchants) {
-                slotDataCustom.put(slotptr, offer);
+                pageDataCustomEnchants.get(PAGE_NUMBER).put(slotptr, offer);
                 ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
                 ItemMeta metaOffer = enchantOption.getItemMeta();
                 if (metaOffer != null) {
@@ -100,54 +113,31 @@ public class EnchantmentTableMenu {
         // Fill options
         optionsFill(inv);
 
-        // Set ptr to next page
+        // Set Previous page ptr
+        ItemStack prevPagePtr = new ItemStack(Material.ARROW);
+        ItemMeta prevPagePtrMeta = prevPagePtr.getItemMeta();
+        if (prevPagePtrMeta != null) {
+            prevPagePtrMeta.displayName(Component.text("Previous Page", NamedTextColor.AQUA));
+            prevPagePtr.setItemMeta(prevPagePtrMeta);
+        }
+        inv.setItem(PREVIOUS_PAGE, prevPagePtr);
+        // Set Next page ptr
         ItemStack nextPagePtr = new ItemStack(Material.ARROW);
         ItemMeta nextPagePtrMeta = nextPagePtr.getItemMeta();
         if (nextPagePtrMeta != null) {
-            nextPagePtrMeta.displayName(Component.text("Next Page", NamedTextColor.RED));
+            nextPagePtrMeta.displayName(Component.text("Next Page", NamedTextColor.AQUA));
             nextPagePtr.setItemMeta(nextPagePtrMeta);
         }
         inv.setItem(NEXT_PAGE, nextPagePtr);
-    }
 
-    public static void clearOptions(Inventory inv) {
-        int slotptr = START_SLOT;
-        pageDataCustomEnchants.get(PAGE_NUMBER).clear();
-        pageDataVanillaEnchants.get(PAGE_NUMBER).clear();
-        while(slotptr < 51) {
-            inv.setItem(slotptr, new ItemStack(Material.AIR));
-            if(slotptr == 5) slotptr+=4;
-            else if(slotptr == 14) slotptr+=4;
-            else if(slotptr == 23) slotptr+=4;
-            else if(slotptr == 32) slotptr+=4;
-            else if(slotptr == 41) slotptr+=4;
-            else if(slotptr == 50) break;
-            else {
-                slotptr++;
-            }
-        }
-    }
-
-    public static void voidOptions(Inventory inv) {
-        int slotptr = START_SLOT;
-        while(slotptr < 51) {
-            inv.setItem(slotptr, new ItemStack(Material.AIR));
-            if(slotptr == 5) slotptr+=4;
-            else if(slotptr == 14) slotptr+=4;
-            else if(slotptr == 23) slotptr+=4;
-            else if(slotptr == 32) slotptr+=4;
-            else if(slotptr == 41) slotptr+=4;
-            else if(slotptr == 50) break;
-            else {
-                slotptr++;
-            }
-        }
     }
 
     public static void displaySelectedEnchantmentOptions(Player player, ItemStack item, Inventory inv, int slot) {
         if(item == null) return;
         EnchantmentOffer selectedOffer = pageDataVanillaEnchants.get(PAGE_NUMBER).get(slot);
-        CustomEnchantmentOffer selectedOfferCustom = slotDataCustom.get(PAGE_NUMBER).get(slot);
+        CustomEnchantmentOffer selectedOfferCustom = pageDataCustomEnchants.get(PAGE_NUMBER).get(slot);
+        selectedVanillaOffer = selectedOffer;
+        selectedCustomOffer = selectedOfferCustom;
         clearOptions(inv);
 
         if(selectedOffer != null) {
@@ -159,6 +149,7 @@ public class EnchantmentTableMenu {
             }
             int slotptr = 0;
             int maxEnchantmentLevel = selectedOffer.getEnchantmentLevel();
+            MAX_PAGES = maxEnchantmentLevel / 36 + 1;
             for (int i = 1; i <= maxEnchantmentLevel; i++) {
                 // Display offers by increasing level up to max level as well as their prices
                 EnchantmentOffer offer = new EnchantmentOffer(selectedOffer.getEnchantment(), i, i * experienceLevelStep);
@@ -215,11 +206,300 @@ public class EnchantmentTableMenu {
         } 
         // Fill options
         optionsFill(inv);
+
+        // Set Previous page ptr
+        ItemStack prevPagePtr = new ItemStack(Material.ARROW);
+        ItemMeta prevPagePtrMeta = prevPagePtr.getItemMeta();
+        if (prevPagePtrMeta != null) {
+            prevPagePtrMeta.displayName(Component.text("Previous Page", NamedTextColor.GREEN));
+            prevPagePtr.setItemMeta(prevPagePtrMeta);
+        }
+        inv.setItem(PREVIOUS_PAGE, prevPagePtr);
+        // Set Next page ptr
+        ItemStack nextPagePtr = new ItemStack(Material.ARROW);
+        ItemMeta nextPagePtrMeta = nextPagePtr.getItemMeta();
+        if (nextPagePtrMeta != null) {
+            nextPagePtrMeta.displayName(Component.text("Next Page", NamedTextColor.GREEN));
+            nextPagePtr.setItemMeta(nextPagePtrMeta);
+        }
+        inv.setItem(NEXT_PAGE, nextPagePtr);
+    }
+
+    public static void displayNextSelectedEnchantmentOptions(Player player, ItemStack item, Inventory inv, int slot) {
+        if(item == null) return;
+        if(PAGE_NUMBER + 1 > MAX_PAGES) return;
+        PAGE_NUMBER++;
+        EnchantmentOffer selectedOffer = selectedVanillaOffer;
+        CustomEnchantmentOffer selectedOfferCustom = selectedCustomOffer;
+        voidOptions(inv);
+
+        if(selectedOffer != null) {
+            if(selectedOffer.getCost() > 0) {
+                // Apply the enchantment and return
+                UtilityMethods.applyVanillaEnchant(player, selectedOffer, item);
+                displayEnchantmentOptions(inv, item);
+                return;
+            }
+            int slotptr = 0;
+            HashMap<Integer, EnchantmentOffer> previousSlotData = pageDataVanillaEnchants.get(PAGE_NUMBER - 1);
+            List<Integer> levels = new ArrayList<>();
+            for(EnchantmentOffer offer : previousSlotData.values()) {
+                levels.add(offer.getEnchantmentLevel());
+            }
+            int startLevel = Collections.max(levels) + 1;
+            int maxEnchantmentLevel = selectedOffer.getEnchantmentLevel();
+            for (int i = startLevel; i <= maxEnchantmentLevel; i++) {
+                // Display offers by increasing level up to max level as well as their prices
+                EnchantmentOffer offer = new EnchantmentOffer(selectedOffer.getEnchantment(), i, i * experienceLevelStep);
+                pageDataVanillaEnchants.get(PAGE_NUMBER).put(slotptr, offer);
+                ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
+                ItemMeta metaOffer = enchantOption.getItemMeta();
+                if (metaOffer != null) {
+                    String enchantmentName = offer.getEnchantment().getKey().getKey();
+                    metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName) + " " + UtilityMethods.toRoman(offer.getEnchantmentLevel()) + " Required Level: " + offer.getCost(), NamedTextColor.GREEN));
+                    enchantOption.setItemMeta(metaOffer);
+                }
+                inv.setItem(slotptr, enchantOption);
+                if(slotptr== 5) slotptr+=4;
+                else if(slotptr== 14) slotptr+=4;
+                else if(slotptr== 23) slotptr+=4;
+                else if(slotptr== 32) slotptr+=4;
+                else if(slotptr== 41) slotptr+=4;
+                else if(slotptr== 50) break;
+                else {
+                    slotptr++;
+                }
+            }
+        } else if(selectedOfferCustom != null) {
+            if(selectedOfferCustom.getCost() > 0) {
+                // Apply the enchantment and return
+                UtilityMethods.applyCustomEnchant(player, selectedOfferCustom, item);
+                displayEnchantmentOptions(inv, item);
+                return;
+            }
+            int slotptr = 0;
+            HashMap<Integer, CustomEnchantmentOffer> previousSlotData = pageDataCustomEnchants.get(PAGE_NUMBER - 1);
+            List<Integer> levels = new ArrayList<>();
+            for(CustomEnchantmentOffer offer : previousSlotData.values()) {
+                levels.add(offer.getEnchantmentLevel());
+            }
+            int startLevel = Collections.max(levels) + 1;
+            int maxEnchantmentLevel = selectedOfferCustom.getEnchantmentLevel();
+            for (int i = startLevel; i <= maxEnchantmentLevel; i++) {
+                // Display offers by increasing level up to max level as well as their prices
+                CustomEnchantmentOffer offer = new CustomEnchantmentOffer(selectedOfferCustom.getEnchant(), i, i * experienceLevelStep);
+                pageDataCustomEnchants.get(PAGE_NUMBER).put(slotptr, offer);
+                ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
+                ItemMeta metaOffer = enchantOption.getItemMeta();
+                if (metaOffer != null) {
+                    String enchantmentName = offer.getEnchant().getName();
+                    metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName) + " " + UtilityMethods.toRoman(offer.getEnchantmentLevel()) + " Required Level: " + offer.getCost(), NamedTextColor.GREEN));
+                    enchantOption.setItemMeta(metaOffer);
+                }
+                inv.setItem(slotptr, enchantOption);
+                if(slotptr== 5) slotptr+=4;
+                else if(slotptr== 14) slotptr+=4;
+                else if(slotptr== 23) slotptr+=4;
+                else if(slotptr== 32) slotptr+=4;
+                else if(slotptr== 41) slotptr+=4;
+                else if(slotptr== 50) break;
+                else {
+                    slotptr++;
+                }
+            }
+        } 
+        // Fill options
+        optionsFill(inv);
+
+        // Set Previous page ptr
+        ItemStack prevPagePtr = new ItemStack(Material.ARROW);
+        ItemMeta prevPagePtrMeta = prevPagePtr.getItemMeta();
+        if (prevPagePtrMeta != null) {
+            prevPagePtrMeta.displayName(Component.text("Previous Page", NamedTextColor.GREEN));
+            prevPagePtr.setItemMeta(prevPagePtrMeta);
+        }
+        inv.setItem(PREVIOUS_PAGE, prevPagePtr);
+        // Set Next page ptr
+        ItemStack nextPagePtr = new ItemStack(Material.ARROW);
+        ItemMeta nextPagePtrMeta = nextPagePtr.getItemMeta();
+        if (nextPagePtrMeta != null) {
+            nextPagePtrMeta.displayName(Component.text("Next Page", NamedTextColor.GREEN));
+            nextPagePtr.setItemMeta(nextPagePtrMeta);
+        }
+        inv.setItem(NEXT_PAGE, nextPagePtr);
+    }
+
+
+    public static void displayPreviousSelectedEnchantmentOptions(Player player, ItemStack item, Inventory inv, int slot) {
+        if(item == null) return;
+        if(PAGE_NUMBER == 1) {
+            displayEnchantmentOptions(inv, item);
+            return;
+        }
+        PAGE_NUMBER--;
+        EnchantmentOffer selectedOffer = selectedVanillaOffer;
+        CustomEnchantmentOffer selectedOfferCustom = selectedCustomOffer;
+        voidOptions(inv);
+
+        if(selectedOffer != null) {
+            if(selectedOffer.getCost() > 0) {
+                // Apply the enchantment and return
+                UtilityMethods.applyVanillaEnchant(player, selectedOffer, item);
+                displayEnchantmentOptions(inv, item);
+                return;
+            }
+            int slotptr = 0;
+            HashMap<Integer, EnchantmentOffer> previousSlotData = pageDataVanillaEnchants.get(PAGE_NUMBER + 1);
+            List<Integer> levels = new ArrayList<>();
+            for(EnchantmentOffer offer : previousSlotData.values()) {
+                levels.add(offer.getEnchantmentLevel());
+            }
+            int startLevel = Collections.min(levels) - 1;
+            int maxEnchantmentLevel = startLevel;
+            for (int i = startLevel - 36; i <= maxEnchantmentLevel; i++) {
+                // Display offers by increasing level up to max level as well as their prices
+                EnchantmentOffer offer = new EnchantmentOffer(selectedOffer.getEnchantment(), i, i * experienceLevelStep);
+                pageDataVanillaEnchants.get(PAGE_NUMBER).put(slotptr, offer);
+                ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
+                ItemMeta metaOffer = enchantOption.getItemMeta();
+                if (metaOffer != null) {
+                    String enchantmentName = offer.getEnchantment().getKey().getKey();
+                    metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName) + " " + UtilityMethods.toRoman(offer.getEnchantmentLevel()) + " Required Level: " + offer.getCost(), NamedTextColor.GREEN));
+                    enchantOption.setItemMeta(metaOffer);
+                }
+                inv.setItem(slotptr, enchantOption);
+                if(slotptr== 5) slotptr+=4;
+                else if(slotptr== 14) slotptr+=4;
+                else if(slotptr== 23) slotptr+=4;
+                else if(slotptr== 32) slotptr+=4;
+                else if(slotptr== 41) slotptr+=4;
+                else if(slotptr== 50) break;
+                else {
+                    slotptr++;
+                }
+            }
+        } else if(selectedOfferCustom != null) {
+            if(selectedOfferCustom.getCost() > 0) {
+                // Apply the enchantment and return
+                UtilityMethods.applyCustomEnchant(player, selectedOfferCustom, item);
+                displayEnchantmentOptions(inv, item);
+                return;
+            }
+            int slotptr = 0;
+            HashMap<Integer, CustomEnchantmentOffer> previousSlotData = pageDataCustomEnchants.get(PAGE_NUMBER + 1);
+            List<Integer> levels = new ArrayList<>();
+            for(CustomEnchantmentOffer offer : previousSlotData.values()) {
+                levels.add(offer.getEnchantmentLevel());
+            }
+            int startLevel = Collections.min(levels) - 1;
+            int maxEnchantmentLevel = startLevel;
+            for (int i = startLevel - 36; i <= maxEnchantmentLevel; i++) {
+                // Display offers by increasing level up to max level as well as their prices
+                CustomEnchantmentOffer offer = new CustomEnchantmentOffer(selectedOfferCustom.getEnchant(), i, i * experienceLevelStep);
+                pageDataCustomEnchants.get(PAGE_NUMBER).put(slotptr, offer);
+                ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
+                ItemMeta metaOffer = enchantOption.getItemMeta();
+                if (metaOffer != null) {
+                    String enchantmentName = offer.getEnchant().getName();
+                    metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName) + " " + UtilityMethods.toRoman(offer.getEnchantmentLevel()) + " Required Level: " + offer.getCost(), NamedTextColor.GREEN));
+                    enchantOption.setItemMeta(metaOffer);
+                }
+                inv.setItem(slotptr, enchantOption);
+                if(slotptr== 5) slotptr+=4;
+                else if(slotptr== 14) slotptr+=4;
+                else if(slotptr== 23) slotptr+=4;
+                else if(slotptr== 32) slotptr+=4;
+                else if(slotptr== 41) slotptr+=4;
+                else if(slotptr== 50) break;
+                else {
+                    slotptr++;
+                }
+            }
+        } 
+        // Fill options
+        optionsFill(inv);
+
+        // Set Previous page ptr
+        ItemStack prevPagePtr = new ItemStack(Material.ARROW);
+        ItemMeta prevPagePtrMeta = prevPagePtr.getItemMeta();
+        if (prevPagePtrMeta != null) {
+            prevPagePtrMeta.displayName(Component.text("Previous Page", NamedTextColor.GREEN));
+            prevPagePtr.setItemMeta(prevPagePtrMeta);
+        }
+        inv.setItem(PREVIOUS_PAGE, prevPagePtr);
+        // Set Next page ptr
+        ItemStack nextPagePtr = new ItemStack(Material.ARROW);
+        ItemMeta nextPagePtrMeta = nextPagePtr.getItemMeta();
+        if (nextPagePtrMeta != null) {
+            nextPagePtrMeta.displayName(Component.text("Next Page", NamedTextColor.GREEN));
+            nextPagePtr.setItemMeta(nextPagePtrMeta);
+        }
+        inv.setItem(NEXT_PAGE, nextPagePtr);
     }
 
     public static void displayNextEnchantmentOptionsPage(Inventory inv, ItemStack item) {
         if(item == null) return;
+        if(PAGE_NUMBER + 1 > MAX_PAGES) return;
         PAGE_NUMBER++;
+        if(pageDataVanillaEnchants.get(PAGE_NUMBER).isEmpty() && pageDataCustomEnchants.get(PAGE_NUMBER).isEmpty()) {
+            displayNextEmptyEnchantmentOptionsPage(inv, item);
+        }
+        voidOptions(inv);
+        // Display the rest of enchantments that are applicable for the item
+        int slotptr = START_SLOT;
+        for (int i = 0; i < 51; i++) {
+            if(pageDataVanillaEnchants.get(PAGE_NUMBER) == null || pageDataVanillaEnchants.get(PAGE_NUMBER).isEmpty()) break;
+            EnchantmentOffer offer = pageDataVanillaEnchants.get(PAGE_NUMBER).get(slotptr);
+            if(offer == null) continue;
+            ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
+            ItemMeta metaOffer = enchantOption.getItemMeta();
+            if (metaOffer != null) {
+                String enchantmentName = offer.getEnchantment().getKey().getKey();
+                metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), NamedTextColor.AQUA));
+                enchantOption.setItemMeta(metaOffer);
+            }
+            inv.setItem(slotptr, enchantOption);
+            if(slotptr == 5) slotptr+=4;
+            else if(slotptr == 14) slotptr+=4;
+            else if(slotptr == 23) slotptr+=4;
+            else if(slotptr == 32) slotptr+=4;
+            else if(slotptr == 41) slotptr+=4;
+            else if(slotptr == 50) break;
+            else {
+                slotptr++;
+            }
+        }
+        if(slotptr < 50) {
+            for (int i = 0; i < 51; i++) {
+                if(pageDataCustomEnchants.get(PAGE_NUMBER) == null || pageDataCustomEnchants.get(PAGE_NUMBER).isEmpty()) break;
+                CustomEnchantmentOffer offer = pageDataCustomEnchants.get(PAGE_NUMBER).get(slotptr);
+                if(offer == null) continue;
+                ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
+                ItemMeta metaOffer = enchantOption.getItemMeta();
+                if (metaOffer != null) {
+                    String enchantmentName = offer.getEnchant().getName();
+                    metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), NamedTextColor.GOLD));
+                    enchantOption.setItemMeta(metaOffer);
+                }
+                inv.setItem(slotptr, enchantOption);
+                if(slotptr == 5) slotptr+=4;
+                else if(slotptr == 14) slotptr+=4;
+                else if(slotptr == 23) slotptr+=4;
+                else if(slotptr == 32) slotptr+=4;
+                else if(slotptr == 41) slotptr+=4;
+                else if(slotptr == 50) break;
+                else {
+                    slotptr++;
+                }
+            }
+        }
+
+        // Fill options
+        optionsFill(inv);
+    }
+
+    public static void displayNextEmptyEnchantmentOptionsPage(Inventory inv, ItemStack item) {
+        if(item == null) return;
         voidOptions(inv);
         // Display the rest of enchantments that are applicable for the item
         int slotptr = START_SLOT;
@@ -227,10 +507,14 @@ public class EnchantmentTableMenu {
         List<CustomEnchantmentOffer> applicableCustomEnchants = getCustomEnchants(item);
         for (EnchantmentOffer offer : applicableEnchants) {
             boolean exists = false;
-            for (EnchantmentOffer precedentOffer : pageDataVanillaEnchants.get(PAGE_NUMBER - 1).values()) {
-                if(offer.getEnchantment().getKey().equals(precedentOffer.getEnchantment().getKey())) {
-                    exists = true;
-                    break;
+            for (int i = 1; i < PAGE_NUMBER; i++) {
+                HashMap<Integer, EnchantmentOffer> data = pageDataVanillaEnchants.get(i);
+                if(data == null) continue;
+                for (EnchantmentOffer precedentOffer : data.values()) {
+                    if(offer.getEnchantment().getKey().equals(precedentOffer.getEnchantment().getKey())) {
+                        exists = true;
+                        break;
+                    }
                 }
             }
             if(exists) continue;
@@ -256,10 +540,14 @@ public class EnchantmentTableMenu {
         if(slotptr < 50) {
             for (CustomEnchantmentOffer offer : applicableCustomEnchants) {
                 boolean exists = false;
-                for (CustomEnchantmentOffer precedentOffer : pageDataCustomEnchants.get(PAGE_NUMBER - 1).values()) {
-                    if(offer.getEnchant().getName().equals(precedentOffer.getEnchant().getName())) {
-                        exists = true;
-                        break;
+                for (int i = 0; i < PAGE_NUMBER; i++) {
+                    HashMap<Integer, CustomEnchantmentOffer> data = pageDataCustomEnchants.get(i);
+                    if(data == null) continue;
+                    for (CustomEnchantmentOffer precedentOffer : data.values()) {
+                        if(offer.getEnchant().getName().equals(precedentOffer.getEnchant().getName())) {
+                            exists = true;
+                            break;
+                        }
                     }
                 }
                 if(exists) continue;
@@ -290,22 +578,15 @@ public class EnchantmentTableMenu {
 
     public static void displayPreviousEnchantmentOptionsPage(Inventory inv, ItemStack item) {
         if(item == null) return;
+        if(PAGE_NUMBER == 1) return;
         PAGE_NUMBER--;
         voidOptions(inv);
         // Display the rest of enchantments that are applicable for the item
         int slotptr = START_SLOT;
-        List<EnchantmentOffer> applicableEnchants = getEnchants(item);
-        List<CustomEnchantmentOffer> applicableCustomEnchants = getCustomEnchants(item);
-        for (EnchantmentOffer offer : applicableEnchants) {
-            boolean exists = false;
-            for (EnchantmentOffer precedentOffer : pageDataVanillaEnchants.get(PAGE_NUMBER + 1).values()) {
-                if(offer.getEnchantment().getKey().equals(precedentOffer.getEnchantment().getKey())) {
-                    exists = true;
-                    break;
-                }
-            }
-            if(exists) continue;
-            pageDataVanillaEnchants.get(PAGE_NUMBER).put(slotptr, offer);
+        for (int i = 0; i < 51; i++) {
+            if(pageDataVanillaEnchants.get(PAGE_NUMBER) == null || pageDataVanillaEnchants.get(PAGE_NUMBER).isEmpty()) continue;
+            EnchantmentOffer offer = pageDataVanillaEnchants.get(PAGE_NUMBER).get(slotptr);
+            if(offer == null) continue;
             ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
             ItemMeta metaOffer = enchantOption.getItemMeta();
             if (metaOffer != null) {
@@ -325,16 +606,10 @@ public class EnchantmentTableMenu {
             }
         }
         if(slotptr < 50) {
-            for (CustomEnchantmentOffer offer : applicableCustomEnchants) {
-                boolean exists = false;
-                for (CustomEnchantmentOffer precedentOffer : pageDataCustomEnchants.get(PAGE_NUMBER + 1).values()) {
-                    if(offer.getEnchant().getName().equals(precedentOffer.getEnchant().getName())) {
-                        exists = true;
-                        break;
-                    }
-                }
-                if(exists) continue;
-                pageDataCustomEnchants.get(PAGE_NUMBER).put(slotptr, offer);
+            for (int i = 0; i < 51; i++) {
+                if(pageDataVanillaEnchants.get(PAGE_NUMBER) == null || pageDataVanillaEnchants.get(PAGE_NUMBER).isEmpty()) break;
+                CustomEnchantmentOffer offer = pageDataCustomEnchants.get(PAGE_NUMBER).get(slotptr);
+                if(offer == null) continue;
                 ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
                 ItemMeta metaOffer = enchantOption.getItemMeta();
                 if (metaOffer != null) {
@@ -374,14 +649,14 @@ public class EnchantmentTableMenu {
         ItemStack nextPagePtr = new ItemStack(Material.ARROW);
         ItemMeta nextPagePtrMeta = nextPagePtr.getItemMeta();
         if (nextPagePtrMeta != null) {
-            nextPagePtrMeta.displayName(Component.text("Next Page", NamedTextColor.RED));
+            nextPagePtrMeta.displayName(Component.text("Next Page", NamedTextColor.AQUA));
             nextPagePtr.setItemMeta(nextPagePtrMeta);
         }
 
         ItemStack prevPagePtr = new ItemStack(Material.ARROW);
         ItemMeta prevPagePtrMeta = prevPagePtr.getItemMeta();
         if (prevPagePtrMeta != null) {
-            prevPagePtrMeta.displayName(Component.text("Previous Page", NamedTextColor.RED));
+            prevPagePtrMeta.displayName(Component.text("Previous Page", NamedTextColor.AQUA));
             prevPagePtr.setItemMeta(prevPagePtrMeta);
         }
 
@@ -392,9 +667,9 @@ public class EnchantmentTableMenu {
             enchantTablePlaceholder.setItemMeta(enchantTablePlaceholderMeta);
         }
 
-        inv.setItem(PLACEHOLDER_SLOT, enchantTablePlaceholder); // Assuming PLACEHOLDER_SLOT is correctly defined
-        inv.setItem(PREVIOUS_PAGE, prevPagePtr); // Assuming NEXT_PAGE is correctly defined
-        inv.setItem(NEXT_PAGE, nextPagePtr); // Assuming NEXT_PAGE is correctly defined
+        inv.setItem(PLACEHOLDER_SLOT, enchantTablePlaceholder);
+        inv.setItem(PREVIOUS_PAGE, prevPagePtr);
+        inv.setItem(NEXT_PAGE, nextPagePtr);
     }
 
     private static void optionsFill(Inventory inv) {
@@ -409,6 +684,41 @@ public class EnchantmentTableMenu {
             if(inv.getItem(slotptr) == null || inv.getItem(slotptr).getType() != Material.ENCHANTED_BOOK) {
                 inv.setItem(slotptr, Placeholder);
             }
+            if(slotptr == 5) slotptr+=4;
+            else if(slotptr == 14) slotptr+=4;
+            else if(slotptr == 23) slotptr+=4;
+            else if(slotptr == 32) slotptr+=4;
+            else if(slotptr == 41) slotptr+=4;
+            else if(slotptr == 50) break;
+            else {
+                slotptr++;
+            }
+        }
+    }
+
+    public static void clearOptions(Inventory inv) {
+        int slotptr = START_SLOT;
+        if(pageDataCustomEnchants.get(PAGE_NUMBER) != null) pageDataCustomEnchants.get(PAGE_NUMBER).clear();
+        if(pageDataVanillaEnchants.get(PAGE_NUMBER) != null) pageDataVanillaEnchants.get(PAGE_NUMBER).clear();
+        PAGE_NUMBER = 1;
+        while(slotptr < 51) {
+            inv.setItem(slotptr, new ItemStack(Material.AIR));
+            if(slotptr == 5) slotptr+=4;
+            else if(slotptr == 14) slotptr+=4;
+            else if(slotptr == 23) slotptr+=4;
+            else if(slotptr == 32) slotptr+=4;
+            else if(slotptr == 41) slotptr+=4;
+            else if(slotptr == 50) break;
+            else {
+                slotptr++;
+            }
+        }
+    }
+
+    public static void voidOptions(Inventory inv) {
+        int slotptr = START_SLOT;
+        while(slotptr < 51) {
+            inv.setItem(slotptr, new ItemStack(Material.AIR));
             if(slotptr == 5) slotptr+=4;
             else if(slotptr == 14) slotptr+=4;
             else if(slotptr == 23) slotptr+=4;
