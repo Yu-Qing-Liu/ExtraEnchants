@@ -64,9 +64,10 @@ public class EnchantmentTableMenu {
         clearOptions(inv);
         // Display all enchantments that are applicable for the item
         int slotptr = START_SLOT;
+        int itemcount = 0;
         List<EnchantmentOffer> applicableEnchants = getEnchants(item);
         List<CustomEnchantmentOffer> applicableCustomEnchants = getCustomEnchants(item);
-        MAX_PAGES = applicableEnchants.size() / 36 + applicableCustomEnchants.size() / 36 + 1;
+        MAX_PAGES = (int) Math.ceil((double) applicableEnchants.size() / 36.0 + (double) applicableCustomEnchants.size() / 36.0);
         for (EnchantmentOffer offer : applicableEnchants) {
             pageDataVanillaEnchants.get(PAGE_NUMBER).put(slotptr, offer);
             ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
@@ -77,6 +78,7 @@ public class EnchantmentTableMenu {
                 enchantOption.setItemMeta(metaOffer);
             }
             inv.setItem(slotptr, enchantOption);
+            itemcount++;
             if(slotptr == 5) slotptr+=4;
             else if(slotptr == 14) slotptr+=4;
             else if(slotptr == 23) slotptr+=4;
@@ -87,7 +89,7 @@ public class EnchantmentTableMenu {
                 slotptr++;
             }
         }
-        if(slotptr < 50) {
+        if(slotptr < 50 || inv.getItem(50) == null || inv.getItem(50).getType() == Material.AIR) {
             for (CustomEnchantmentOffer offer : applicableCustomEnchants) {
                 pageDataCustomEnchants.get(PAGE_NUMBER).put(slotptr, offer);
                 ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
@@ -149,7 +151,7 @@ public class EnchantmentTableMenu {
             }
             int slotptr = 0;
             int maxEnchantmentLevel = selectedOffer.getEnchantmentLevel();
-            MAX_PAGES = maxEnchantmentLevel / 36 + 1;
+            MAX_PAGES = (int) Math.ceil((double) maxEnchantmentLevel / 36.0);
             for (int i = 1; i <= maxEnchantmentLevel; i++) {
                 // Display offers by increasing level up to max level as well as their prices
                 EnchantmentOffer offer = new EnchantmentOffer(selectedOffer.getEnchantment(), i, i * experienceLevelStep);
@@ -469,7 +471,7 @@ public class EnchantmentTableMenu {
                 slotptr++;
             }
         }
-        if(slotptr < 50) {
+        if(slotptr < 50 || inv.getItem(50) == null || inv.getItem(50).getType() == Material.AIR) {
             for (int i = 0; i < 51; i++) {
                 if(pageDataCustomEnchants.get(PAGE_NUMBER) == null || pageDataCustomEnchants.get(PAGE_NUMBER).isEmpty()) break;
                 CustomEnchantmentOffer offer = pageDataCustomEnchants.get(PAGE_NUMBER).get(slotptr);
@@ -503,6 +505,7 @@ public class EnchantmentTableMenu {
         voidOptions(inv);
         // Display the rest of enchantments that are applicable for the item
         int slotptr = START_SLOT;
+        int itemcount = 0;
         List<EnchantmentOffer> applicableEnchants = getEnchants(item);
         List<CustomEnchantmentOffer> applicableCustomEnchants = getCustomEnchants(item);
         for (EnchantmentOffer offer : applicableEnchants) {
@@ -527,6 +530,7 @@ public class EnchantmentTableMenu {
                 enchantOption.setItemMeta(metaOffer);
             }
             inv.setItem(slotptr, enchantOption);
+            itemcount++;
             if(slotptr == 5) slotptr+=4;
             else if(slotptr == 14) slotptr+=4;
             else if(slotptr == 23) slotptr+=4;
@@ -537,7 +541,7 @@ public class EnchantmentTableMenu {
                 slotptr++;
             }
         }
-        if(slotptr < 50) {
+        if(slotptr < 50 || inv.getItem(50) == null || inv.getItem(50).getType() == Material.AIR) {
             for (CustomEnchantmentOffer offer : applicableCustomEnchants) {
                 boolean exists = false;
                 for (int i = 0; i < PAGE_NUMBER; i++) {
@@ -605,7 +609,7 @@ public class EnchantmentTableMenu {
                 slotptr++;
             }
         }
-        if(slotptr < 50) {
+        if(slotptr < 50 || inv.getItem(50) == null || inv.getItem(50).getType() == Material.AIR) {
             for (int i = 0; i < 51; i++) {
                 if(pageDataVanillaEnchants.get(PAGE_NUMBER) == null || pageDataVanillaEnchants.get(PAGE_NUMBER).isEmpty()) break;
                 CustomEnchantmentOffer offer = pageDataCustomEnchants.get(PAGE_NUMBER).get(slotptr);
@@ -698,8 +702,9 @@ public class EnchantmentTableMenu {
 
     public static void clearOptions(Inventory inv) {
         int slotptr = START_SLOT;
-        if(pageDataCustomEnchants.get(PAGE_NUMBER) != null) pageDataCustomEnchants.get(PAGE_NUMBER).clear();
-        if(pageDataVanillaEnchants.get(PAGE_NUMBER) != null) pageDataVanillaEnchants.get(PAGE_NUMBER).clear();
+        pageDataCustomEnchants.clear();
+        pageDataVanillaEnchants.clear();
+        initializePages();
         PAGE_NUMBER = 1;
         while(slotptr < 51) {
             inv.setItem(slotptr, new ItemStack(Material.AIR));
@@ -752,6 +757,7 @@ public class EnchantmentTableMenu {
     public static List<EnchantmentOffer> getEnchants(ItemStack item) {
         HashMap<NamespacedKey, Integer> EnchantmentRegistry = Constants.getEnchantments();
         List<EnchantmentOffer> applicableEnchants = new ArrayList<>();
+        Map<Enchantment, Integer> itemEnchants = item.getEnchantments();
 
         for (Enchantment enchantment : Registry.ENCHANTMENT) {
             boolean enchantable = isEnchantable(item, enchantment);
@@ -759,6 +765,9 @@ public class EnchantmentTableMenu {
                 // Get the level from applicableEnchants
                 NamespacedKey key = enchantment.getKey();
                 int level = EnchantmentRegistry.get(key);
+                int itemEnchantLevel = 0;
+                if(itemEnchants.get(enchantment) != null) itemEnchantLevel = itemEnchants.get(enchantment);
+                if(itemEnchantLevel == level) continue;
                 if(level > 0) {
                     EnchantmentOffer offer = new EnchantmentOffer(enchantment, level, 0);
                     applicableEnchants.add(offer);
@@ -772,6 +781,7 @@ public class EnchantmentTableMenu {
         HashMap<String, Integer> customEnchantments= Constants.getCustomEnchantments();
         List<CustomEnchantment> customEnchantmentRegistry = Database.getCustomEnchantmentRegistry();
         List<CustomEnchantmentOffer> applicableEnchants = new ArrayList<>();
+        Map<CustomEnchantment, Integer> itemEnchants = UtilityMethods.getEnchantments(item);
 
         for (CustomEnchantment enchantment : customEnchantmentRegistry) {
             boolean enchantable = isCustomEnchantable(item, enchantment);
@@ -779,6 +789,9 @@ public class EnchantmentTableMenu {
                 // Get the level from applicableEnchants
                 String key = enchantment.getName();
                 int level = customEnchantments.get(key);
+                int itemEnchantLevel = 0;
+                if(itemEnchants.get(enchantment) != null) itemEnchantLevel = itemEnchants.get(enchantment);
+                if(itemEnchantLevel == level) continue;
                 if(level > 0) {
                     CustomEnchantmentOffer offer = new CustomEnchantmentOffer(enchantment, level, 0);
                     applicableEnchants.add(offer);
