@@ -5,6 +5,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.Material;
 
 import java.util.List;
+import java.util.Objects;
 
 public class CustomEnchantment {
     private String name;
@@ -28,6 +29,19 @@ public class CustomEnchantment {
     public boolean canEnchant(ItemStack item) {
         if(item.getType() == Material.BOOK || item.getType() == Material.ENCHANTED_BOOK) return true;
         return applicable.contains(item.getType());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CustomEnchantment that = (CustomEnchantment) o;
+        return Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }
 

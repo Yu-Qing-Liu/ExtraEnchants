@@ -44,6 +44,7 @@ public class ExtraEnchants extends JavaPlugin {
 
         /*Events*/
         getServer().getPluginManager().registerEvents(new PlayerInteractsWithEnchantmentTable(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerInteractsWithGrindstone(this), this);
         getServer().getPluginManager().registerEvents(new Homing(this), this);
         getServer().getPluginManager().registerEvents(new Mitigation(this), this);
         getServer().getPluginManager().registerEvents(new Growth(this), this);
