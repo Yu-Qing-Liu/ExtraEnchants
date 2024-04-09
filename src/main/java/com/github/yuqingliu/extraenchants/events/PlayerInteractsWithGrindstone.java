@@ -16,6 +16,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import com.github.yuqingliu.extraenchants.gui.GrindstoneMenu;
 
@@ -29,6 +30,8 @@ import net.kyori.adventure.text.format.NamedTextColor;
 public class PlayerInteractsWithGrindstone implements Listener {
     private JavaPlugin plugin;
     private static final int ITEM_SLOT = 25;
+    private static final int PREVIOUS_PAGE = 6;
+    private static final int NEXT_PAGE = 51;
     List<Integer> frame = Arrays.asList(7,8,15,16,17,24,26,33,35,42,43,44,52,53);
     List<Integer> options = Arrays.asList(0,1,2,3,4,5,9,10,11,12,13,14,18,19,20,21,22,23,27,28,29,30,31,32,36,37,38,39,40,41,45,46,47,48,49,50);
 
@@ -86,8 +89,6 @@ public class PlayerInteractsWithGrindstone implements Listener {
                 event.setCancelled(true); // Prevent default behavior
                 GrindstoneMenu.displayOptions(actionInventory, currentItem);
             } else {
-                // If ITEM_SLOT is not empty, optionally handle this case, e.g., by sending a message to the player
-                player.sendMessage(Component.text("The grindstone slot is already occupied!", NamedTextColor.RED));
                 return;
             }
         }
@@ -104,6 +105,20 @@ public class PlayerInteractsWithGrindstone implements Listener {
                 clickedInventory.close();
                 Bukkit.getScheduler().runTaskLater(plugin, () -> GrindstoneMenu.openGrindstoneMenu(player), 1L);
                 return;
+            } else if(slot == NEXT_PAGE) {
+                ItemStack ptr = clickedInventory.getItem(slot);
+                ItemMeta ptrMeta = ptr.getItemMeta();
+                if(ptrMeta != null) {
+                    GrindstoneMenu.displayNextOptionsPage(clickedInventory, item);
+                }
+                event.setCancelled(true);
+            } else if(slot == PREVIOUS_PAGE) {
+                ItemStack ptr = clickedInventory.getItem(slot);
+                ItemMeta ptrMeta = ptr.getItemMeta();
+                if(ptrMeta != null) {
+                    GrindstoneMenu.displayPreviousOptionsPage(clickedInventory, item);
+                }
+                event.setCancelled(true);
             } else if(options.contains(slot)) {
                 if(itemClicked != null && itemClicked.getType() != Material.GLASS_PANE) {
                     GrindstoneMenu.applyOption(player, clickedInventory, slot, item);

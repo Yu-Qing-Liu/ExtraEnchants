@@ -92,8 +92,6 @@ public class PlayerInteractsWithEnchantmentTable implements Listener {
                 event.setCancelled(true); // Prevent default behavior
                 EnchantmentTableMenu.displayEnchantmentOptions(actionInventory, currentItem);
             } else {
-                // If ITEM_SLOT is not empty, optionally handle this case, e.g., by sending a message to the player
-                player.sendMessage(Component.text("The enchantment slot is already occupied!", NamedTextColor.RED));
                 return;
             }
         }

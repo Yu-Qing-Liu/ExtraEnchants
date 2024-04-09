@@ -30,8 +30,12 @@ import com.github.yuqingliu.extraenchants.utils.*;
 public class GrindstoneMenu {
     private static final int START_SLOT = 0;
     private static final int PLACEHOLDER_SLOT = 34;
-    private static HashMap<Integer,Enchantment> slotData = new HashMap<>();
-    private static HashMap<Integer,CustomEnchantment> slotDataCustom = new HashMap<>();
+    private static final int PREVIOUS_PAGE = 6;
+    private static final int NEXT_PAGE = 51;
+    private static int PAGE_NUMBER = 1;
+    private static int MAX_PAGES = 25;
+    private static HashMap<Integer,HashMap<Integer,Enchantment>> pageDataVanillaEnchants = new HashMap<>();
+    private static HashMap<Integer,HashMap<Integer,CustomEnchantment>> pageDataCustomEnchants = new HashMap<>();
 
     
     public static void openGrindstoneMenu(Player player) {
@@ -41,12 +45,20 @@ public class GrindstoneMenu {
         player.openInventory(inv);
     }
 
+    private static void initializePages() {
+        for (int i = 1; i < 25; i++) {
+            pageDataVanillaEnchants.put(i, new HashMap<>());
+            pageDataCustomEnchants.put(i, new HashMap<>());
+        }
+    }
+
     public static void displayOptions(Inventory inv, ItemStack item) {
         if(item == null) return;
         clearOptions(inv);
         Map<Enchantment, Integer> vanillaEnchants = item.getEnchantments();
         Map<CustomEnchantment, Integer> customEnchants = UtilityMethods.getEnchantments(item);
         int slotptr = START_SLOT;
+        MAX_PAGES = (int) Math.ceil((double) vanillaEnchants.size() / 36.0 + (double) customEnchants.size() / 36.0);
         for(Enchantment enchant : vanillaEnchants.keySet()) {
             ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
             ItemMeta metaOffer = enchantOption.getItemMeta();
@@ -56,7 +68,7 @@ public class GrindstoneMenu {
                 enchantOption.setItemMeta(metaOffer);
             }
             inv.setItem(slotptr, enchantOption);
-            slotData.put(slotptr, enchant);
+            pageDataVanillaEnchants.get(PAGE_NUMBER).put(slotptr, enchant);
             if(slotptr == 5) slotptr+=4;
             else if(slotptr == 14) slotptr+=4;
             else if(slotptr == 23) slotptr+=4;
@@ -67,7 +79,7 @@ public class GrindstoneMenu {
                 slotptr++;
             }
         }
-        if(slotptr < 50) {
+        if(slotptr < 50 || inv.getItem(50) == null || inv.getItem(50).getType() == Material.AIR) {
             for(CustomEnchantment enchant : customEnchants.keySet()) {
                 ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
                 ItemMeta metaOffer = enchantOption.getItemMeta();
@@ -77,7 +89,7 @@ public class GrindstoneMenu {
                     enchantOption.setItemMeta(metaOffer);
                 }
                 inv.setItem(slotptr, enchantOption);
-                slotDataCustom.put(slotptr, enchant);
+                pageDataCustomEnchants.get(PAGE_NUMBER).put(slotptr, enchant);
                 if(slotptr == 5) slotptr+=4;
                 else if(slotptr == 14) slotptr+=4;
                 else if(slotptr == 23) slotptr+=4;
@@ -92,10 +104,208 @@ public class GrindstoneMenu {
         optionsFill(inv);
     }
 
+    public static void displayNextOptionsPage(Inventory inv, ItemStack item) {
+        if(item == null) return;
+        if(PAGE_NUMBER + 1 > MAX_PAGES) return;
+        PAGE_NUMBER++;
+        if(pageDataVanillaEnchants.get(PAGE_NUMBER).isEmpty() && pageDataCustomEnchants.get(PAGE_NUMBER).isEmpty()) {
+            displayNextEmptyOptionsPage(inv, item);
+        }
+        voidOptions(inv);
+        // Display the rest of enchantments that are applicable for the item
+        int slotptr = START_SLOT;
+        for (int i = 0; i < 51; i++) {
+            if(pageDataVanillaEnchants.get(PAGE_NUMBER) == null || pageDataVanillaEnchants.get(PAGE_NUMBER).isEmpty()) break;
+            Enchantment offer = pageDataVanillaEnchants.get(PAGE_NUMBER).get(slotptr);
+            if(offer == null) continue;
+            ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
+            ItemMeta metaOffer = enchantOption.getItemMeta();
+            if (metaOffer != null) {
+                String enchantmentName = offer.getKey().getKey();
+                metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), NamedTextColor.AQUA));
+                enchantOption.setItemMeta(metaOffer);
+            }
+            inv.setItem(slotptr, enchantOption);
+            if(slotptr == 5) slotptr+=4;
+            else if(slotptr == 14) slotptr+=4;
+            else if(slotptr == 23) slotptr+=4;
+            else if(slotptr == 32) slotptr+=4;
+            else if(slotptr == 41) slotptr+=4;
+            else if(slotptr == 50) break;
+            else {
+                slotptr++;
+            }
+        }
+        if(slotptr < 50 || inv.getItem(50) == null || inv.getItem(50).getType() == Material.AIR) {
+            for (int i = 0; i < 51; i++) {
+                if(pageDataCustomEnchants.get(PAGE_NUMBER) == null || pageDataCustomEnchants.get(PAGE_NUMBER).isEmpty()) break;
+                CustomEnchantment offer = pageDataCustomEnchants.get(PAGE_NUMBER).get(slotptr);
+                if(offer == null) continue;
+                ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
+                ItemMeta metaOffer = enchantOption.getItemMeta();
+                if (metaOffer != null) {
+                    String enchantmentName = offer.getName();
+                    metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), NamedTextColor.GOLD));
+                    enchantOption.setItemMeta(metaOffer);
+                }
+                inv.setItem(slotptr, enchantOption);
+                if(slotptr == 5) slotptr+=4;
+                else if(slotptr == 14) slotptr+=4;
+                else if(slotptr == 23) slotptr+=4;
+                else if(slotptr == 32) slotptr+=4;
+                else if(slotptr == 41) slotptr+=4;
+                else if(slotptr == 50) break;
+                else {
+                    slotptr++;
+                }
+            }
+        }
+
+        // Fill options
+        optionsFill(inv);
+    }
+
+    public static void displayNextEmptyOptionsPage(Inventory inv, ItemStack item) {
+        if(item == null) return;
+        voidOptions(inv);
+        // Display the rest of enchantments that are applicable for the item
+        int slotptr = START_SLOT;
+        int itemcount = 0;
+        Map<Enchantment, Integer> vanillaEnchants = item.getEnchantments();
+        Map<CustomEnchantment, Integer> customEnchants = UtilityMethods.getEnchantments(item);
+        for (Enchantment offer : vanillaEnchants.keySet()) {
+            boolean exists = false;
+            for (int i = 1; i < PAGE_NUMBER; i++) {
+                HashMap<Integer, Enchantment> data = pageDataVanillaEnchants.get(i);
+                if(data == null) continue;
+                for (Enchantment precedentOffer : data.values()) {
+                    if(offer.getKey().equals(precedentOffer.getKey())) {
+                        exists = true;
+                        break;
+                    }
+                }
+            }
+            if(exists) continue;
+            ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
+            ItemMeta metaOffer = enchantOption.getItemMeta();
+            if (metaOffer != null) {
+                String enchantmentName = offer.getKey().getKey();
+                metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), NamedTextColor.AQUA));
+                enchantOption.setItemMeta(metaOffer);
+            }
+            inv.setItem(slotptr, enchantOption);
+            pageDataVanillaEnchants.get(PAGE_NUMBER).put(slotptr, offer);
+            if(slotptr == 5) slotptr+=4;
+            else if(slotptr == 14) slotptr+=4;
+            else if(slotptr == 23) slotptr+=4;
+            else if(slotptr == 32) slotptr+=4;
+            else if(slotptr == 41) slotptr+=4;
+            else if(slotptr == 50) break;
+            else {
+                slotptr++;
+            }
+        }
+        if(slotptr < 50 || inv.getItem(50) == null || inv.getItem(50).getType() == Material.AIR) {
+            for (CustomEnchantment offer : customEnchants.keySet()) {
+                boolean exists = false;
+                for (int i = 0; i < PAGE_NUMBER; i++) {
+                    HashMap<Integer, CustomEnchantment> data = pageDataCustomEnchants.get(i);
+                    if(data == null) continue;
+                    for (CustomEnchantment precedentOffer : data.values()) {
+                        if(offer.getName().equals(precedentOffer.getName())) {
+                            exists = true;
+                            break;
+                        }
+                    }
+                }
+                if(exists) continue;
+                ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
+                ItemMeta metaOffer = enchantOption.getItemMeta();
+                if (metaOffer != null) {
+                    String enchantmentName = offer.getName();
+                    metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), NamedTextColor.GOLD));
+                    enchantOption.setItemMeta(metaOffer);
+                }
+                inv.setItem(slotptr, enchantOption);
+                pageDataCustomEnchants.get(PAGE_NUMBER).put(slotptr, offer);
+                if(slotptr == 5) slotptr+=4;
+                else if(slotptr == 14) slotptr+=4;
+                else if(slotptr == 23) slotptr+=4;
+                else if(slotptr == 32) slotptr+=4;
+                else if(slotptr == 41) slotptr+=4;
+                else if(slotptr == 50) break;
+                else {
+                    slotptr++;
+                }
+            }
+        }
+
+        // Fill options
+        optionsFill(inv);
+    }
+
+    public static void displayPreviousOptionsPage(Inventory inv, ItemStack item) {
+        if(item == null) return;
+        if(PAGE_NUMBER == 1) return;
+        PAGE_NUMBER--;
+        voidOptions(inv);
+        // Display the rest of enchantments that are applicable for the item
+        int slotptr = START_SLOT;
+        for (int i = 0; i < 51; i++) {
+            if(pageDataVanillaEnchants.get(PAGE_NUMBER) == null || pageDataVanillaEnchants.get(PAGE_NUMBER).isEmpty()) continue;
+            Enchantment offer = pageDataVanillaEnchants.get(PAGE_NUMBER).get(slotptr);
+            if(offer == null) continue;
+            ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
+            ItemMeta metaOffer = enchantOption.getItemMeta();
+            if (metaOffer != null) {
+                String enchantmentName = offer.getKey().getKey();
+                metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), NamedTextColor.AQUA));
+                enchantOption.setItemMeta(metaOffer);
+            }
+            inv.setItem(slotptr, enchantOption);
+            if(slotptr == 5) slotptr+=4;
+            else if(slotptr == 14) slotptr+=4;
+            else if(slotptr == 23) slotptr+=4;
+            else if(slotptr == 32) slotptr+=4;
+            else if(slotptr == 41) slotptr+=4;
+            else if(slotptr == 50) break;
+            else {
+                slotptr++;
+            }
+        }
+        if(slotptr < 50 || inv.getItem(50) == null || inv.getItem(50).getType() == Material.AIR) {
+            for (int i = 0; i < 51; i++) {
+                if(pageDataVanillaEnchants.get(PAGE_NUMBER) == null || pageDataVanillaEnchants.get(PAGE_NUMBER).isEmpty()) break;
+                CustomEnchantment offer = pageDataCustomEnchants.get(PAGE_NUMBER).get(slotptr);
+                if(offer == null) continue;
+                ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
+                ItemMeta metaOffer = enchantOption.getItemMeta();
+                if (metaOffer != null) {
+                    String enchantmentName = offer.getName();
+                    metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), NamedTextColor.GOLD));
+                    enchantOption.setItemMeta(metaOffer);
+                }
+                inv.setItem(slotptr, enchantOption);
+                if(slotptr == 5) slotptr+=4;
+                else if(slotptr == 14) slotptr+=4;
+                else if(slotptr == 23) slotptr+=4;
+                else if(slotptr == 32) slotptr+=4;
+                else if(slotptr == 41) slotptr+=4;
+                else if(slotptr == 50) break;
+                else {
+                    slotptr++;
+                }
+            }
+        }
+
+        // Fill options
+        optionsFill(inv);
+    }
+
     public static void applyOption(Player player, Inventory inv, int slot, ItemStack item) {
         if(item == null) return;
-        Enchantment enchant = slotData.get(slot);
-        CustomEnchantment customEnchant = slotDataCustom.get(slot);
+        Enchantment enchant = pageDataVanillaEnchants.get(PAGE_NUMBER).get(slot);
+        CustomEnchantment customEnchant = pageDataCustomEnchants.get(PAGE_NUMBER).get(slot);
 
         if(enchant != null) {
             item.removeEnchantment(enchant);
@@ -110,6 +320,26 @@ public class GrindstoneMenu {
     }
 
     public static void clearOptions(Inventory inv) {
+        int slotptr = START_SLOT;
+        pageDataCustomEnchants.clear();
+        pageDataVanillaEnchants.clear();
+        initializePages();
+        PAGE_NUMBER = 1;
+        while(slotptr < 51) {
+            inv.setItem(slotptr, new ItemStack(Material.AIR));
+            if(slotptr == 5) slotptr+=4;
+            else if(slotptr == 14) slotptr+=4;
+            else if(slotptr == 23) slotptr+=4;
+            else if(slotptr == 32) slotptr+=4;
+            else if(slotptr == 41) slotptr+=4;
+            else if(slotptr == 50) break;
+            else {
+                slotptr++;
+            }
+        }
+    }
+
+    public static void voidOptions(Inventory inv) {
         int slotptr = START_SLOT;
         while(slotptr < 51) {
             inv.setItem(slotptr, new ItemStack(Material.AIR));
@@ -136,6 +366,20 @@ public class GrindstoneMenu {
             }
             inv.setItem(slot, frameTiles);
         }
+
+        ItemStack nextPagePtr = new ItemStack(Material.ARROW);
+        ItemMeta nextPagePtrMeta = nextPagePtr.getItemMeta();
+        if (nextPagePtrMeta != null) {
+            nextPagePtrMeta.displayName(Component.text("Next Page", NamedTextColor.AQUA));
+            nextPagePtr.setItemMeta(nextPagePtrMeta);
+        }
+
+        ItemStack prevPagePtr = new ItemStack(Material.ARROW);
+        ItemMeta prevPagePtrMeta = prevPagePtr.getItemMeta();
+        if (prevPagePtrMeta != null) {
+            prevPagePtrMeta.displayName(Component.text("Previous Page", NamedTextColor.AQUA));
+            prevPagePtr.setItemMeta(prevPagePtrMeta);
+        }
         
         ItemStack enchantTablePlaceholder = new ItemStack(Material.GRINDSTONE);
         ItemMeta enchantTablePlaceholderMeta = enchantTablePlaceholder.getItemMeta();
@@ -145,6 +389,8 @@ public class GrindstoneMenu {
         }
 
         inv.setItem(PLACEHOLDER_SLOT, enchantTablePlaceholder); // Assuming PLACEHOLDER_SLOT is correctly defined
+        inv.setItem(PREVIOUS_PAGE, prevPagePtr);
+        inv.setItem(NEXT_PAGE, nextPagePtr);
     }
 
     private static void optionsFill(Inventory inv) {
