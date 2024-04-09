@@ -1,30 +1,22 @@
 package com.github.yuqingliu.extraenchants.gui;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Registry;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.enchantments.EnchantmentOffer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.Sound;
-import org.bukkit.NamespacedKey;
 
 import java.util.List;
-import java.util.Set;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.HashMap;
 import java.util.Map;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
-import com.github.yuqingliu.extraenchants.database.*;
 import com.github.yuqingliu.extraenchants.utils.*;
 
 public class GrindstoneMenu {

@@ -1,13 +1,11 @@
 package com.github.yuqingliu.extraenchants.gui;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Registry;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.enchantments.EnchantmentOffer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.Sound;
 import org.bukkit.NamespacedKey;
@@ -22,16 +20,17 @@ import java.util.Map;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 import com.github.yuqingliu.extraenchants.database.*;
 import com.github.yuqingliu.extraenchants.utils.*;
 
 public class AnvilMenu {
     private static final int MAX_IRON_BLOCKS = 15;
+    private static int IRON_BLOCKS = 1;
     private static final int IRON_BLOCK_MULTIPLIER = 5;
-    private static final int LEFT_SLOT = 11;
-    private static final int RIGHT_SLOT = 13;
+    private static final int VANILLA_COST_PER_LEVEL = 5;
+    private static final int CUSTOM_COST_PER_LEVEL = 10;
+    private static int COST = 0;
     private static final int RESULT_SLOT = 15;
     private static final List<Integer> SLOTS = Arrays.asList(11, 13, 15, 20, 22, 24);
     private static final List<Integer> PLACEHOLDER_SLOTS = Arrays.asList(20, 22, 24);
@@ -39,7 +38,9 @@ public class AnvilMenu {
 
     public static void openAnvilMenu(Player player, int ironBlocks) {
         Inventory inv = Bukkit.createInventory(null, 36, Component.text("Anvil", NamedTextColor.DARK_GRAY));
+        IRON_BLOCKS = Math.min(ironBlocks, MAX_IRON_BLOCKS);
         displayItemFrame(inv);
+        COST = 0;
         player.openInventory(inv);
     }
 
@@ -76,11 +77,28 @@ public class AnvilMenu {
 
     public static void updateResult(Inventory inv, ItemStack leftItem, ItemStack rightItem) {
         ItemStack Result = leftItem.clone();
+        COST = 0;
 
+        int anvilPower = IRON_BLOCKS * IRON_BLOCK_MULTIPLIER;
         int vanillaCost = applyVanillaEnchants(Result, leftItem.getEnchantments(), rightItem.getEnchantments());
         int customCost = applyCustomEnchants(Result, UtilityMethods.getEnchantments(leftItem), UtilityMethods.getEnchantments(rightItem));
+    
+        if(vanillaCost + customCost == 0) return;
+        COST = vanillaCost * VANILLA_COST_PER_LEVEL + customCost * CUSTOM_COST_PER_LEVEL;
+        
+        if(anvilPower > COST) {
+            inv.setItem(RESULT_SLOT, Result);
+        }
+    }
 
-        inv.setItem(RESULT_SLOT, Result);
+    public static boolean applyCost(Player player) {
+        int playerLevel = player.getLevel();
+        if(playerLevel > COST) {
+            player.setLevel(playerLevel - COST);
+            // Play anvil sound
+            return true;
+        }
+        return false;
     }
 
     private static int applyVanillaEnchants(ItemStack result, Map<Enchantment, Integer> ItemVanillaEnchants, Map<Enchantment, Integer> SacrificeVanillaEnchants) {
@@ -96,18 +114,16 @@ public class AnvilMenu {
             if(ItemVanillaEnchants.get(enchant) != null) itemVanillaEnchantLevel = ItemVanillaEnchants.get(enchant);
             if(SacrificeVanillaEnchants.get(enchant) != null) sacrificeVanillaEnchantLevel = SacrificeVanillaEnchants.get(enchant);
 
-            if(sacrificeVanillaEnchantLevel > itemVanillaEnchantLevel) {
+            if(sacrificeVanillaEnchantLevel > itemVanillaEnchantLevel && enchant.canEnchantItem(result)) {
                 result.removeEnchantment(enchant);
                 result.addUnsafeEnchantment(enchant, sacrificeVanillaEnchantLevel);
                 cost += sacrificeVanillaEnchantLevel - itemVanillaEnchantLevel;
-            } else if (sacrificeVanillaEnchantLevel == itemVanillaEnchantLevel && sacrificeVanillaEnchantLevel + 1 <= maxEnchantmentLevel) {
+            } else if (sacrificeVanillaEnchantLevel == itemVanillaEnchantLevel && sacrificeVanillaEnchantLevel + 1 <= maxEnchantmentLevel && enchant.canEnchantItem(result)) {
                 result.removeEnchantment(enchant);
                 result.addUnsafeEnchantment(enchant, sacrificeVanillaEnchantLevel + 1);
                 cost += 1;
             }
-            
         }
-
         return cost;
     }
 

@@ -2,12 +2,12 @@ package com.github.yuqingliu.extraenchants.utils;
 
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentOffer;
 import org.bukkit.Sound;
 import org.bukkit.NamespacedKey;
+import org.bukkit.block.Block;
+import org.bukkit.Material;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -15,11 +15,8 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 import java.util.Map;
-import java.util.Set;
-import java.util.HashSet;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 
@@ -227,5 +224,34 @@ public class UtilityMethods {
             player.setLevel(playerLevel - 1);
             player.playSound(player.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0f, 1.0f);
         }
+    }
+
+    public static int countSurroundingEffectiveBlocks(Block centerBlock, Material checkBlockType) {
+        int count = 0;
+        // Coordinates relative to the enchanting table for all 24 valid surrounding positions
+        int[][] relativePositions = {
+            {-1, 0, 2}, {0, 0, 2}, {1, 0, 2},
+            {2, 0, 1}, {2, 0, 0}, {2, 0, -1},
+            {1, 0, -2}, {0, 0, -2}, {-1, 0, -2},
+            {-2, 0, -1}, {-2, 0, 0}, {-2, 0, 1},
+            {-1, 1, 2}, {0, 1, 2}, {1, 1, 2},
+            {2, 1, 1}, {2, 1, 0}, {2, 1, -1},
+            {1, 1, -2}, {0, 1, -2}, {-1, 1, -2},
+            {-2, 1, -1}, {-2, 1, 0}, {-2, 1, 1}
+        };
+
+        for (int[] pos : relativePositions) {
+            Block checkBlock = centerBlock.getRelative(pos[0], pos[1], pos[2]);
+            if (checkBlock.getType() == checkBlockType) {
+                Block airCheck1 = centerBlock.getRelative(pos[0], 1, pos[2]); // Directly above enchanting table
+                Block airCheck2 = centerBlock.getRelative(pos[0], 2, pos[2]); // One above the bookshelf level
+                if ((airCheck1.getType() == Material.AIR || airCheck1.getType() == checkBlockType) && 
+                    airCheck2.getType() == Material.AIR) {
+                    count++;
+                }
+            }
+        }
+        if(count == 0) return 1;
+        return count;
     }
 }

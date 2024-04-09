@@ -5,32 +5,24 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.block.Block;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.NamespacedKey;
 
 import com.github.yuqingliu.extraenchants.gui.AnvilMenu;
 import com.github.yuqingliu.extraenchants.utils.*;
-import com.github.yuqingliu.extraenchants.database.Constants;
 
 import java.util.List;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.HashSet;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -41,7 +33,7 @@ public class PlayerInteractsWithAnvil implements Listener {
     private static final int LEFT_SLOT = 11;
     private static final int RIGHT_SLOT = 13;
     private static final int RESULT_SLOT = 15;
-    private static final List<Integer> allowed = Arrays.asList(21,23);
+    private static final List<Integer> allowed = Arrays.asList(11,13);
     private static boolean hasResult = false;
 
     public PlayerInteractsWithAnvil(JavaPlugin plugin) {
@@ -97,9 +89,18 @@ public class PlayerInteractsWithAnvil implements Listener {
                     clickedInventory.clear(event.getSlot()); // Clear the slot from where the item was moved
                     event.setCancelled(true); // Prevent default behavior
                 }
+            } else if(validResult(clickedInventory.getItem(RESULT_SLOT))) {
+                if(AnvilMenu.applyCost(player)) {
+                    clickedInventory.setItem(LEFT_SLOT, new ItemStack(Material.AIR));
+                    clickedInventory.setItem(RIGHT_SLOT, new ItemStack(Material.AIR));
+                } else {
+                    event.setCancelled(true);
+                }
+                wait(clickedInventory);
             } else {
-                clickedInventory.setItem(LEFT_SLOT, new ItemStack(Material.AIR));
-                clickedInventory.setItem(RIGHT_SLOT, new ItemStack(Material.AIR));
+                // Player is removing an item from left or right, cancel the transaction
+                setBarrier(clickedInventory);
+                wait(clickedInventory);
             }
             return;
         }
@@ -114,10 +115,16 @@ public class PlayerInteractsWithAnvil implements Listener {
             } else {
                 // If player removes item from left or right slot, cancel the transaction
                 if(slot == RIGHT_SLOT || slot == LEFT_SLOT) {
+                    setBarrier(clickedInventory);
                     wait(clickedInventory);
                 } else if(slot == RESULT_SLOT && validResult(clickedInventory.getItem(slot))) {
-                    clickedInventory.setItem(LEFT_SLOT, new ItemStack(Material.AIR));
-                    clickedInventory.setItem(RIGHT_SLOT, new ItemStack(Material.AIR));
+                    if(AnvilMenu.applyCost(player)) {
+                        clickedInventory.setItem(LEFT_SLOT, new ItemStack(Material.AIR));
+                        clickedInventory.setItem(RIGHT_SLOT, new ItemStack(Material.AIR));
+                    } else {
+                        event.setCancelled(true);
+                    }
+                    wait(clickedInventory);
                 } else {
                     event.setCancelled(true);
                 }
@@ -174,16 +181,27 @@ public class PlayerInteractsWithAnvil implements Listener {
         return item != null && item.getType() != Material.BARRIER && item.getType() != Material.AIR;
     }
 
+    private void setBarrier(Inventory inv) {
+        ItemStack resultPlaceholder = new ItemStack(Material.BARRIER);
+        ItemMeta resultPlaceholderMeta = resultPlaceholder.getItemMeta();
+        if (resultPlaceholderMeta != null) {
+            resultPlaceholderMeta.displayName(Component.text("Unavailable", NamedTextColor.RED));
+            resultPlaceholder.setItemMeta(resultPlaceholderMeta);
+        }
+        inv.setItem(RESULT_SLOT, resultPlaceholder);
+    }
+
     private void wait(Inventory inv) {
         hasResult = false;
         new BukkitRunnable() {
             @Override
             public void run() {
+                setBarrier(inv);
                 ItemStack leftItem = inv.getItem(LEFT_SLOT);
-                ItemStack rightItem = inv.getItem(LEFT_SLOT);
+                ItemStack rightItem = inv.getItem(RIGHT_SLOT);
                 if (leftItem != null && rightItem != null && leftItem.getType() != Material.AIR && rightItem.getType() != Material.AIR) {
                     // Item detected in both left and right slots, update the result
-                    AnvilMenu.updateResult(leftItem, rightItem);
+                    AnvilMenu.updateResult(inv, leftItem, rightItem);
                     hasResult = true;
                     cancel(); // Stop this task from running again
                 }

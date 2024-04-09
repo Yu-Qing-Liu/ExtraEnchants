@@ -5,8 +5,10 @@
 /home/yuqingliu/Documents/PersonalRepos/ExtraEnchants/src/main/java/com/github/yuqingliu/extraenchants/utils/CustomEnchantmentOffer.java
 /home/yuqingliu/Documents/PersonalRepos/ExtraEnchants/src/main/java/com/github/yuqingliu/extraenchants/enchants/bow/Homing.java
 /home/yuqingliu/Documents/PersonalRepos/ExtraEnchants/src/main/java/com/github/yuqingliu/extraenchants/events/PlayerInteractsWithGrindstone.java
+/home/yuqingliu/Documents/PersonalRepos/ExtraEnchants/src/main/java/com/github/yuqingliu/extraenchants/events/PlayerInteractsWithAnvil.java
 /home/yuqingliu/Documents/PersonalRepos/ExtraEnchants/src/main/java/com/github/yuqingliu/extraenchants/enchants/weapons/Venom.java
 /home/yuqingliu/Documents/PersonalRepos/ExtraEnchants/src/main/java/com/github/yuqingliu/extraenchants/enchants/weapons/Wither.java
+/home/yuqingliu/Documents/PersonalRepos/ExtraEnchants/src/main/java/com/github/yuqingliu/extraenchants/gui/AnvilMenu.java
 /home/yuqingliu/Documents/PersonalRepos/ExtraEnchants/src/main/java/com/github/yuqingliu/extraenchants/enchants/crossbow/Flame.java
 /home/yuqingliu/Documents/PersonalRepos/ExtraEnchants/src/main/java/com/github/yuqingliu/extraenchants/commands/EECommand.java
 /home/yuqingliu/Documents/PersonalRepos/ExtraEnchants/src/main/java/com/github/yuqingliu/extraenchants/database/Database.java
