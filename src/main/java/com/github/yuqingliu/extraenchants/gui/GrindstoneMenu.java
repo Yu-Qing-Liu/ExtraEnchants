@@ -384,7 +384,7 @@ public class GrindstoneMenu {
         ItemStack enchantTablePlaceholder = new ItemStack(Material.GRINDSTONE);
         ItemMeta enchantTablePlaceholderMeta = enchantTablePlaceholder.getItemMeta();
         if (enchantTablePlaceholderMeta != null) {
-            enchantTablePlaceholderMeta.displayName(Component.text("Enchantment Slot", NamedTextColor.GREEN));
+            enchantTablePlaceholderMeta.displayName(Component.text("Grindstone Slot", NamedTextColor.GREEN));
             enchantTablePlaceholder.setItemMeta(enchantTablePlaceholderMeta);
         }
 
@@ -393,7 +393,7 @@ public class GrindstoneMenu {
         inv.setItem(NEXT_PAGE, nextPagePtr);
     }
 
-    private static void optionsFill(Inventory inv) {
+    public static void optionsFill(Inventory inv) {
         int slotptr = START_SLOT;
         ItemStack Placeholder = new ItemStack(Material.GLASS_PANE);
         ItemMeta PlaceholderMeta = Placeholder.getItemMeta();

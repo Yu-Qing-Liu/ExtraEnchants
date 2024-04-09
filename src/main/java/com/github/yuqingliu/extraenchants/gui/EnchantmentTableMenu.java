@@ -9,7 +9,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.enchantments.EnchantmentOffer;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.Sound;
 import org.bukkit.NamespacedKey;
 
 import java.util.List;
@@ -676,7 +675,7 @@ public class EnchantmentTableMenu {
         inv.setItem(NEXT_PAGE, nextPagePtr);
     }
 
-    private static void optionsFill(Inventory inv) {
+    public static void optionsFill(Inventory inv) {
         int slotptr = START_SLOT;
         ItemStack Placeholder = new ItemStack(Material.GLASS_PANE);
         ItemMeta PlaceholderMeta = Placeholder.getItemMeta();
