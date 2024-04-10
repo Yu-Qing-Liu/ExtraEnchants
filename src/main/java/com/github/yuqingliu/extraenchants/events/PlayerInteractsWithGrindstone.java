@@ -31,7 +31,7 @@ public class PlayerInteractsWithGrindstone implements Listener {
     private static final int ITEM_SLOT = 25;
     private static final int PREVIOUS_PAGE = 6;
     private static final int NEXT_PAGE = 51;
-    List<Integer> frame = Arrays.asList(7,8,15,16,17,24,26,33,35,42,43,44,52,53);
+    List<Integer> frame = Arrays.asList(7,8,15,16,17,24,26,33,34,35,42,43,44,52,53);
     List<Integer> options = Arrays.asList(0,1,2,3,4,5,9,10,11,12,13,14,18,19,20,21,22,23,27,28,29,30,31,32,36,37,38,39,40,41,45,46,47,48,49,50);
 
     public PlayerInteractsWithGrindstone(JavaPlugin plugin) {
@@ -69,6 +69,10 @@ public class PlayerInteractsWithGrindstone implements Listener {
         }
 
         if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+            if(frame.contains(event.getRawSlot()) || options.contains(event.getRawSlot()) || event.getRawSlot() == NEXT_PAGE || event.getRawSlot() == PREVIOUS_PAGE) {
+                event.setCancelled(true);
+                return;
+            } 
             // Handle the shift-click case
             ItemStack itemInTargetSlot = actionInventory.getItem(ITEM_SLOT);
             if (itemInTargetSlot == null || itemInTargetSlot.getType() == Material.AIR) {
