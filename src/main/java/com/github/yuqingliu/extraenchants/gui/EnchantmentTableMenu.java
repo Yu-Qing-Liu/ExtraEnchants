@@ -9,7 +9,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.enchantments.EnchantmentOffer;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.Sound;
 import org.bukkit.NamespacedKey;
 
 import java.util.List;
@@ -24,8 +23,8 @@ import java.util.Collections;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-import com.github.yuqingliu.extraenchants.database.*;
-import com.github.yuqingliu.extraenchants.utils.*;
+import com.github.yuqingliu.extraenchants.enchants.*;
+import com.github.yuqingliu.extraenchants.enchants.utils.*;
 
 public class EnchantmentTableMenu {
     private static final int START_SLOT = 0;
@@ -676,7 +675,7 @@ public class EnchantmentTableMenu {
         inv.setItem(NEXT_PAGE, nextPagePtr);
     }
 
-    private static void optionsFill(Inventory inv) {
+    public static void optionsFill(Inventory inv) {
         int slotptr = START_SLOT;
         ItemStack Placeholder = new ItemStack(Material.GLASS_PANE);
         ItemMeta PlaceholderMeta = Placeholder.getItemMeta();

@@ -12,13 +12,13 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.block.Block;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.event.block.Action;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.event.inventory.InventoryAction;
 
 import com.github.yuqingliu.extraenchants.gui.EnchantmentTableMenu;
+import com.github.yuqingliu.extraenchants.enchants.utils.UtilityMethods;
 
 import java.util.List;
 import java.util.Arrays;
@@ -33,7 +33,7 @@ public class PlayerInteractsWithEnchantmentTable implements Listener {
     private static final int PREVIOUS_PAGE = 6;
     private static final int NEXT_PAGE = 51;
     private static int BOOKSHELVES = 1;
-    List<Integer> frame = Arrays.asList(7,8,15,16,17,24,26,33,35,42,43,44,52,53);
+    List<Integer> frame = Arrays.asList(7,8,15,16,17,24,26,33,34,35,42,43,44,52,53);
     List<Integer> options = Arrays.asList(0,1,2,3,4,5,9,10,11,12,13,14,18,19,20,21,22,23,27,28,29,30,31,32,36,37,38,39,40,41,45,46,47,48,49,50);
 
     public PlayerInteractsWithEnchantmentTable(JavaPlugin plugin) {
@@ -49,7 +49,7 @@ public class PlayerInteractsWithEnchantmentTable implements Listener {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK && block != null && block.getType() == Material.ENCHANTING_TABLE) {
             event.setCancelled(true); // Prevent the default enchantment table GUI from opening
 
-            BOOKSHELVES = countEffectiveBookshelves(block);
+            BOOKSHELVES = UtilityMethods.countSurroundingEffectiveBlocks(block, Material.BOOKSHELF);
             EnchantmentTableMenu.openEnchantmentTableMenu(player, BOOKSHELVES);
         }
     }
@@ -57,17 +57,7 @@ public class PlayerInteractsWithEnchantmentTable implements Listener {
     @EventHandler
     public void onInventoryOpen(InventoryOpenEvent event) {
         if (event.getView().title().equals(Component.text("Enchanting Table", NamedTextColor.DARK_PURPLE))) {
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    ItemStack itemInTargetSlot = event.getInventory().getItem(ITEM_SLOT);
-                    if (itemInTargetSlot != null && itemInTargetSlot.getType() != Material.AIR) {
-                        // Item detected in the target slot, update the UI accordingly
-                        EnchantmentTableMenu.displayEnchantmentOptions(event.getInventory(), itemInTargetSlot);
-                        cancel(); // Stop this task from running again
-                    }
-                }
-            }.runTaskTimer(plugin, 0L, 10L); // Run this task every half second (10 ticks)
+            wait(event.getInventory());
         }
     }
     
@@ -83,6 +73,10 @@ public class PlayerInteractsWithEnchantmentTable implements Listener {
         }
 
         if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+            if(frame.contains(event.getRawSlot()) || options.contains(event.getRawSlot()) || event.getRawSlot() == NEXT_PAGE || event.getRawSlot() == PREVIOUS_PAGE) {
+                event.setCancelled(true);
+                return;
+            } 
             // Handle the shift-click case
             ItemStack itemInTargetSlot = actionInventory.getItem(ITEM_SLOT);
             if (itemInTargetSlot == null || itemInTargetSlot.getType() == Material.AIR) {
@@ -92,8 +86,11 @@ public class PlayerInteractsWithEnchantmentTable implements Listener {
                 event.setCancelled(true); // Prevent default behavior
                 EnchantmentTableMenu.displayEnchantmentOptions(actionInventory, currentItem);
             } else {
-                return;
+                EnchantmentTableMenu.clearOptions(actionInventory);
+                EnchantmentTableMenu.optionsFill(actionInventory);
+                wait(actionInventory);
             }
+            return;
         }
 
         if (clickedInventory.equals(player.getOpenInventory().getTopInventory())) {
@@ -105,8 +102,9 @@ public class PlayerInteractsWithEnchantmentTable implements Listener {
                 return;
             }
             if(slot == ITEM_SLOT) {
-                clickedInventory.close();
-                Bukkit.getScheduler().runTaskLater(plugin, () -> EnchantmentTableMenu.openEnchantmentTableMenu(player, BOOKSHELVES), 1L);
+                EnchantmentTableMenu.clearOptions(clickedInventory);
+                EnchantmentTableMenu.optionsFill(clickedInventory);
+                wait(clickedInventory);
                 return;
             } else if(slot == NEXT_PAGE) {
                 ItemStack ptr = clickedInventory.getItem(slot);
@@ -170,32 +168,17 @@ public class PlayerInteractsWithEnchantmentTable implements Listener {
         }
     }
 
-    public int countEffectiveBookshelves(Block enchantingTableBlock) {
-        int count = 0;
-        // Coordinates relative to the enchanting table for all 24 valid bookshelf positions
-        int[][] relativePositions = {
-            {-1, 0, 2}, {0, 0, 2}, {1, 0, 2},
-            {2, 0, 1}, {2, 0, 0}, {2, 0, -1},
-            {1, 0, -2}, {0, 0, -2}, {-1, 0, -2},
-            {-2, 0, -1}, {-2, 0, 0}, {-2, 0, 1},
-            {-1, 1, 2}, {0, 1, 2}, {1, 1, 2},
-            {2, 1, 1}, {2, 1, 0}, {2, 1, -1},
-            {1, 1, -2}, {0, 1, -2}, {-1, 1, -2},
-            {-2, 1, -1}, {-2, 1, 0}, {-2, 1, 1}
-        };
-
-        for (int[] pos : relativePositions) {
-            Block checkBlock = enchantingTableBlock.getRelative(pos[0], pos[1], pos[2]);
-            if (checkBlock.getType() == Material.BOOKSHELF) {
-                Block airCheck1 = enchantingTableBlock.getRelative(pos[0], 1, pos[2]); // Directly above enchanting table
-                Block airCheck2 = enchantingTableBlock.getRelative(pos[0], 2, pos[2]); // One above the bookshelf level
-                if ((airCheck1.getType() == Material.AIR || airCheck1.getType() == Material.BOOKSHELF) && 
-                    airCheck2.getType() == Material.AIR) {
-                    count++;
+    private void wait(Inventory inv) {
+        new BukkitRunnable() {
+                @Override
+                public void run() {
+                    ItemStack itemInTargetSlot = inv.getItem(ITEM_SLOT);
+                    if (itemInTargetSlot != null && itemInTargetSlot.getType() != Material.AIR) {
+                        // Item detected in the target slot, update the UI accordingly
+                        EnchantmentTableMenu.displayEnchantmentOptions(inv, itemInTargetSlot);
+                        cancel(); // Stop this task from running again
+                    }
                 }
-            }
-        }
-        if(count == 0) return 1;
-        return count;
+        }.runTaskTimer(plugin, 0L, 10L); // Run this task every half second (10 ticks)
     }
 }

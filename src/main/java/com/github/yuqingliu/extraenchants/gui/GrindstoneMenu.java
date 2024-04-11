@@ -1,31 +1,23 @@
 package com.github.yuqingliu.extraenchants.gui;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Registry;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.enchantments.EnchantmentOffer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.Sound;
-import org.bukkit.NamespacedKey;
 
 import java.util.List;
-import java.util.Set;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.HashMap;
 import java.util.Map;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
-import com.github.yuqingliu.extraenchants.database.*;
-import com.github.yuqingliu.extraenchants.utils.*;
+import com.github.yuqingliu.extraenchants.enchants.utils.*;
 
 public class GrindstoneMenu {
     private static final int START_SLOT = 0;
@@ -384,7 +376,7 @@ public class GrindstoneMenu {
         ItemStack enchantTablePlaceholder = new ItemStack(Material.GRINDSTONE);
         ItemMeta enchantTablePlaceholderMeta = enchantTablePlaceholder.getItemMeta();
         if (enchantTablePlaceholderMeta != null) {
-            enchantTablePlaceholderMeta.displayName(Component.text("Enchantment Slot", NamedTextColor.GREEN));
+            enchantTablePlaceholderMeta.displayName(Component.text("Grindstone Slot", NamedTextColor.GREEN));
             enchantTablePlaceholder.setItemMeta(enchantTablePlaceholderMeta);
         }
 
@@ -393,7 +385,7 @@ public class GrindstoneMenu {
         inv.setItem(NEXT_PAGE, nextPagePtr);
     }
 
-    private static void optionsFill(Inventory inv) {
+    public static void optionsFill(Inventory inv) {
         int slotptr = START_SLOT;
         ItemStack Placeholder = new ItemStack(Material.GLASS_PANE);
         ItemMeta PlaceholderMeta = Placeholder.getItemMeta();

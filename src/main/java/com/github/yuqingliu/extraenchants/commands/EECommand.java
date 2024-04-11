@@ -1,6 +1,6 @@
 package com.github.yuqingliu.extraenchants.commands;
 
-import com.github.yuqingliu.extraenchants.utils.UtilityMethods;
+import com.github.yuqingliu.extraenchants.enchants.utils.UtilityMethods;
 import com.github.yuqingliu.extraenchants.ExtraEnchants;
 
 import net.kyori.adventure.text.Component;

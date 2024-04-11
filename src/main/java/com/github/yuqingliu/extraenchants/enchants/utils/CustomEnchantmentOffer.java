@@ -1,4 +1,4 @@
-package com.github.yuqingliu.extraenchants.utils;
+package com.github.yuqingliu.extraenchants.enchants.utils;
 
 public class CustomEnchantmentOffer {
     private int cost;

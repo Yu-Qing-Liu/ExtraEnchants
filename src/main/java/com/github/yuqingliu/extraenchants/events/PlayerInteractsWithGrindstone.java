@@ -12,7 +12,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.block.Block;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryAction;
@@ -32,7 +31,7 @@ public class PlayerInteractsWithGrindstone implements Listener {
     private static final int ITEM_SLOT = 25;
     private static final int PREVIOUS_PAGE = 6;
     private static final int NEXT_PAGE = 51;
-    List<Integer> frame = Arrays.asList(7,8,15,16,17,24,26,33,35,42,43,44,52,53);
+    List<Integer> frame = Arrays.asList(7,8,15,16,17,24,26,33,34,35,42,43,44,52,53);
     List<Integer> options = Arrays.asList(0,1,2,3,4,5,9,10,11,12,13,14,18,19,20,21,22,23,27,28,29,30,31,32,36,37,38,39,40,41,45,46,47,48,49,50);
 
     public PlayerInteractsWithGrindstone(JavaPlugin plugin) {
@@ -54,17 +53,7 @@ public class PlayerInteractsWithGrindstone implements Listener {
     @EventHandler
     public void onInventoryOpen(InventoryOpenEvent event) {
         if (event.getView().title().equals(Component.text("Grindstone", NamedTextColor.GOLD))) {
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    ItemStack itemInTargetSlot = event.getInventory().getItem(ITEM_SLOT);
-                    if (itemInTargetSlot != null && itemInTargetSlot.getType() != Material.AIR) {
-                        // Item detected in the target slot, update the UI accordingly
-                        GrindstoneMenu.displayOptions(event.getInventory(), itemInTargetSlot);
-                        cancel(); // Stop this task from running again
-                    }
-                }
-            }.runTaskTimer(plugin, 0L, 10L); // Run this task every half second (10 ticks)
+            wait(event.getInventory());
         }
     }
     
@@ -80,6 +69,10 @@ public class PlayerInteractsWithGrindstone implements Listener {
         }
 
         if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+            if(frame.contains(event.getRawSlot()) || options.contains(event.getRawSlot()) || event.getRawSlot() == NEXT_PAGE || event.getRawSlot() == PREVIOUS_PAGE) {
+                event.setCancelled(true);
+                return;
+            } 
             // Handle the shift-click case
             ItemStack itemInTargetSlot = actionInventory.getItem(ITEM_SLOT);
             if (itemInTargetSlot == null || itemInTargetSlot.getType() == Material.AIR) {
@@ -89,8 +82,11 @@ public class PlayerInteractsWithGrindstone implements Listener {
                 event.setCancelled(true); // Prevent default behavior
                 GrindstoneMenu.displayOptions(actionInventory, currentItem);
             } else {
-                return;
+                GrindstoneMenu.clearOptions(actionInventory);
+                GrindstoneMenu.optionsFill(actionInventory);
+                wait(actionInventory);
             }
+            return;
         }
 
         if (clickedInventory.equals(player.getOpenInventory().getTopInventory())) {
@@ -102,8 +98,9 @@ public class PlayerInteractsWithGrindstone implements Listener {
                 return;
             }
             if(slot == ITEM_SLOT) {
-                clickedInventory.close();
-                Bukkit.getScheduler().runTaskLater(plugin, () -> GrindstoneMenu.openGrindstoneMenu(player), 1L);
+                GrindstoneMenu.clearOptions(actionInventory);
+                GrindstoneMenu.optionsFill(actionInventory);
+                wait(clickedInventory);
                 return;
             } else if(slot == NEXT_PAGE) {
                 ItemStack ptr = clickedInventory.getItem(slot);
@@ -137,23 +134,37 @@ public class PlayerInteractsWithGrindstone implements Listener {
 
         // Check if the closed inventory is the custom enchantment table GUI
         if (event.getView().title().equals(Component.text("Grindstone", NamedTextColor.GOLD))) {
-            ItemStack itemInEnchantSlot = closedInventory.getItem(ITEM_SLOT);
+            ItemStack item = closedInventory.getItem(ITEM_SLOT);
 
             // If there is an item in the enchantment slot, return it to the player's inventory
-            if (itemInEnchantSlot != null && itemInEnchantSlot.getType() != Material.AIR) {
+            if (item != null && item.getType() != Material.AIR) {
                 Inventory playerInventory = player.getInventory();
 
                 // Try to add the item back to the player's inventory
-                HashMap<Integer, ItemStack> unaddedItems = playerInventory.addItem(itemInEnchantSlot);
+                HashMap<Integer, ItemStack> unaddedItems = playerInventory.addItem(item);
 
                 // If the player's inventory is full and the item cannot be added back, drop it in the world at the player's location
                 if (!unaddedItems.isEmpty()) {
-                    player.getWorld().dropItemNaturally(player.getLocation(), itemInEnchantSlot);
+                    player.getWorld().dropItemNaturally(player.getLocation(), item);
                 }
 
                 // Clear the slot in the custom GUI to prevent duplication
                 closedInventory.setItem(ITEM_SLOT, new ItemStack(Material.AIR));
             }
         }
+    }
+
+    private void wait(Inventory inv) {
+        new BukkitRunnable() {
+                @Override
+                public void run() {
+                    ItemStack itemInTargetSlot = inv.getItem(ITEM_SLOT);
+                    if (itemInTargetSlot != null && itemInTargetSlot.getType() != Material.AIR) {
+                        // Item detected in the target slot, update the UI accordingly
+                        GrindstoneMenu.displayOptions(inv, itemInTargetSlot);
+                        cancel(); // Stop this task from running again
+                    }
+                }
+        }.runTaskTimer(plugin, 0L, 10L); // Run this task every half second (10 ticks)
     }
 }

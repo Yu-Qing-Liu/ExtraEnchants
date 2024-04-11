@@ -13,7 +13,7 @@ import org.bukkit.util.Vector;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.Material;
 
-import com.github.yuqingliu.extraenchants.utils.UtilityMethods;
+import com.github.yuqingliu.extraenchants.enchants.utils.UtilityMethods;
 
 public class Homing implements Listener {
     private final JavaPlugin plugin;

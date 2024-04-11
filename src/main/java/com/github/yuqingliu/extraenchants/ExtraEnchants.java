@@ -11,14 +11,13 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.github.yuqingliu.extraenchants.enchants.bow.*;
+import com.github.yuqingliu.extraenchants.enchants.*;
 import com.github.yuqingliu.extraenchants.enchants.crossbow.*;
 import com.github.yuqingliu.extraenchants.enchants.armor.*;
 import com.github.yuqingliu.extraenchants.enchants.weapons.*;
 import com.github.yuqingliu.extraenchants.enchants.tools.*;
 import com.github.yuqingliu.extraenchants.events.*;
-import com.github.yuqingliu.extraenchants.database.Constants;
-import com.github.yuqingliu.extraenchants.database.Database;
-import com.github.yuqingliu.extraenchants.utils.*;
+import com.github.yuqingliu.extraenchants.enchants.utils.*;
 import com.github.yuqingliu.extraenchants.commands.*;
 
 public class ExtraEnchants extends JavaPlugin {
@@ -36,6 +35,15 @@ public class ExtraEnchants extends JavaPlugin {
         Constants.setBookshelfMultiplier(
             this.getConfig().getInt("BookshelfMultiplier")
         );
+        Constants.setRepairAnvilCostPerResource(
+            this.getConfig().getDouble("RepairAnvilCostPerResource")
+        );
+        Constants.setVanillaAnvilCostPerLevel(
+            this.getConfig().getInt("VanillaAnvilCostPerLevel")
+        );
+        Constants.setCustomAnvilCostPerLevel(
+            this.getConfig().getInt("CustomAnvilCostPerLevel")
+        );
 
         loadEnchantmentsFromConfig();
 
@@ -45,6 +53,7 @@ public class ExtraEnchants extends JavaPlugin {
         /*Events*/
         getServer().getPluginManager().registerEvents(new PlayerInteractsWithEnchantmentTable(this), this);
         getServer().getPluginManager().registerEvents(new PlayerInteractsWithGrindstone(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerInteractsWithAnvil(this), this);
         getServer().getPluginManager().registerEvents(new Homing(this), this);
         getServer().getPluginManager().registerEvents(new Mitigation(this), this);
         getServer().getPluginManager().registerEvents(new Growth(this), this);
@@ -67,9 +76,24 @@ public class ExtraEnchants extends JavaPlugin {
         boolean changesMade = false;
         List<CustomEnchantment> customEnchantmentRegistry = Database.getCustomEnchantmentRegistry();
 
-        // Check and set the BookshelfMultiplier settings
+        // Check and set other attributes
         if (!config.isSet("BookshelfMultiplier")) {
             config.set("BookshelfMultiplier", 5);
+            changesMade = true;
+        }
+
+        if (!config.isSet("RepairAnvilCostPerResource")) {
+            config.set("RepairAnvilCostPerResource", 1.5);
+            changesMade = true;
+        }
+
+        if (!config.isSet("VanillaAnvilCostPerLevel")) {
+            config.set("VanillaAnvilCostPerLevel", 3);
+            changesMade = true;
+        }   
+
+        if (!config.isSet("CustomAnvilCostPerLevel")) {
+            config.set("CustomAnvilCostPerLevel", 5);
             changesMade = true;
         }
 

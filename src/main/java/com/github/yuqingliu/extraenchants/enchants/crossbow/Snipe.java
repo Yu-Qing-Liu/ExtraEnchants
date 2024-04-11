@@ -11,7 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 import org.bukkit.Material;
 
-import com.github.yuqingliu.extraenchants.utils.UtilityMethods;
+import com.github.yuqingliu.extraenchants.enchants.utils.UtilityMethods;
 
 public class Snipe implements Listener {
     private final JavaPlugin plugin;

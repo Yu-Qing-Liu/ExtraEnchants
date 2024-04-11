@@ -1,4 +1,4 @@
-package com.github.yuqingliu.extraenchants.utils;
+package com.github.yuqingliu.extraenchants.enchants.utils;
 
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
