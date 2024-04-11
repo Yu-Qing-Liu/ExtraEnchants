@@ -18,7 +18,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.event.inventory.InventoryAction;
 
 import com.github.yuqingliu.extraenchants.gui.EnchantmentTableMenu;
-import com.github.yuqingliu.extraenchants.utils.UtilityMethods;
+import com.github.yuqingliu.extraenchants.enchants.utils.UtilityMethods;
 
 import java.util.List;
 import java.util.Arrays;

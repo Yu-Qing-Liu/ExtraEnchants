@@ -1,6 +1,6 @@
-package com.github.yuqingliu.extraenchants.database;
+package com.github.yuqingliu.extraenchants.enchants;
 
-import com.github.yuqingliu.extraenchants.utils.CustomEnchantment;
+import com.github.yuqingliu.extraenchants.enchants.utils.CustomEnchantment;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.Material;
 

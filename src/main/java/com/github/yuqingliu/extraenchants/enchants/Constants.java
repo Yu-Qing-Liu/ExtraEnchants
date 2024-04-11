@@ -1,4 +1,4 @@
-package com.github.yuqingliu.extraenchants.database;
+package com.github.yuqingliu.extraenchants.enchants;
 
 import org.bukkit.NamespacedKey;
 

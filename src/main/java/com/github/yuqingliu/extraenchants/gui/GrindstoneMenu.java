@@ -17,7 +17,7 @@ import java.util.Map;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-import com.github.yuqingliu.extraenchants.utils.*;
+import com.github.yuqingliu.extraenchants.enchants.utils.*;
 
 public class GrindstoneMenu {
     private static final int START_SLOT = 0;

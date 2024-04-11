@@ -23,8 +23,8 @@ import java.util.Collections;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-import com.github.yuqingliu.extraenchants.database.*;
-import com.github.yuqingliu.extraenchants.utils.*;
+import com.github.yuqingliu.extraenchants.enchants.*;
+import com.github.yuqingliu.extraenchants.enchants.utils.*;
 
 public class EnchantmentTableMenu {
     private static final int START_SLOT = 0;

@@ -16,7 +16,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.event.inventory.ClickType;
 
 import com.github.yuqingliu.extraenchants.gui.AnvilMenu;
 

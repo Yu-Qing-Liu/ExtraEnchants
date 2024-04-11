@@ -23,8 +23,8 @@ import java.util.Map;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-import com.github.yuqingliu.extraenchants.database.*;
-import com.github.yuqingliu.extraenchants.utils.*;
+import com.github.yuqingliu.extraenchants.enchants.*;
+import com.github.yuqingliu.extraenchants.enchants.utils.*;
 
 public class AnvilMenu {
     private static final double REPAIR_COST_PER_RESOURCE = Constants.getRepairAnvilCostPerResource();

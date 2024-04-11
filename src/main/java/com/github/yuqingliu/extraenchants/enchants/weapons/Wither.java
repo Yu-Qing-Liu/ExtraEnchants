@@ -16,7 +16,7 @@ import org.bukkit.entity.Arrow;
 
 import java.util.List;
 
-import com.github.yuqingliu.extraenchants.utils.UtilityMethods;
+import com.github.yuqingliu.extraenchants.enchants.utils.UtilityMethods;
 
 public class Wither implements Listener {
     private final JavaPlugin plugin;

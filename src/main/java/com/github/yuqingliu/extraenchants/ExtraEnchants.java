@@ -11,14 +11,13 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.github.yuqingliu.extraenchants.enchants.bow.*;
+import com.github.yuqingliu.extraenchants.enchants.*;
 import com.github.yuqingliu.extraenchants.enchants.crossbow.*;
 import com.github.yuqingliu.extraenchants.enchants.armor.*;
 import com.github.yuqingliu.extraenchants.enchants.weapons.*;
 import com.github.yuqingliu.extraenchants.enchants.tools.*;
 import com.github.yuqingliu.extraenchants.events.*;
-import com.github.yuqingliu.extraenchants.database.Constants;
-import com.github.yuqingliu.extraenchants.database.Database;
-import com.github.yuqingliu.extraenchants.utils.*;
+import com.github.yuqingliu.extraenchants.enchants.utils.*;
 import com.github.yuqingliu.extraenchants.commands.*;
 
 public class ExtraEnchants extends JavaPlugin {

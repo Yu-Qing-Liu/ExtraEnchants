@@ -1,4 +1,4 @@
-package com.github.yuqingliu.extraenchants.utils;
+package com.github.yuqingliu.extraenchants.enchants.utils;
 
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 
-import com.github.yuqingliu.extraenchants.database.*;
+import com.github.yuqingliu.extraenchants.enchants.*;
 
 public class UtilityMethods {
     public static String toRoman(int number) {
