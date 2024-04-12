@@ -11,9 +11,10 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.Material;
 
 public class Power implements Listener {
+    private final JavaPlugin plugin;
 
     public Power(JavaPlugin plugin) {
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+        this.plugin = plugin;
     }
 
     @EventHandler

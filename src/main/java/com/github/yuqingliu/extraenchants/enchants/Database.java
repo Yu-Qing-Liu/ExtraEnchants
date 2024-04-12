@@ -50,6 +50,7 @@ public class Database {
         CustomEnchantment wither = new CustomEnchantment(plugin, "Wither", 2, weapons_applicable);
         CustomEnchantment venom = new CustomEnchantment(plugin, "Venom", 2, weapons_applicable);
         CustomEnchantment replant = new CustomEnchantment(plugin, "Replant", 1, hoe_applicable);
+        CustomEnchantment sonic_boom = new CustomEnchantment(plugin, "SonicBoom", 1, melee_weapons_applicable);
         
         customEnchantmentRegistry.add(homing);
         customEnchantmentRegistry.add(snipe);
@@ -59,6 +60,7 @@ public class Database {
         customEnchantmentRegistry.add(wither);
         customEnchantmentRegistry.add(venom);
         customEnchantmentRegistry.add(replant);
+        customEnchantmentRegistry.add(sonic_boom);
     }
 
     public static List<CustomEnchantment> getCustomEnchantmentRegistry() {

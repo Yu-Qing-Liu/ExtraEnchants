@@ -23,7 +23,6 @@ public class Venom implements Listener {
 
     public Venom(JavaPlugin plugin) {
         this.plugin = plugin;
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     @EventHandler

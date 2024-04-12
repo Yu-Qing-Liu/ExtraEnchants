@@ -16,12 +16,10 @@ import org.bukkit.enchantments.Enchantment;
 import com.github.yuqingliu.extraenchants.enchants.utils.UtilityMethods;
 
 public class Replant implements Listener {
-    
     private final JavaPlugin plugin;
 
     public Replant(JavaPlugin plugin) {
         this.plugin = plugin;
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     @EventHandler

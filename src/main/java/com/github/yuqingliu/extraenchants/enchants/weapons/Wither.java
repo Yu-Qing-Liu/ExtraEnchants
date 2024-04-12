@@ -23,7 +23,6 @@ public class Wither implements Listener {
 
     public Wither(JavaPlugin plugin) {
         this.plugin = plugin;
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     @EventHandler

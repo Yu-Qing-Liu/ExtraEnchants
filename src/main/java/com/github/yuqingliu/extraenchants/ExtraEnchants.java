@@ -15,6 +15,7 @@ import com.github.yuqingliu.extraenchants.enchants.*;
 import com.github.yuqingliu.extraenchants.enchants.crossbow.*;
 import com.github.yuqingliu.extraenchants.enchants.armor.*;
 import com.github.yuqingliu.extraenchants.enchants.weapons.*;
+import com.github.yuqingliu.extraenchants.enchants.melee.*;
 import com.github.yuqingliu.extraenchants.enchants.tools.*;
 import com.github.yuqingliu.extraenchants.events.*;
 import com.github.yuqingliu.extraenchants.enchants.utils.*;
@@ -63,6 +64,7 @@ public class ExtraEnchants extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new Wither(this), this);
         getServer().getPluginManager().registerEvents(new Venom(this), this);
         getServer().getPluginManager().registerEvents(new Replant(this), this);
+        getServer().getPluginManager().registerEvents(new SonicBoom(this), this);
 
     }
 
