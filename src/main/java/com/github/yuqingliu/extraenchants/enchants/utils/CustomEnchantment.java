@@ -2,6 +2,9 @@ package com.github.yuqingliu.extraenchants.enchants.utils;
 
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import net.kyori.adventure.text.format.TextColor;
+
 import org.bukkit.Material;
 
 import java.util.List;
@@ -10,12 +13,14 @@ import java.util.Objects;
 public class CustomEnchantment {
     private String name;
     private int maxLevel;
+    private TextColor color;
     private List<Material> applicable;
 
-    public CustomEnchantment(JavaPlugin plugin, String name, int maxLevel, List<Material> applicable) {
+    public CustomEnchantment(JavaPlugin plugin, String name, int maxLevel, TextColor color, List<Material> applicable) {
         this.name = name;
         this.maxLevel = maxLevel;
         this.applicable = applicable;
+        this.color = color;
     }
 
     public int getMaxLevel() {
@@ -24,6 +29,10 @@ public class CustomEnchantment {
 
     public String getName() {
         return name;
+    }
+
+    public TextColor getColor() {
+        return color;
     }
 
     public boolean canEnchant(ItemStack item) {

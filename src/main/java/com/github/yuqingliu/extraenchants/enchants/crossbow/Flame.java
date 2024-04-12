@@ -27,7 +27,7 @@ public class Flame implements Listener {
         ItemStack crossbow = event.getBow();
         
         // Ensure the item is a crossbow and has the custom Flame enchantment
-        if (crossbow != null && crossbow.getType() == Material.CROSSBOW && UtilityMethods.hasEnchantment(crossbow, "Flame", 1)) {
+        if (crossbow != null && crossbow.getType() == Material.CROSSBOW && UtilityMethods.getEnchantmentLevel(crossbow, "Flame") > 0) {
             // Check if the projectile is an arrow
             if (event.getProjectile() instanceof Arrow) {
                 Arrow arrow = (Arrow) event.getProjectile();

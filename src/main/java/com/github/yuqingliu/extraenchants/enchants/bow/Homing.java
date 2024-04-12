@@ -28,7 +28,7 @@ public class Homing implements Listener {
         Player player = (Player) event.getEntity();
         ItemStack bow = event.getBow();
         if (bow == null || bow.getType() != Material.BOW) return;
-        if (UtilityMethods.hasEnchantment(bow, "Homing", 1)) {
+        if (UtilityMethods.getEnchantmentLevel(bow, "Homing") > 0) {
             Arrow arrow = (Arrow) event.getProjectile();
             setHomingArrow(player, arrow);
         }

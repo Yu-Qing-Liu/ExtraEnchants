@@ -27,7 +27,7 @@ public class Replant implements Listener {
         Player player = event.getPlayer();
         ItemStack tool = player.getInventory().getItemInMainHand();
 
-        if (tool.getType().toString().endsWith("_HOE") && UtilityMethods.hasEnchantment(tool, "Replant", 1)) {
+        if (tool.getType().toString().endsWith("_HOE") && UtilityMethods.getEnchantmentLevel(tool, "Replant") > 0) {
             Block block = event.getBlock();
             Material cropType = block.getType();
             Material seed = getSeedForCrop(cropType);

@@ -42,7 +42,7 @@ public class SonicBoom implements Listener {
 
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
             if(item != null) {
-                int SonicBoomLevel = UtilityMethods.getEnchantmentLevel(item, "SonicBoom");
+                int SonicBoomLevel = UtilityMethods.getEnchantmentLevel(item, "Sonic Boom");
                 if(SonicBoomLevel > 0) {
                     long remainingTime = getRemainingCooldownTime(player);
                     if (remainingTime <= 0) {

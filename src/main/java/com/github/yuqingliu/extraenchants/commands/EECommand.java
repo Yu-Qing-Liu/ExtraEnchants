@@ -1,6 +1,8 @@
 package com.github.yuqingliu.extraenchants.commands;
 
 import com.github.yuqingliu.extraenchants.enchants.utils.UtilityMethods;
+import com.github.yuqingliu.extraenchants.enchants.Database;
+import com.github.yuqingliu.extraenchants.enchants.utils.CustomEnchantment;
 import com.github.yuqingliu.extraenchants.ExtraEnchants;
 
 import net.kyori.adventure.text.Component;
@@ -11,6 +13,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
 
 public class EECommand implements CommandExecutor {
     private final ExtraEnchants plugin;
@@ -52,7 +56,15 @@ public class EECommand implements CommandExecutor {
             }
 
             // Attempt to add the enchantment
-            boolean success = UtilityMethods.addEnchantment(item, enchantmentName, level);
+            List<CustomEnchantment> Registry = Database.getCustomEnchantmentRegistry();
+            CustomEnchantment enchantment = null;
+            for(CustomEnchantment enchant : Registry) {
+                if(enchantmentName.equals(enchant.getName())) enchantment = enchant;
+            }
+            boolean success = false;
+            if(enchantment != null) {
+                success = UtilityMethods.addEnchantment(item, enchantmentName, level, enchantment.getColor());
+            }
             if (success) {
                 player.sendMessage(Component.text("Enchantment applied successfully!", NamedTextColor.GREEN));
             } else {

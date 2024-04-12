@@ -10,7 +10,7 @@ import org.bukkit.block.Block;
 import org.bukkit.Material;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 import java.util.List;
@@ -63,8 +63,7 @@ public class UtilityMethods {
                 prevValue = value;
             } else {
                 // Handle the case where the map returns null due to an unexpected character
-                System.err.println("Unexpected character in Roman numeral: " + ch);
-                return 0; // Or throw an exception, depending on how you wish to handle this
+                return 0;
             }
         }
         return result;
@@ -85,15 +84,6 @@ public class UtilityMethods {
         return rand.nextInt((end - start) + 1) + start;
     }
 
-    public static boolean hasEnchantment(ItemStack item, String enchantmentName, int level) {
-        if (item == null || !item.hasItemMeta()) return false;
-        ItemMeta meta = item.getItemMeta();
-        if (meta.hasLore()) {
-            return meta.lore().contains(Component.text(enchantmentName + " " + toRoman(level), NamedTextColor.GOLD));
-        }
-        return false;
-    }
-
     public static int getEnchantmentLevel(ItemStack item, String enchantmentName) {
         if (item == null || !item.hasItemMeta()) return 0;
         ItemMeta meta = item.getItemMeta();
@@ -107,7 +97,10 @@ public class UtilityMethods {
                     String[] parts = loreText.split(enchantmentName, 2);
                     if (parts.length > 1) {
                         String levelPart = parts[1].trim();
-                        return fromRoman(levelPart);
+                        String[] levelParts = levelPart.split(" ");
+                        for(String part : levelParts) {
+                            if(fromRoman(part) > 0) return fromRoman(part);
+                        }
                     }
                 }
             }
@@ -129,7 +122,7 @@ public class UtilityMethods {
         return itemEnchants;
     }
 
-    public static boolean addEnchantment(ItemStack item, String enchantmentName, int level) {
+    public static boolean addEnchantment(ItemStack item, String enchantmentName, int level, TextColor color) {
         List<CustomEnchantment> Register = Database.getCustomEnchantmentRegistry();
         List<String> Names = new ArrayList<>();
         for (CustomEnchantment enchantment : Register) {
@@ -160,7 +153,7 @@ public class UtilityMethods {
             }
 
             // Add or upgrade the enchantment
-            Component newEnchantText = Component.text(enchantmentName + " " + toRoman(level), NamedTextColor.GOLD);
+            Component newEnchantText = Component.text(enchantmentName + " " + toRoman(level), color);
             existingLore.add(newEnchantText);
 
             // Update the lore
@@ -208,7 +201,7 @@ public class UtilityMethods {
         }
     }
 
-    public static void applyCustomEnchant(Player player, CustomEnchantmentOffer selectedOfferCustom, ItemStack item) {
+    public static void applyCustomEnchant(Player player, CustomEnchantmentOffer selectedOfferCustom, ItemStack item, TextColor color) {
         HashMap<String, Integer> Registry = Constants.getCustomEnchantments();
 
         String enchantmentName = selectedOfferCustom.getEnchant().getName();
@@ -220,7 +213,7 @@ public class UtilityMethods {
         int playerLevel = player.getLevel();
         if(playerLevel >= requiredLevel) {
             if(prevLevel == enchantmentLevel && prevLevel == maxEnchantmentLevel) return;
-            addEnchantment(item, enchantmentName, enchantmentLevel);
+            addEnchantment(item, enchantmentName, enchantmentLevel, color);
             player.setLevel(playerLevel - 1);
             player.playSound(player.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0f, 1.0f);
         }

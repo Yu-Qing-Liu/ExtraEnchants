@@ -22,6 +22,7 @@ import java.util.Collections;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 
 import com.github.yuqingliu.extraenchants.enchants.*;
 import com.github.yuqingliu.extraenchants.enchants.utils.*;
@@ -63,7 +64,6 @@ public class EnchantmentTableMenu {
         clearOptions(inv);
         // Display all enchantments that are applicable for the item
         int slotptr = START_SLOT;
-        int itemcount = 0;
         List<EnchantmentOffer> applicableEnchants = getEnchants(item);
         List<CustomEnchantmentOffer> applicableCustomEnchants = getCustomEnchants(item);
         MAX_PAGES = (int) Math.ceil((double) applicableEnchants.size() / 36.0 + (double) applicableCustomEnchants.size() / 36.0);
@@ -77,7 +77,6 @@ public class EnchantmentTableMenu {
                 enchantOption.setItemMeta(metaOffer);
             }
             inv.setItem(slotptr, enchantOption);
-            itemcount++;
             if(slotptr == 5) slotptr+=4;
             else if(slotptr == 14) slotptr+=4;
             else if(slotptr == 23) slotptr+=4;
@@ -95,7 +94,7 @@ public class EnchantmentTableMenu {
                 ItemMeta metaOffer = enchantOption.getItemMeta();
                 if (metaOffer != null) {
                     String enchantmentName = offer.getEnchant().getName();
-                    metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), NamedTextColor.GOLD));
+                    metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), offer.getEnchant().getColor()));
                     enchantOption.setItemMeta(metaOffer);
                 }
                 inv.setItem(slotptr, enchantOption);
@@ -176,7 +175,8 @@ public class EnchantmentTableMenu {
         } else if(selectedOfferCustom != null) {
             if(selectedOfferCustom.getCost() > 0) {
                 // Apply the enchantment and return
-                UtilityMethods.applyCustomEnchant(player, selectedOfferCustom, item);
+                TextColor color = selectedOfferCustom.getEnchant().getColor();
+                UtilityMethods.applyCustomEnchant(player, selectedOfferCustom, item, color);
                 displayEnchantmentOptions(inv, item);
                 return;
             }
@@ -274,7 +274,8 @@ public class EnchantmentTableMenu {
         } else if(selectedOfferCustom != null) {
             if(selectedOfferCustom.getCost() > 0) {
                 // Apply the enchantment and return
-                UtilityMethods.applyCustomEnchant(player, selectedOfferCustom, item);
+                TextColor color = selectedOfferCustom.getEnchant().getColor();
+                UtilityMethods.applyCustomEnchant(player, selectedOfferCustom, item, color);
                 displayEnchantmentOptions(inv, item);
                 return;
             }
@@ -382,7 +383,8 @@ public class EnchantmentTableMenu {
         } else if(selectedOfferCustom != null) {
             if(selectedOfferCustom.getCost() > 0) {
                 // Apply the enchantment and return
-                UtilityMethods.applyCustomEnchant(player, selectedOfferCustom, item);
+                TextColor color = selectedOfferCustom.getEnchant().getColor();
+                UtilityMethods.applyCustomEnchant(player, selectedOfferCustom, item, color);
                 displayEnchantmentOptions(inv, item);
                 return;
             }
@@ -479,7 +481,7 @@ public class EnchantmentTableMenu {
                 ItemMeta metaOffer = enchantOption.getItemMeta();
                 if (metaOffer != null) {
                     String enchantmentName = offer.getEnchant().getName();
-                    metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), NamedTextColor.GOLD));
+                    metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), offer.getEnchant().getColor()));
                     enchantOption.setItemMeta(metaOffer);
                 }
                 inv.setItem(slotptr, enchantOption);
@@ -504,7 +506,6 @@ public class EnchantmentTableMenu {
         voidOptions(inv);
         // Display the rest of enchantments that are applicable for the item
         int slotptr = START_SLOT;
-        int itemcount = 0;
         List<EnchantmentOffer> applicableEnchants = getEnchants(item);
         List<CustomEnchantmentOffer> applicableCustomEnchants = getCustomEnchants(item);
         for (EnchantmentOffer offer : applicableEnchants) {
@@ -529,7 +530,6 @@ public class EnchantmentTableMenu {
                 enchantOption.setItemMeta(metaOffer);
             }
             inv.setItem(slotptr, enchantOption);
-            itemcount++;
             if(slotptr == 5) slotptr+=4;
             else if(slotptr == 14) slotptr+=4;
             else if(slotptr == 23) slotptr+=4;
@@ -559,7 +559,7 @@ public class EnchantmentTableMenu {
                 ItemMeta metaOffer = enchantOption.getItemMeta();
                 if (metaOffer != null) {
                     String enchantmentName = offer.getEnchant().getName();
-                    metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), NamedTextColor.GOLD));
+                    metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), offer.getEnchant().getColor()));
                     enchantOption.setItemMeta(metaOffer);
                 }
                 inv.setItem(slotptr, enchantOption);
@@ -617,7 +617,7 @@ public class EnchantmentTableMenu {
                 ItemMeta metaOffer = enchantOption.getItemMeta();
                 if (metaOffer != null) {
                     String enchantmentName = offer.getEnchant().getName();
-                    metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), NamedTextColor.GOLD));
+                    metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), offer.getEnchant().getColor()));
                     enchantOption.setItemMeta(metaOffer);
                 }
                 inv.setItem(slotptr, enchantOption);

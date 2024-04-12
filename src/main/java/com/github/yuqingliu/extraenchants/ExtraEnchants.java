@@ -9,6 +9,8 @@ import org.bukkit.Registry;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import com.github.yuqingliu.extraenchants.enchants.bow.*;
 import com.github.yuqingliu.extraenchants.enchants.*;
@@ -20,6 +22,11 @@ import com.github.yuqingliu.extraenchants.enchants.tools.*;
 import com.github.yuqingliu.extraenchants.events.*;
 import com.github.yuqingliu.extraenchants.enchants.utils.*;
 import com.github.yuqingliu.extraenchants.commands.*;
+
+import org.bukkit.Material;
+
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.TextColor;
 
 public class ExtraEnchants extends JavaPlugin {
     @Override
@@ -47,6 +54,7 @@ public class ExtraEnchants extends JavaPlugin {
         );
 
         loadEnchantmentsFromConfig();
+        loadExtraEnchantsFromConfig();
 
         /*Commands*/
         this.getCommand("ee").setExecutor(new EECommand(this));
@@ -119,6 +127,20 @@ public class ExtraEnchants extends JavaPlugin {
             }
         }
 
+        
+        // Check and set the extra enchants
+        if (!config.isConfigurationSection("ExtraEnchantments")) {
+            // If it doesn't exist, add default values
+            List<Object> defaultEnchantments = new ArrayList<>();
+            defaultEnchantments.add(1); // Default level
+            defaultEnchantments.add("C133FF"); // Default color
+            defaultEnchantments.add(Arrays.asList("STICK", "FISHING_ROD")); // Default items
+
+            config.set("ExtraEnchantments.Test", defaultEnchantments);
+
+            changesMade = true;
+        }
+
         // Save the config if any changes have been made
         if (changesMade) {
             this.saveConfig();
@@ -148,6 +170,52 @@ public class ExtraEnchants extends JavaPlugin {
 
         Constants.setEnchantments(enchantments);
         Constants.setCustomEnchantments(customEnchantments);
+    }
+
+    public void loadExtraEnchantsFromConfig() {
+        FileConfiguration config = this.getConfig();
+
+        ConfigurationSection extraEnchantmentsSection = config.getConfigurationSection("ExtraEnchantments");
+        if(extraEnchantmentsSection != null) {
+            for (String key: extraEnchantmentsSection.getKeys(false)) {
+                Object value = extraEnchantmentsSection.get(key);
+                if (value instanceof List) {
+                    List<?> enchantmentInfo = (List<?>) value;
+                    // first value in the list is the level
+                    int level = (int) enchantmentInfo.get(0);
+                    // second value in the list is the color string
+                    String color = (String) enchantmentInfo.get(1);
+                    // third value in the list is the applicable items    
+                    List<?> applicable = (List<?>) enchantmentInfo.get(2);
+                    registerEnchant(key, level, color, applicable);
+                }
+            }
+        }
+    }
+
+    private void registerEnchant(String name, int level, String color, List<?> applicable) {
+        TextColor col = TextColor.fromHexString(color);
+        CustomEnchantment enchant = new CustomEnchantment(this, name, level, col, convertToMaterialList(applicable));
+        Database.getCustomEnchantmentRegistry().add(enchant);
+        Constants.getCustomEnchantments().put(name, level);
+    }
+
+    private List<Material> convertToMaterialList(List<?> inputList) {
+        List<Material> materialList = new ArrayList<>();
+        for (Object item : inputList) {
+            if (item instanceof String) {
+                // Convert the string to a Material object
+                Material material = Material.matchMaterial((String) item);
+                if (material != null) {
+                    materialList.add(material);
+                } else {
+                    getLogger().warning("Invalid material name: " + item);
+                }
+            } else {
+                getLogger().warning("Invalid item in the input list: " + item);
+            }
+        }
+        return materialList;
     }
 }
 

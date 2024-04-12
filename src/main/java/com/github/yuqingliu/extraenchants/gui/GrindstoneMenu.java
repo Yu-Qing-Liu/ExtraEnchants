@@ -77,7 +77,7 @@ public class GrindstoneMenu {
                 ItemMeta metaOffer = enchantOption.getItemMeta();
                 if (metaOffer != null) {
                     String enchantmentName = enchant.getName();
-                    metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), NamedTextColor.GOLD));
+                    metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), enchant.getColor()));
                     enchantOption.setItemMeta(metaOffer);
                 }
                 inv.setItem(slotptr, enchantOption);
@@ -137,7 +137,7 @@ public class GrindstoneMenu {
                 ItemMeta metaOffer = enchantOption.getItemMeta();
                 if (metaOffer != null) {
                     String enchantmentName = offer.getName();
-                    metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), NamedTextColor.GOLD));
+                    metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), offer.getColor()));
                     enchantOption.setItemMeta(metaOffer);
                 }
                 inv.setItem(slotptr, enchantOption);
@@ -215,7 +215,7 @@ public class GrindstoneMenu {
                 ItemMeta metaOffer = enchantOption.getItemMeta();
                 if (metaOffer != null) {
                     String enchantmentName = offer.getName();
-                    metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), NamedTextColor.GOLD));
+                    metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), offer.getColor()));
                     enchantOption.setItemMeta(metaOffer);
                 }
                 inv.setItem(slotptr, enchantOption);
@@ -274,7 +274,7 @@ public class GrindstoneMenu {
                 ItemMeta metaOffer = enchantOption.getItemMeta();
                 if (metaOffer != null) {
                     String enchantmentName = offer.getName();
-                    metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), NamedTextColor.GOLD));
+                    metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), offer.getColor()));
                     enchantOption.setItemMeta(metaOffer);
                 }
                 inv.setItem(slotptr, enchantOption);

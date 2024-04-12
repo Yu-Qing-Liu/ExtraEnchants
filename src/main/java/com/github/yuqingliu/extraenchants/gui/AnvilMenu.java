@@ -268,11 +268,11 @@ public class AnvilMenu {
 
             if(sacrificeVanillaEnchantLevel > itemVanillaEnchantLevel && enchant.canEnchant(result)) {
                 UtilityMethods.removeEnchantment(result, enchant.getName());
-                UtilityMethods.addEnchantment(result, enchant.getName(), sacrificeVanillaEnchantLevel);
+                UtilityMethods.addEnchantment(result, enchant.getName(), sacrificeVanillaEnchantLevel, enchant.getColor());
                 cost += sacrificeVanillaEnchantLevel - itemVanillaEnchantLevel;
             } else if (sacrificeVanillaEnchantLevel == itemVanillaEnchantLevel && sacrificeVanillaEnchantLevel + 1 <= maxEnchantmentLevel && enchant.canEnchant(result)) {
                 UtilityMethods.removeEnchantment(result, enchant.getName());
-                UtilityMethods.addEnchantment(result, enchant.getName(), sacrificeVanillaEnchantLevel + 1);
+                UtilityMethods.addEnchantment(result, enchant.getName(), sacrificeVanillaEnchantLevel + 1, enchant.getColor());
                 cost += 1;
             }
         }
