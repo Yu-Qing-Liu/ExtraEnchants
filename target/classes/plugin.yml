@@ -3,6 +3,7 @@ name: ExtraEnchants
 version: '1.0'
 main: com.github.yuqingliu.extraenchants.ExtraEnchants
 api-version: '1.13'
+softdepend: [AdvancedEnchantments]
 commands:
   ee:
     description: Apply custom enchantments

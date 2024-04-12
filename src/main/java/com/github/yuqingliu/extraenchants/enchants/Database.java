@@ -16,15 +16,15 @@ public class Database extends ApplicableItemsRegistry {
     private static List<CustomEnchantment> customEnchantmentRegistry = new ArrayList<>();
 
     public static void registerEnchants(JavaPlugin plugin) {
-        CustomEnchantment homing = new CustomEnchantment(plugin, "Homing", 1, NamedTextColor.GRAY, Arrays.asList(Material.BOW));
-        CustomEnchantment snipe = new CustomEnchantment(plugin, "Snipe", 5, NamedTextColor.GRAY, Arrays.asList(Material.CROSSBOW));
-        CustomEnchantment flame = new CustomEnchantment(plugin, "Flame", 1, NamedTextColor.GRAY, Arrays.asList(Material.CROSSBOW));
-        CustomEnchantment mitigation = new CustomEnchantment(plugin, "Mitigation", 5, NamedTextColor.GRAY, armor_applicable);
-        CustomEnchantment growth = new CustomEnchantment(plugin, "Growth", 5, NamedTextColor.GRAY, armor_applicable);
-        CustomEnchantment wither = new CustomEnchantment(plugin, "Wither", 2, NamedTextColor.GRAY, weapons_applicable);
-        CustomEnchantment venom = new CustomEnchantment(plugin, "Venom", 2, NamedTextColor.GRAY, weapons_applicable);
-        CustomEnchantment replant = new CustomEnchantment(plugin, "Replant", 1, NamedTextColor.GRAY, hoe_applicable);
-        CustomEnchantment sonic_boom = new CustomEnchantment(plugin, "Sonic Boom", 1, NamedTextColor.LIGHT_PURPLE, melee_applicable);
+        CustomEnchantment homing = new CustomEnchantment(plugin, "Homing", null, 1, NamedTextColor.GRAY, Arrays.asList(Material.BOW));
+        CustomEnchantment snipe = new CustomEnchantment(plugin, "Snipe", null, 5, NamedTextColor.GRAY, Arrays.asList(Material.CROSSBOW));
+        CustomEnchantment flame = new CustomEnchantment(plugin, "Flame", null, 1, NamedTextColor.GRAY, Arrays.asList(Material.CROSSBOW));
+        CustomEnchantment mitigation = new CustomEnchantment(plugin, "Mitigation", null, 5, NamedTextColor.GRAY, armor_applicable);
+        CustomEnchantment growth = new CustomEnchantment(plugin, "Growth", null, 5, NamedTextColor.GRAY, armor_applicable);
+        CustomEnchantment wither = new CustomEnchantment(plugin, "Wither", null, 2, NamedTextColor.GRAY, weapons_applicable);
+        CustomEnchantment venom = new CustomEnchantment(plugin, "Venom", null, 2, NamedTextColor.GRAY, weapons_applicable);
+        CustomEnchantment replant = new CustomEnchantment(plugin, "Replant", null, 2, NamedTextColor.GRAY, hoe_applicable);
+        CustomEnchantment sonic_boom = new CustomEnchantment(plugin, "Sonic Boom", null, 1, NamedTextColor.LIGHT_PURPLE, melee_applicable);
         
         customEnchantmentRegistry.add(homing);
         customEnchantmentRegistry.add(snipe);

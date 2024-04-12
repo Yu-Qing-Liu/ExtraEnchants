@@ -132,11 +132,12 @@ public class ExtraEnchants extends JavaPlugin {
         if (!config.isConfigurationSection("ExtraEnchantments")) {
             // If it doesn't exist, add default values
             List<Object> defaultEnchantments = new ArrayList<>();
+            defaultEnchantments.add("abiding");
             defaultEnchantments.add(1); // Default level
             defaultEnchantments.add("C133FF"); // Default color
-            defaultEnchantments.add(Arrays.asList("STICK", "FISHING_ROD")); // Default items
+            defaultEnchantments.add(Arrays.asList("DIAMOND_SWORD", "NETHERITE_SWORD"));
 
-            config.set("ExtraEnchantments.Test", defaultEnchantments);
+            config.set("ExtraEnchantments.Abiding", defaultEnchantments);
 
             changesMade = true;
         }
@@ -181,21 +182,19 @@ public class ExtraEnchants extends JavaPlugin {
                 Object value = extraEnchantmentsSection.get(key);
                 if (value instanceof List) {
                     List<?> enchantmentInfo = (List<?>) value;
-                    // first value in the list is the level
-                    int level = (int) enchantmentInfo.get(0);
-                    // second value in the list is the color string
-                    String color = (String) enchantmentInfo.get(1);
-                    // third value in the list is the applicable items    
-                    List<?> applicable = (List<?>) enchantmentInfo.get(2);
-                    registerEnchant(key, level, color, applicable);
+                    String identifier = (String) enchantmentInfo.get(0);
+                    int level = (int) enchantmentInfo.get(1);
+                    String color = (String) enchantmentInfo.get(2);
+                    List<?> applicable = (List<?>) enchantmentInfo.get(3);
+                    registerEnchant(key, identifier, level, color, applicable);
                 }
             }
         }
     }
 
-    private void registerEnchant(String name, int level, String color, List<?> applicable) {
+    private void registerEnchant(String name, String identifier, int level, String color, List<?> applicable) {
         TextColor col = TextColor.fromHexString(color);
-        CustomEnchantment enchant = new CustomEnchantment(this, name, level, col, convertToMaterialList(applicable));
+        CustomEnchantment enchant = new CustomEnchantment(this, name, identifier, level, col, convertToMaterialList(applicable));
         Database.getCustomEnchantmentRegistry().add(enchant);
         Constants.getCustomEnchantments().put(name, level);
     }

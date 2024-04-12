@@ -12,15 +12,17 @@ import java.util.Objects;
 
 public class CustomEnchantment {
     private String name;
+    private String identifier;
     private int maxLevel;
     private TextColor color;
     private List<Material> applicable;
 
-    public CustomEnchantment(JavaPlugin plugin, String name, int maxLevel, TextColor color, List<Material> applicable) {
+    public CustomEnchantment(JavaPlugin plugin, String name, String identifier, int maxLevel, TextColor color, List<Material> applicable) {
         this.name = name;
         this.maxLevel = maxLevel;
         this.applicable = applicable;
         this.color = color;
+        this.identifier = identifier;
     }
 
     public int getMaxLevel() {
@@ -29,6 +31,10 @@ public class CustomEnchantment {
 
     public String getName() {
         return name;
+    }
+
+    public String getIdentifier() {
+        return identifier;
     }
 
     public TextColor getColor() {
