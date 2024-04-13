@@ -8,6 +8,9 @@ import org.bukkit.Sound;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.Material;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -22,55 +25,7 @@ import java.util.stream.Collectors;
 
 import com.github.yuqingliu.extraenchants.enchants.*;
 
-import java.lang.reflect.Method;
-
 public class UtilityMethods {
-    private static Object aeApi = null;
-
-    private static void initializeAdvancedEnchantmentsAPI() {
-        try {
-            Class<?> apiClass = Class.forName("net.advancedplugins.ae.api.IAEAPI");
-            Method getInstanceMethod = apiClass.getMethod("getInstance");
-            aeApi = getInstanceMethod.invoke(null);
-        } catch (ClassNotFoundException e) {
-            System.out.println("Advanced Enchantments not found, disabling advanced features.");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void applyAdvancedEnchant(String identifier, int level, ItemStack item) {
-        if (aeApi == null) {
-            initializeAdvancedEnchantmentsAPI();
-        }
-        if (aeApi != null) {
-            try {
-                Method applyEnchantMethod = aeApi.getClass().getMethod("applyEnchant", String.class, int.class, ItemStack.class);
-                applyEnchantMethod.invoke(aeApi, identifier, level, item);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            System.out.println("Advanced Enchantments API not available. Cannot apply enchant.");
-        }
-    }
-
-    public static void removeAdvancedEnchant(ItemStack item, String identifier) {
-        if (aeApi == null) {
-            initializeAdvancedEnchantmentsAPI();
-        }
-        if (aeApi != null) {
-            try {
-                Method applyEnchantMethod = aeApi.getClass().getMethod("removeEnchant", String.class, int.class, ItemStack.class);
-                applyEnchantMethod.invoke(aeApi, identifier, item);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            System.out.println("Advanced Enchantments API not available. Cannot remove enchant.");
-        }
-    }
-
     public static String toRoman(int number) {
         int[] values = {1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
         String[] romanLiterals = {"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
@@ -181,66 +136,48 @@ public class UtilityMethods {
         }
         ItemMeta meta = item.getItemMeta();
         if (meta != null && enchant != null) {
-            if(enchant.getIdentifier() != null && !enchant.getIdentifier().isEmpty()) {
-                String identifier = enchant.getIdentifier();
-                applyAdvancedEnchant(identifier, level, item);
-            } else {
-                // Not an advanced enchant
-                List<Component> existingLore = meta.lore() != null ? meta.lore() : new ArrayList<>();
-                PlainTextComponentSerializer plainTextSerializer = PlainTextComponentSerializer.plainText();
+            List<Component> existingLore = meta.lore() != null ? meta.lore() : new ArrayList<>();
+            PlainTextComponentSerializer plainTextSerializer = PlainTextComponentSerializer.plainText();
 
-                // Determine if the enchantment already exists and its level
-                int prevLevel = getEnchantmentLevel(item, enchantmentName);
+            // Determine if the enchantment already exists and its level
+            int prevLevel = getEnchantmentLevel(item, enchantmentName);
 
-                if (prevLevel > 0) {
-                    // The enchantment already exists, determine action based on level comparison
-                    if (level == prevLevel) {
-                        // If the new level is the same and it's below max, upgrade by 1
-                        level++;
-                    } else if (level <= prevLevel) {
-                        // If the new level is not greater, do nothing
-                        return true;
-                    }
-                    // Remove the old enchantment lore
-                    existingLore = existingLore.stream()
-                            .filter(loreComponent -> !plainTextSerializer.serialize(loreComponent).contains(enchantmentName))
-                            .collect(Collectors.toList());
+            if (prevLevel > 0) {
+                // The enchantment already exists, determine action based on level comparison
+                if (level == prevLevel) {
+                    // If the new level is the same and it's below max, upgrade by 1
+                    level++;
+                } else if (level <= prevLevel) {
+                    // If the new level is not greater, do nothing
+                    return true;
                 }
-
-                // Add or upgrade the enchantment
-                Component newEnchantText = Component.text(enchantmentName + " " + toRoman(level), color);
-                existingLore.add(newEnchantText);
-
-                // Update the lore
-                meta.lore(existingLore);
-                item.setItemMeta(meta);
-                return true;
+                // Remove the old enchantment lore
+                existingLore = existingLore.stream()
+                        .filter(loreComponent -> !plainTextSerializer.serialize(loreComponent).contains(enchantmentName))
+                        .collect(Collectors.toList());
             }
+
+            // Add or upgrade the enchantment
+            Component newEnchantText = Component.text(enchantmentName + " " + toRoman(level), color);
+            existingLore.add(newEnchantText);
+
+            // Update the lore
+            meta.lore(existingLore);
+            item.setItemMeta(meta);
+            return true;
         }
         return false;
     }
 
     public static void removeEnchantment(ItemStack item, String enchantmentName) {
-        List<CustomEnchantment> Register = Database.getCustomEnchantmentRegistry();
-        CustomEnchantment enchant = null;
-        for (CustomEnchantment enchantment : Register) {
-            if(enchantment.getName().equals(enchantmentName)) enchant = enchantment;
-            break;
-        }
-        
-        if(enchant != null && enchant.getIdentifier() != null && !enchant.getIdentifier().isEmpty()) {
-            removeAdvancedEnchant(item, enchant.getIdentifier());   
-        } else {
-            // Not an advanced enchant
-            ItemMeta meta = item.getItemMeta();
-            List<Component> existingLore = meta.lore() != null ? meta.lore() : new ArrayList<>();
-            PlainTextComponentSerializer plainTextSerializer = PlainTextComponentSerializer.plainText();
-            existingLore = existingLore.stream()
-                    .filter(loreComponent -> !plainTextSerializer.serialize(loreComponent).contains(enchantmentName))
-                    .collect(Collectors.toList());
-            meta.lore(existingLore);
-            item.setItemMeta(meta);
-        }
+        ItemMeta meta = item.getItemMeta();
+        List<Component> existingLore = meta.lore() != null ? meta.lore() : new ArrayList<>();
+        PlainTextComponentSerializer plainTextSerializer = PlainTextComponentSerializer.plainText();
+        existingLore = existingLore.stream()
+                .filter(loreComponent -> !plainTextSerializer.serialize(loreComponent).contains(enchantmentName))
+                .collect(Collectors.toList());
+        meta.lore(existingLore);
+        item.setItemMeta(meta);
     }
 
     public static void applyVanillaEnchant(Player player, EnchantmentOffer selectedOffer, ItemStack item) {
@@ -285,6 +222,32 @@ public class UtilityMethods {
             player.setLevel(playerLevel - 1);
             player.playSound(player.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0f, 1.0f);
         }
+    }
+
+    public static void applyExtraEnchant(JavaPlugin plugin, Inventory inv, Player player, CustomEnchantmentOffer selectedOfferCustom, ItemStack item, TextColor color) {
+        int requiredLevel = selectedOfferCustom.getCost();
+        int playerLevel = player.getLevel();
+        if(playerLevel < requiredLevel) return;
+        applyCustomEnchant(player, selectedOfferCustom, item, color);
+        String baseCommand = selectedOfferCustom.getEnchant().getAddCmd();
+        String command = baseCommand.replace("enchant", "enchant " + player.getName());
+        String finalCommand = command + " " + selectedOfferCustom.getEnchantmentLevel();
+
+        inv.close();
+
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), finalCommand);
+        }, 1L);
+    }
+
+    public static void removeExtraEnchant(JavaPlugin plugin, Inventory inv, Player player, ItemStack item, CustomEnchantment enchant) {
+        removeEnchantment(item, enchant.getName());
+        String baseCommand = enchant.getRmCmd();
+        String finalCommand = baseCommand.replace("unenchant", "unenchant " + player.getName());
+        inv.close();
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), finalCommand);
+        }, 1L);
     }
 
     public static int countSurroundingEffectiveBlocks(Block centerBlock, Material checkBlockType) {

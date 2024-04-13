@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.Sound;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
 import java.util.Arrays;
@@ -294,7 +295,7 @@ public class GrindstoneMenu {
         optionsFill(inv);
     }
 
-    public static void applyOption(Player player, Inventory inv, int slot, ItemStack item) {
+    public static void applyOption(JavaPlugin plugin, Player player, Inventory inv, int slot, ItemStack item) {
         if(item == null) return;
         Enchantment enchant = pageDataVanillaEnchants.get(PAGE_NUMBER).get(slot);
         CustomEnchantment customEnchant = pageDataCustomEnchants.get(PAGE_NUMBER).get(slot);
@@ -305,7 +306,13 @@ public class GrindstoneMenu {
         } 
 
         if(customEnchant != null) {
-            UtilityMethods.removeEnchantment(item, customEnchant.getName());
+
+            String cmd = customEnchant.getRmCmd();
+            if(cmd != null) {
+                UtilityMethods.removeExtraEnchant(plugin, inv, player, item, customEnchant);
+            } else {
+                UtilityMethods.removeEnchantment(item, customEnchant.getName());
+            }
             player.getWorld().playSound(player.getLocation(), Sound.BLOCK_LAVA_EXTINGUISH, 1.0f, 1.0f);
         }
         displayOptions(inv, item);

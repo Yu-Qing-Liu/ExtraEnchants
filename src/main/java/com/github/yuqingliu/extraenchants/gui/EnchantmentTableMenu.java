@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.enchantments.EnchantmentOffer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.NamespacedKey;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
 import java.util.Set;
@@ -21,6 +22,7 @@ import java.util.Map;
 import java.util.Collections;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 
@@ -94,7 +96,9 @@ public class EnchantmentTableMenu {
                 ItemMeta metaOffer = enchantOption.getItemMeta();
                 if (metaOffer != null) {
                     String enchantmentName = offer.getEnchant().getName();
-                    metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), offer.getEnchant().getColor()));
+                    TextColor color = offer.getEnchant().getColor();
+                    TextComponent textComponent = Component.text(UtilityMethods.formatString(enchantmentName)).color(color);
+                    metaOffer.displayName(textComponent);
                     enchantOption.setItemMeta(metaOffer);
                 }
                 inv.setItem(slotptr, enchantOption);
@@ -132,7 +136,7 @@ public class EnchantmentTableMenu {
 
     }
 
-    public static void displaySelectedEnchantmentOptions(Player player, ItemStack item, Inventory inv, int slot) {
+    public static void displaySelectedEnchantmentOptions(JavaPlugin plugin, Player player, ItemStack item, Inventory inv, int slot) {
         if(item == null) return;
         EnchantmentOffer selectedOffer = pageDataVanillaEnchants.get(PAGE_NUMBER).get(slot);
         CustomEnchantmentOffer selectedOfferCustom = pageDataCustomEnchants.get(PAGE_NUMBER).get(slot);
@@ -176,7 +180,12 @@ public class EnchantmentTableMenu {
             if(selectedOfferCustom.getCost() > 0) {
                 // Apply the enchantment and return
                 TextColor color = selectedOfferCustom.getEnchant().getColor();
-                UtilityMethods.applyCustomEnchant(player, selectedOfferCustom, item, color);
+                String cmd = selectedOfferCustom.getEnchant().getAddCmd();
+                if(cmd != null) {
+                    UtilityMethods.applyExtraEnchant(plugin, inv, player, selectedOfferCustom, item, color);
+                } else {
+                    UtilityMethods.applyCustomEnchant(player, selectedOfferCustom, item, color);
+                } 
                 displayEnchantmentOptions(inv, item);
                 return;
             }

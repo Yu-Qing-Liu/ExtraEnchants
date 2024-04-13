@@ -12,17 +12,19 @@ import java.util.Objects;
 
 public class CustomEnchantment {
     private String name;
-    private String identifier;
+    private String addCommand;
+    private String removeCommand;
     private int maxLevel;
     private TextColor color;
     private List<Material> applicable;
 
-    public CustomEnchantment(JavaPlugin plugin, String name, String identifier, int maxLevel, TextColor color, List<Material> applicable) {
+    public CustomEnchantment(JavaPlugin plugin, String name, String addCommand, String removeCommand, int maxLevel, TextColor color, List<Material> applicable) {
         this.name = name;
         this.maxLevel = maxLevel;
         this.applicable = applicable;
         this.color = color;
-        this.identifier = identifier;
+        this.addCommand = addCommand;
+        this.removeCommand = removeCommand;
     }
 
     public int getMaxLevel() {
@@ -33,8 +35,12 @@ public class CustomEnchantment {
         return name;
     }
 
-    public String getIdentifier() {
-        return identifier;
+    public String getAddCmd() {
+        return addCommand;
+    }
+
+    public String getRmCmd() {
+        return removeCommand;
     }
 
     public TextColor getColor() {

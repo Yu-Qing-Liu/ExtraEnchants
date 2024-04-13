@@ -16,6 +16,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.event.block.Action;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.inventory.PlayerInventory;
 
 import com.github.yuqingliu.extraenchants.gui.EnchantmentTableMenu;
 import com.github.yuqingliu.extraenchants.enchants.utils.UtilityMethods;
@@ -132,7 +133,7 @@ public class PlayerInteractsWithEnchantmentTable implements Listener {
                 event.setCancelled(true);
             } else if(options.contains(slot)) {
                 if(itemClicked != null && itemClicked.getType() != Material.GLASS_PANE) {
-                    EnchantmentTableMenu.displaySelectedEnchantmentOptions(player, item, clickedInventory, slot);
+                    EnchantmentTableMenu.displaySelectedEnchantmentOptions(plugin, player, item, clickedInventory, slot);
                 }
                 event.setCancelled(true);
             } else {
@@ -148,18 +149,24 @@ public class PlayerInteractsWithEnchantmentTable implements Listener {
 
         // Check if the closed inventory is the custom enchantment table GUI
         if (event.getView().title().equals(Component.text("Enchanting Table", NamedTextColor.DARK_PURPLE))) {
-            ItemStack itemInEnchantSlot = closedInventory.getItem(ITEM_SLOT);
+            ItemStack itemInEnchantSlot = closedInventory.getItem(ITEM_SLOT);  // Ensure ITEM_SLOT is defined correctly
 
-            // If there is an item in the enchantment slot, return it to the player's inventory
+            // If there is an item in the enchantment slot
             if (itemInEnchantSlot != null && itemInEnchantSlot.getType() != Material.AIR) {
-                Inventory playerInventory = player.getInventory();
+                PlayerInventory playerInventory = player.getInventory();
+                ItemStack currentItemInMainHand = playerInventory.getItemInMainHand();
 
-                // Try to add the item back to the player's inventory
-                HashMap<Integer, ItemStack> unaddedItems = playerInventory.addItem(itemInEnchantSlot);
+                // Set the item from the enchantment slot directly to the main hand
+                playerInventory.setItemInMainHand(itemInEnchantSlot);
 
-                // If the player's inventory is full and the item cannot be added back, drop it in the world at the player's location
-                if (!unaddedItems.isEmpty()) {
-                    player.getWorld().dropItemNaturally(player.getLocation(), itemInEnchantSlot);
+                // If there was already an item in the main hand, try to add it back to the player's inventory
+                if (currentItemInMainHand != null && currentItemInMainHand.getType() != Material.AIR) {
+                    HashMap<Integer, ItemStack> unaddedItems = playerInventory.addItem(currentItemInMainHand);
+
+                    // If the player's inventory is full and the item cannot be added back, drop it in the world at the player's location
+                    if (!unaddedItems.isEmpty()) {
+                        player.getWorld().dropItemNaturally(player.getLocation(), currentItemInMainHand);
+                    }
                 }
 
                 // Clear the slot in the custom GUI to prevent duplication
