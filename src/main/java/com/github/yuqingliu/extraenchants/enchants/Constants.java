@@ -7,8 +7,7 @@ import java.util.HashMap;
 public class Constants {
     private static int bookshelfMultiplier = 5;
     private static double repairAnvilCostPerResource = 1.5;
-    private static int vanillaAnvilCostPerLevel = 5;
-    private static int customAnvilCostPerLevel = 10;
+    private static int anvilCostPerLevel = 3;
 
     private static HashMap<NamespacedKey, Integer> enchantments = new HashMap<>();
     private static HashMap<String, Integer> customEnchants = new HashMap<>();
@@ -45,20 +44,12 @@ public class Constants {
         repairAnvilCostPerResource = newRepairAnvilCostPerResource;
     }
 
-    public static int getVanillaAnvilCostPerLevel() {
-        return vanillaAnvilCostPerLevel;
+    public static int getAnvilCostPerLevel() {
+        return anvilCostPerLevel;
     }
 
-    public static void setVanillaAnvilCostPerLevel(int newVanillaAnvilCostPerLevel) {
-        vanillaAnvilCostPerLevel = newVanillaAnvilCostPerLevel;
-    }
-
-    public static int getCustomAnvilCostPerLevel() {
-        return customAnvilCostPerLevel;
-    }
-
-    public static void setCustomAnvilCostPerLevel(int newCustomAnvilCostPerLevel) {
-        customAnvilCostPerLevel = newCustomAnvilCostPerLevel;
+    public static void setAnvilCostPerLevel(int newAnvilCostPerLevel) {
+        anvilCostPerLevel = newAnvilCostPerLevel;
     }
 }
 

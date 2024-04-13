@@ -25,6 +25,8 @@ import java.util.stream.Collectors;
 
 import com.github.yuqingliu.extraenchants.enchants.*;
 
+import de.tr7zw.changeme.nbtapi.NBTItem;
+
 public class UtilityMethods {
     public static String toRoman(int number) {
         int[] values = {1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
@@ -88,27 +90,12 @@ public class UtilityMethods {
     }
 
     public static int getEnchantmentLevel(ItemStack item, String enchantmentName) {
-        if (item == null || !item.hasItemMeta()) return 0;
-        ItemMeta meta = item.getItemMeta();
-        if (meta.hasLore()) {
-            PlainTextComponentSerializer plainTextSerializer = PlainTextComponentSerializer.plainText();
-            for (Component loreComponent : meta.lore()) {
-                // Use PlainTextComponentSerializer to convert Component to plain text
-                String loreText = plainTextSerializer.serialize(loreComponent);
-                if (loreText.contains(enchantmentName)) {
-                    // Assuming the format "[EnchantmentName] [Level]"
-                    String[] parts = loreText.split(enchantmentName, 2);
-                    if (parts.length > 1) {
-                        String levelPart = parts[1].trim();
-                        String[] levelParts = levelPart.split(" ");
-                        for(String part : levelParts) {
-                            if(fromRoman(part) > 0) return fromRoman(part);
-                        }
-                    }
-                }
-            }
+        NBTItem nbtItem = new NBTItem(item);
+        int level = 0;
+        if (nbtItem.hasTag("extra-enchants"+enchantmentName)) {
+            level = nbtItem.getInteger("extra-enchants"+enchantmentName);
         }
-        return 0;
+        return level;
     }
 
     public static Map<CustomEnchantment, Integer> getEnchantments(ItemStack item) {
@@ -125,7 +112,7 @@ public class UtilityMethods {
         return itemEnchants;
     }
 
-    public static boolean addEnchantment(ItemStack item, String enchantmentName, int level, TextColor color) {
+    public static ItemStack addEnchantment(ItemStack item, String enchantmentName, int level, TextColor color, boolean editLore) {
         List<CustomEnchantment> Register = Database.getCustomEnchantmentRegistry();
         CustomEnchantment enchant = null;
         for (CustomEnchantment enchantment : Register) {
@@ -149,35 +136,55 @@ public class UtilityMethods {
                     level++;
                 } else if (level <= prevLevel) {
                     // If the new level is not greater, do nothing
-                    return true;
+                    return null;
                 }
                 // Remove the old enchantment lore
-                existingLore = existingLore.stream()
-                        .filter(loreComponent -> !plainTextSerializer.serialize(loreComponent).contains(enchantmentName))
-                        .collect(Collectors.toList());
+                if(editLore) {
+                    existingLore = existingLore.stream()
+                            .filter(loreComponent -> !plainTextSerializer.serialize(loreComponent).contains(enchantmentName))
+                            .collect(Collectors.toList());
+                }
             }
 
-            // Add or upgrade the enchantment
-            Component newEnchantText = Component.text(enchantmentName + " " + toRoman(level), color);
-            existingLore.add(newEnchantText);
+            // Add lore
+            if(editLore) {
+                // Add or upgrade the enchantment
+                Component newEnchantText = Component.text(enchantmentName + " " + toRoman(level), color);
+                existingLore.add(newEnchantText);
 
-            // Update the lore
-            meta.lore(existingLore);
-            item.setItemMeta(meta);
-            return true;
+                // Update the lore
+                meta.lore(existingLore);
+                item.setItemMeta(meta);
+            }
+
+            // Add nbt tag
+            NBTItem nbtItem = new NBTItem(item);
+            nbtItem.setInteger("extra-enchants"+enchantmentName, level);
+
+            return nbtItem.getItem();
         }
-        return false;
+        return null;
     }
 
-    public static void removeEnchantment(ItemStack item, String enchantmentName) {
-        ItemMeta meta = item.getItemMeta();
-        List<Component> existingLore = meta.lore() != null ? meta.lore() : new ArrayList<>();
-        PlainTextComponentSerializer plainTextSerializer = PlainTextComponentSerializer.plainText();
-        existingLore = existingLore.stream()
-                .filter(loreComponent -> !plainTextSerializer.serialize(loreComponent).contains(enchantmentName))
-                .collect(Collectors.toList());
-        meta.lore(existingLore);
-        item.setItemMeta(meta);
+    public static ItemStack removeEnchantment(ItemStack item, String enchantmentName, boolean editLore) {
+        // Remove lore
+        if(editLore) {
+            ItemMeta meta = item.getItemMeta();
+            List<Component> existingLore = meta.lore() != null ? meta.lore() : new ArrayList<>();
+            PlainTextComponentSerializer plainTextSerializer = PlainTextComponentSerializer.plainText();
+            existingLore = existingLore.stream()
+                    .filter(loreComponent -> !plainTextSerializer.serialize(loreComponent).contains(enchantmentName))
+                    .collect(Collectors.toList());
+            meta.lore(existingLore);
+            item.setItemMeta(meta);
+        }
+
+        // Remove nbt tag
+        NBTItem nbtItem = new NBTItem(item);
+        if (nbtItem.hasTag("extra-enchants"+enchantmentName)) {
+            nbtItem.removeKey("extra-enchants"+enchantmentName);
+        }
+        return nbtItem.getItem();
     }
 
     public static void applyVanillaEnchant(Player player, EnchantmentOffer selectedOffer, ItemStack item) {
@@ -206,7 +213,7 @@ public class UtilityMethods {
         }
     }
 
-    public static void applyCustomEnchant(Player player, CustomEnchantmentOffer selectedOfferCustom, ItemStack item, TextColor color) {
+    public static ItemStack applyCustomEnchant(Player player, CustomEnchantmentOffer selectedOfferCustom, ItemStack item, TextColor color) {
         HashMap<String, Integer> Registry = Constants.getCustomEnchantments();
 
         String enchantmentName = selectedOfferCustom.getEnchant().getName();
@@ -217,37 +224,79 @@ public class UtilityMethods {
         int requiredLevel = selectedOfferCustom.getCost();
         int playerLevel = player.getLevel();
         if(playerLevel >= requiredLevel) {
-            if(prevLevel == enchantmentLevel && prevLevel == maxEnchantmentLevel) return;
-            addEnchantment(item, enchantmentName, enchantmentLevel, color);
+            if(prevLevel == enchantmentLevel && prevLevel == maxEnchantmentLevel) return null;
             player.setLevel(playerLevel - 1);
             player.playSound(player.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0f, 1.0f);
+            return addEnchantment(item, enchantmentName, enchantmentLevel, color, true);
         }
+        return null;
     }
 
-    public static void applyExtraEnchant(JavaPlugin plugin, Inventory inv, Player player, CustomEnchantmentOffer selectedOfferCustom, ItemStack item, TextColor color) {
+    public static ItemStack applyExtraEnchant(JavaPlugin plugin, Inventory inv, int itemSlot, Player player, CustomEnchantmentOffer selectedOfferCustom, ItemStack item, TextColor color) {
+        HashMap<String, Integer> Registry = Constants.getCustomEnchantments();
+
+        String enchantmentName = selectedOfferCustom.getEnchant().getName();
+        int enchantmentLevel = selectedOfferCustom.getEnchantmentLevel();
+        int prevLevel = getEnchantmentLevel(item, enchantmentName);
+        int maxEnchantmentLevel = Registry.get(enchantmentName);
+
         int requiredLevel = selectedOfferCustom.getCost();
         int playerLevel = player.getLevel();
-        if(playerLevel < requiredLevel) return;
-        applyCustomEnchant(player, selectedOfferCustom, item, color);
-        String baseCommand = selectedOfferCustom.getEnchant().getAddCmd();
-        String command = baseCommand.replace("enchant", "enchant " + player.getName());
-        String finalCommand = command + " " + selectedOfferCustom.getEnchantmentLevel();
-
-        inv.close();
-
-        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+        if(playerLevel >= requiredLevel) {
+            if(prevLevel == enchantmentLevel && prevLevel == maxEnchantmentLevel) return null;
+            ItemStack enchantedItem = addEnchantment(item, enchantmentName, enchantmentLevel, color, false);
+            String baseCommand = selectedOfferCustom.getEnchant().getAddCmd();
+            String command = baseCommand.replace("enchant", "enchant " + player.getName());
+            String finalCommand = command + " " + selectedOfferCustom.getEnchantmentLevel();
+            
+            // Move item to player's main hand
+            ItemStack originalItem = player.getInventory().getItemInMainHand();
+            player.getInventory().setItemInMainHand(enchantedItem);
+            // Send command
             Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), finalCommand);
-        }, 1L);
+            // Move item to slot
+            ItemStack finalItem = player.getInventory().getItemInMainHand();
+            inv.setItem(itemSlot, finalItem);
+            player.getInventory().setItemInMainHand(originalItem);
+            player.setLevel(playerLevel - 1);
+            player.playSound(player.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0f, 1.0f);
+            return finalItem;
+        }
+        return null;
     }
 
-    public static void removeExtraEnchant(JavaPlugin plugin, Inventory inv, Player player, ItemStack item, CustomEnchantment enchant) {
-        removeEnchantment(item, enchant.getName());
+    public static ItemStack addExtraEnchant(JavaPlugin plugin, Inventory inv, int itemSlot, Player player, CustomEnchantment enchant, int level, ItemStack item, TextColor color) {
+        String enchantmentName = enchant.getName();
+        ItemStack enchantedItem = addEnchantment(item, enchantmentName, level, color, false);
+        String baseCommand = enchant.getAddCmd();
+        String command = baseCommand.replace("enchant", "enchant " + player.getName());
+        String finalCommand = command + " " + level;
+        // Move item to player's main hand
+        ItemStack originalItem = player.getInventory().getItemInMainHand();
+        player.getInventory().setItemInMainHand(enchantedItem);
+        // Send command
+        Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), finalCommand);
+        // Move item to slot
+        ItemStack finalItem = player.getInventory().getItemInMainHand();
+        inv.setItem(itemSlot, finalItem);
+        player.getInventory().setItemInMainHand(originalItem);
+        return finalItem;
+    }
+
+    public static ItemStack removeExtraEnchant(JavaPlugin plugin, Inventory inv, int itemSlot, Player player, ItemStack item, CustomEnchantment enchant) {
+        ItemStack enchantedItem = removeEnchantment(item, enchant.getName(), false);
         String baseCommand = enchant.getRmCmd();
         String finalCommand = baseCommand.replace("unenchant", "unenchant " + player.getName());
-        inv.close();
-        Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), finalCommand);
-        }, 1L);
+        // Move item to player's main hand
+        ItemStack originalItem = player.getInventory().getItemInMainHand();
+        player.getInventory().setItemInMainHand(enchantedItem);
+        // Send command
+        Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), finalCommand);
+        // Move item to slot
+        ItemStack finalItem = player.getInventory().getItemInMainHand();
+        inv.setItem(itemSlot, finalItem);
+        player.getInventory().setItemInMainHand(originalItem);
+        return finalItem;
     }
 
     public static int countSurroundingEffectiveBlocks(Block centerBlock, Material checkBlockType) {

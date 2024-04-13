@@ -22,6 +22,7 @@ import com.github.yuqingliu.extraenchants.enchants.utils.*;
 
 public class GrindstoneMenu {
     private static final int START_SLOT = 0;
+    private static final int ITEM_SLOT = 25;
     private static final int PLACEHOLDER_SLOT = 34;
     private static final int PREVIOUS_PAGE = 6;
     private static final int NEXT_PAGE = 51;
@@ -308,10 +309,11 @@ public class GrindstoneMenu {
         if(customEnchant != null) {
 
             String cmd = customEnchant.getRmCmd();
-            if(cmd != null) {
-                UtilityMethods.removeExtraEnchant(plugin, inv, player, item, customEnchant);
+            if(cmd != null && !cmd.isEmpty()) {
+                UtilityMethods.removeExtraEnchant(plugin, inv, ITEM_SLOT, player, item, customEnchant);
             } else {
-                UtilityMethods.removeEnchantment(item, customEnchant.getName());
+                ItemStack finalItem = UtilityMethods.removeEnchantment(item, customEnchant.getName(), true);
+                inv.setItem(ITEM_SLOT, finalItem);
             }
             player.getWorld().playSound(player.getLocation(), Sound.BLOCK_LAVA_EXTINGUISH, 1.0f, 1.0f);
         }

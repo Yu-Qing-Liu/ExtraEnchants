@@ -46,11 +46,8 @@ public class ExtraEnchants extends JavaPlugin {
         Constants.setRepairAnvilCostPerResource(
             this.getConfig().getDouble("RepairAnvilCostPerResource")
         );
-        Constants.setVanillaAnvilCostPerLevel(
-            this.getConfig().getInt("VanillaAnvilCostPerLevel")
-        );
-        Constants.setCustomAnvilCostPerLevel(
-            this.getConfig().getInt("CustomAnvilCostPerLevel")
+        Constants.setAnvilCostPerLevel(
+            this.getConfig().getInt("AnvilCostPerLevel")
         );
 
         loadEnchantmentsFromConfig();
@@ -97,13 +94,8 @@ public class ExtraEnchants extends JavaPlugin {
             changesMade = true;
         }
 
-        if (!config.isSet("VanillaAnvilCostPerLevel")) {
-            config.set("VanillaAnvilCostPerLevel", 3);
-            changesMade = true;
-        }   
-
-        if (!config.isSet("CustomAnvilCostPerLevel")) {
-            config.set("CustomAnvilCostPerLevel", 5);
+        if (!config.isSet("AnvilCostPerLevel")) {
+            config.set("AnvilCostPerLevel", 3);
             changesMade = true;
         }
 

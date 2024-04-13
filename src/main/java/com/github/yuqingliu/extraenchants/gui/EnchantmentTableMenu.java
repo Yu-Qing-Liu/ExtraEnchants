@@ -33,6 +33,7 @@ public class EnchantmentTableMenu {
     private static final int START_SLOT = 0;
     private static final int PREVIOUS_PAGE = 6;
     private static final int NEXT_PAGE = 51;
+    private static final int ITEM_SLOT = 25;
     private static final int PLACEHOLDER_SLOT = 34;
     private static final int BOOKSHELF_MULTIPLIER = Constants.getBookshelfMultiplier();
     private static final int MAX_BOOKSHELVES = 15;
@@ -181,10 +182,13 @@ public class EnchantmentTableMenu {
                 // Apply the enchantment and return
                 TextColor color = selectedOfferCustom.getEnchant().getColor();
                 String cmd = selectedOfferCustom.getEnchant().getAddCmd();
-                if(cmd != null) {
-                    UtilityMethods.applyExtraEnchant(plugin, inv, player, selectedOfferCustom, item, color);
+                if(cmd != null && !cmd.isEmpty()) {
+                    UtilityMethods.applyExtraEnchant(plugin, inv, ITEM_SLOT, player, selectedOfferCustom, item, color);
                 } else {
-                    UtilityMethods.applyCustomEnchant(player, selectedOfferCustom, item, color);
+                    ItemStack enchantedItem = UtilityMethods.applyCustomEnchant(player, selectedOfferCustom, item, color);
+                    inv.setItem(ITEM_SLOT, enchantedItem);
+                    displayEnchantmentOptions(inv, enchantedItem);
+                    return;
                 } 
                 displayEnchantmentOptions(inv, item);
                 return;

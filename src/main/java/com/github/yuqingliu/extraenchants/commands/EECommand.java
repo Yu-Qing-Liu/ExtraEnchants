@@ -61,11 +61,13 @@ public class EECommand implements CommandExecutor {
             for(CustomEnchantment enchant : Registry) {
                 if(enchantmentName.equals(enchant.getName())) enchantment = enchant;
             }
-            boolean success = false;
-            if(enchantment != null) {
-                success = UtilityMethods.addEnchantment(item, enchantmentName, level, enchantment.getColor());
+            ItemStack finalItem = null;
+            if(enchantment != null && enchantment.getAddCmd() == null || enchantment.getAddCmd().isEmpty()) {
+                finalItem = UtilityMethods.addEnchantment(item, enchantmentName, level, enchantment.getColor(), true);
             }
-            if (success) {
+
+            if (finalItem != null) {
+                player.getInventory().setItemInMainHand(finalItem);
                 player.sendMessage(Component.text("Enchantment applied successfully!", NamedTextColor.GREEN));
             } else {
                 player.sendMessage(Component.text("Failed to apply enchantment. Check enchantment name and level limits.", NamedTextColor.RED));

@@ -217,7 +217,7 @@ public class PlayerInteractsWithAnvil implements Listener {
                 ItemStack rightItem = inv.getItem(RIGHT_SLOT);
                 if (leftItem != null && rightItem != null && leftItem.getType() != Material.AIR && rightItem.getType() != Material.AIR) {
                     // Item detected in both left and right slots, update the result
-                    AnvilMenu.updateResult(player, inv, leftItem, rightItem, false);
+                    AnvilMenu.updateResult(plugin, player, inv, leftItem, rightItem, false);
                     hasResult = true;
                     cancel(); // Stop this task from running again
                 }
