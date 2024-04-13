@@ -38,11 +38,6 @@
       <version>4.11</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-        <groupId>net.advancedplugins</groupId>
-        <artifactId>advancedenchantments</artifactId>
-        <version>8.7.4</version>
-    </dependency>
   </dependencies>
 
   <build>
