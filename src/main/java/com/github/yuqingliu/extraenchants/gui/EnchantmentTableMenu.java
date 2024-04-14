@@ -35,20 +35,17 @@ public class EnchantmentTableMenu {
     private static final int NEXT_PAGE = 51;
     private static final int ITEM_SLOT = 25;
     private static final int PLACEHOLDER_SLOT = 34;
-    private static final int BOOKSHELF_MULTIPLIER = Constants.getBookshelfMultiplier();
-    private static final int MAX_BOOKSHELVES = 15;
     private static int PAGE_NUMBER = 1;
     private static int MAX_PAGES = 25;
     private static HashMap<Integer, HashMap<Integer, EnchantmentOffer>> pageDataVanillaEnchants = new HashMap<>();
     private static HashMap<Integer, HashMap<Integer, CustomEnchantmentOffer>> pageDataCustomEnchants = new HashMap<>();
+    private static HashMap<NamespacedKey, List<Object>> EnchantmentRegistry = Constants.getEnchantments();
+    private static HashMap<String, List<Object>> CustomEnchantmentRegistry = Constants.getCustomEnchantments();
     private static EnchantmentOffer selectedVanillaOffer = null;
     private static CustomEnchantmentOffer selectedCustomOffer = null;
-    private static int experienceLevelStep;
     
-    public static void openEnchantmentTableMenu(Player player, int bookshelves) {
-        bookshelves = (int) Math.min(MAX_BOOKSHELVES, bookshelves);
+    public static void openEnchantmentTableMenu(Player player) {
         Inventory inv = Bukkit.createInventory(null, 54, Component.text("Enchanting Table", NamedTextColor.DARK_PURPLE));
-        experienceLevelStep = (bookshelves * BOOKSHELF_MULTIPLIER) / 10;
         displayItemFrame(inv);
         optionsFill(inv);
         initializePages();
@@ -157,7 +154,9 @@ public class EnchantmentTableMenu {
             MAX_PAGES = (int) Math.ceil((double) maxEnchantmentLevel / 36.0);
             for (int i = 1; i <= maxEnchantmentLevel; i++) {
                 // Display offers by increasing level up to max level as well as their prices
-                EnchantmentOffer offer = new EnchantmentOffer(selectedOffer.getEnchantment(), i, i * experienceLevelStep);
+                String expression = (String) EnchantmentRegistry.get(selectedOffer.getEnchantment().getKey()).get(1);
+                int result = UtilityMethods.evaluateExpression(expression, i);
+                EnchantmentOffer offer = new EnchantmentOffer(selectedOffer.getEnchantment(), i, result);
                 pageDataVanillaEnchants.get(PAGE_NUMBER).put(slotptr, offer);
                 ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
                 ItemMeta metaOffer = enchantOption.getItemMeta();
@@ -183,21 +182,22 @@ public class EnchantmentTableMenu {
                 TextColor color = selectedOfferCustom.getEnchant().getColor();
                 String cmd = selectedOfferCustom.getEnchant().getAddCmd();
                 if(cmd != null && !cmd.isEmpty()) {
-                    UtilityMethods.applyExtraEnchant(plugin, inv, ITEM_SLOT, player, selectedOfferCustom, item, color);
+                    ItemStack enchantedItem = UtilityMethods.applyExtraEnchant(plugin, inv, ITEM_SLOT, player, selectedOfferCustom, item, color);
+                    displayEnchantmentOptions(inv, enchantedItem);
                 } else {
                     ItemStack enchantedItem = UtilityMethods.applyCustomEnchant(player, selectedOfferCustom, item, color);
                     inv.setItem(ITEM_SLOT, enchantedItem);
                     displayEnchantmentOptions(inv, enchantedItem);
-                    return;
                 } 
-                displayEnchantmentOptions(inv, item);
                 return;
             }
             int slotptr = 0;
             int maxEnchantmentLevel = selectedOfferCustom.getEnchantmentLevel();
             for (int i = 1; i <= maxEnchantmentLevel; i++) {
                 // Display offers by increasing level up to max level as well as their prices
-                CustomEnchantmentOffer offer = new CustomEnchantmentOffer(selectedOfferCustom.getEnchant(), i, i * experienceLevelStep);
+                String expression = (String) CustomEnchantmentRegistry.get(selectedOfferCustom.getEnchant().getName()).get(1);
+                int result = UtilityMethods.evaluateExpression(expression, i);
+                CustomEnchantmentOffer offer = new CustomEnchantmentOffer(selectedOfferCustom.getEnchant(), i, result);
                 pageDataCustomEnchants.get(PAGE_NUMBER).put(slotptr, offer);
                 ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
                 ItemMeta metaOffer = enchantOption.getItemMeta();
@@ -264,7 +264,9 @@ public class EnchantmentTableMenu {
             int maxEnchantmentLevel = selectedOffer.getEnchantmentLevel();
             for (int i = startLevel; i <= maxEnchantmentLevel; i++) {
                 // Display offers by increasing level up to max level as well as their prices
-                EnchantmentOffer offer = new EnchantmentOffer(selectedOffer.getEnchantment(), i, i * experienceLevelStep);
+                String expression = (String) EnchantmentRegistry.get(selectedOffer.getEnchantment().getKey()).get(1);
+                int result = UtilityMethods.evaluateExpression(expression, i);
+                EnchantmentOffer offer = new EnchantmentOffer(selectedOffer.getEnchantment(), i, result);
                 pageDataVanillaEnchants.get(PAGE_NUMBER).put(slotptr, offer);
                 ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
                 ItemMeta metaOffer = enchantOption.getItemMeta();
@@ -302,7 +304,9 @@ public class EnchantmentTableMenu {
             int maxEnchantmentLevel = selectedOfferCustom.getEnchantmentLevel();
             for (int i = startLevel; i <= maxEnchantmentLevel; i++) {
                 // Display offers by increasing level up to max level as well as their prices
-                CustomEnchantmentOffer offer = new CustomEnchantmentOffer(selectedOfferCustom.getEnchant(), i, i * experienceLevelStep);
+                String expression = (String) CustomEnchantmentRegistry.get(selectedOfferCustom.getEnchant().getName()).get(1);
+                int result = UtilityMethods.evaluateExpression(expression, i);
+                CustomEnchantmentOffer offer = new CustomEnchantmentOffer(selectedOfferCustom.getEnchant(), i, result);
                 pageDataCustomEnchants.get(PAGE_NUMBER).put(slotptr, offer);
                 ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
                 ItemMeta metaOffer = enchantOption.getItemMeta();
@@ -373,7 +377,9 @@ public class EnchantmentTableMenu {
             int maxEnchantmentLevel = startLevel;
             for (int i = startLevel - 36; i <= maxEnchantmentLevel; i++) {
                 // Display offers by increasing level up to max level as well as their prices
-                EnchantmentOffer offer = new EnchantmentOffer(selectedOffer.getEnchantment(), i, i * experienceLevelStep);
+                String expression = (String) EnchantmentRegistry.get(selectedOffer.getEnchantment().getKey()).get(1);
+                int result = UtilityMethods.evaluateExpression(expression, i);
+                EnchantmentOffer offer = new EnchantmentOffer(selectedOffer.getEnchantment(), i, result);
                 pageDataVanillaEnchants.get(PAGE_NUMBER).put(slotptr, offer);
                 ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
                 ItemMeta metaOffer = enchantOption.getItemMeta();
@@ -411,7 +417,9 @@ public class EnchantmentTableMenu {
             int maxEnchantmentLevel = startLevel;
             for (int i = startLevel - 36; i <= maxEnchantmentLevel; i++) {
                 // Display offers by increasing level up to max level as well as their prices
-                CustomEnchantmentOffer offer = new CustomEnchantmentOffer(selectedOfferCustom.getEnchant(), i, i * experienceLevelStep);
+                String expression = (String) CustomEnchantmentRegistry.get(selectedOfferCustom.getEnchant().getName()).get(1);
+                int result = UtilityMethods.evaluateExpression(expression, i);
+                CustomEnchantmentOffer offer = new CustomEnchantmentOffer(selectedOfferCustom.getEnchant(), i, result);
                 pageDataCustomEnchants.get(PAGE_NUMBER).put(slotptr, offer);
                 ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
                 ItemMeta metaOffer = enchantOption.getItemMeta();
@@ -767,7 +775,6 @@ public class EnchantmentTableMenu {
     }
 
     public static List<EnchantmentOffer> getEnchants(ItemStack item) {
-        HashMap<NamespacedKey, Integer> EnchantmentRegistry = Constants.getEnchantments();
         List<EnchantmentOffer> applicableEnchants = new ArrayList<>();
         Map<Enchantment, Integer> itemEnchants = item.getEnchantments();
 
@@ -776,7 +783,7 @@ public class EnchantmentTableMenu {
             if (enchantable) {
                 // Get the level from applicableEnchants
                 NamespacedKey key = enchantment.getKey();
-                int level = EnchantmentRegistry.get(key);
+                int level = (int) EnchantmentRegistry.get(key).get(0);
                 int itemEnchantLevel = 0;
                 if(itemEnchants.get(enchantment) != null) itemEnchantLevel = itemEnchants.get(enchantment);
                 if(itemEnchantLevel == level) continue;
@@ -790,7 +797,6 @@ public class EnchantmentTableMenu {
     }
 
     public static List<CustomEnchantmentOffer> getCustomEnchants(ItemStack item) {
-        HashMap<String, Integer> customEnchantments= Constants.getCustomEnchantments();
         List<CustomEnchantment> customEnchantmentRegistry = Database.getCustomEnchantmentRegistry();
         List<CustomEnchantmentOffer> applicableEnchants = new ArrayList<>();
         Map<CustomEnchantment, Integer> itemEnchants = UtilityMethods.getEnchantments(item);
@@ -800,7 +806,7 @@ public class EnchantmentTableMenu {
             if (enchantable) {
                 // Get the level from applicableEnchants
                 String key = enchantment.getName();
-                int level = customEnchantments.get(key);
+                int level = (int) CustomEnchantmentRegistry.get(key).get(0);
                 int itemEnchantLevel = 0;
                 if(itemEnchants.get(enchantment) != null) itemEnchantLevel = itemEnchants.get(enchantment);
                 if(itemEnchantLevel == level) continue;

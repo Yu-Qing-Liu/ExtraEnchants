@@ -3,36 +3,28 @@ package com.github.yuqingliu.extraenchants.enchants;
 import org.bukkit.NamespacedKey;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class Constants {
-    private static int bookshelfMultiplier = 5;
     private static double repairAnvilCostPerResource = 1.5;
     private static int anvilCostPerLevel = 3;
 
-    private static HashMap<NamespacedKey, Integer> enchantments = new HashMap<>();
-    private static HashMap<String, Integer> customEnchants = new HashMap<>();
+    private static HashMap<NamespacedKey, List<Object>> enchantments = new HashMap<>();
+    private static HashMap<String, List<Object>> customEnchants = new HashMap<>();
 
-    public static int getBookshelfMultiplier() {
-        return bookshelfMultiplier;
-    }
-
-    public static void setBookshelfMultiplier(int bookshelfMultiplier) {
-        Constants.bookshelfMultiplier = bookshelfMultiplier;
-    }
-
-    public static HashMap<NamespacedKey, Integer> getEnchantments() {
+    public static HashMap<NamespacedKey, List<Object>> getEnchantments() {
         return enchantments;
     }
 
-    public static void setEnchantments(HashMap<NamespacedKey, Integer> enchantments) {
+    public static void setEnchantments(HashMap<NamespacedKey, List<Object>> enchantments) {
         Constants.enchantments = enchantments;
     }
 
-    public static HashMap<String, Integer> getCustomEnchantments() {
+    public static HashMap<String, List<Object>> getCustomEnchantments() {
         return customEnchants;
     }
 
-    public static void setCustomEnchantments(HashMap<String, Integer> customEnchants) {
+    public static void setCustomEnchantments(HashMap<String, List<Object>> customEnchants) {
         Constants.customEnchants = customEnchants;
     }
 

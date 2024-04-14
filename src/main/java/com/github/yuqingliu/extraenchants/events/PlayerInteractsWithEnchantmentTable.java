@@ -49,9 +49,7 @@ public class PlayerInteractsWithEnchantmentTable implements Listener {
         // Check if the event is a right-click on a block
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK && block != null && block.getType() == Material.ENCHANTING_TABLE) {
             event.setCancelled(true); // Prevent the default enchantment table GUI from opening
-
-            BOOKSHELVES = UtilityMethods.countSurroundingEffectiveBlocks(block, Material.BOOKSHELF);
-            EnchantmentTableMenu.openEnchantmentTableMenu(player, BOOKSHELVES);
+            EnchantmentTableMenu.openEnchantmentTableMenu(player);
         }
     }
 

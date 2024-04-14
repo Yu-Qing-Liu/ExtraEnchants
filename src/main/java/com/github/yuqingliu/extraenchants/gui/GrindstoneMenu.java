@@ -310,14 +310,15 @@ public class GrindstoneMenu {
 
             String cmd = customEnchant.getRmCmd();
             if(cmd != null && !cmd.isEmpty()) {
-                UtilityMethods.removeExtraEnchant(plugin, inv, ITEM_SLOT, player, item, customEnchant);
+                ItemStack finalItem = UtilityMethods.removeExtraEnchant(plugin, inv, ITEM_SLOT, player, item, customEnchant);
+                displayOptions(inv, finalItem);
             } else {
                 ItemStack finalItem = UtilityMethods.removeEnchantment(item, customEnchant.getName(), true);
                 inv.setItem(ITEM_SLOT, finalItem);
+                displayOptions(inv, finalItem);
             }
             player.getWorld().playSound(player.getLocation(), Sound.BLOCK_LAVA_EXTINGUISH, 1.0f, 1.0f);
         }
-        displayOptions(inv, item);
     }
 
     public static void clearOptions(Inventory inv) {

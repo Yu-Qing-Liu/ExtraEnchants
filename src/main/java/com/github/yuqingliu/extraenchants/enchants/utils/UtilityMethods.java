@@ -22,12 +22,19 @@ import java.util.Random;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.stream.Collectors;
+import java.lang.String;
 
 import com.github.yuqingliu.extraenchants.enchants.*;
 
 import de.tr7zw.changeme.nbtapi.NBTItem;
 
+import net.objecthunter.exp4j.Expression;
+import net.objecthunter.exp4j.ExpressionBuilder;
+
 public class UtilityMethods {
+    private static HashMap<NamespacedKey, List<Object>> EnchantmentsRegistry = Constants.getEnchantments();
+    private static HashMap<String, List<Object>> CustomEnchantmentsRegistry = Constants.getCustomEnchantments();
+
     public static String toRoman(int number) {
         int[] values = {1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
         String[] romanLiterals = {"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
@@ -92,7 +99,7 @@ public class UtilityMethods {
     public static int getEnchantmentLevel(ItemStack item, String enchantmentName) {
         NBTItem nbtItem = new NBTItem(item);
         int level = 0;
-        if (nbtItem.hasTag("extra-enchants"+enchantmentName)) {
+        if (nbtItem != null && nbtItem.hasTag("extra-enchants"+enchantmentName)) {
             level = nbtItem.getInteger("extra-enchants"+enchantmentName);
         }
         return level;
@@ -188,12 +195,10 @@ public class UtilityMethods {
     }
 
     public static void applyVanillaEnchant(Player player, EnchantmentOffer selectedOffer, ItemStack item) {
-        HashMap<NamespacedKey, Integer> Registry = Constants.getEnchantments();
-        
         NamespacedKey enchantmentName = selectedOffer.getEnchantment().getKey();
         int enchantmentLevel = selectedOffer.getEnchantmentLevel();
         int prevEnchantLevel = item.getEnchantmentLevel(selectedOffer.getEnchantment());
-        int maxEnchantmentLevel = Registry.get(enchantmentName);
+        int maxEnchantmentLevel = (int) EnchantmentsRegistry.get(enchantmentName).get(0);
 
         int requiredLevel = selectedOffer.getCost();
         int playerLevel = player.getLevel();
@@ -214,12 +219,10 @@ public class UtilityMethods {
     }
 
     public static ItemStack applyCustomEnchant(Player player, CustomEnchantmentOffer selectedOfferCustom, ItemStack item, TextColor color) {
-        HashMap<String, Integer> Registry = Constants.getCustomEnchantments();
-
         String enchantmentName = selectedOfferCustom.getEnchant().getName();
         int enchantmentLevel = selectedOfferCustom.getEnchantmentLevel();
         int prevLevel = getEnchantmentLevel(item, enchantmentName);
-        int maxEnchantmentLevel = Registry.get(enchantmentName);
+        int maxEnchantmentLevel = (int) CustomEnchantmentsRegistry.get(enchantmentName).get(0);
 
         int requiredLevel = selectedOfferCustom.getCost();
         int playerLevel = player.getLevel();
@@ -233,12 +236,10 @@ public class UtilityMethods {
     }
 
     public static ItemStack applyExtraEnchant(JavaPlugin plugin, Inventory inv, int itemSlot, Player player, CustomEnchantmentOffer selectedOfferCustom, ItemStack item, TextColor color) {
-        HashMap<String, Integer> Registry = Constants.getCustomEnchantments();
-
         String enchantmentName = selectedOfferCustom.getEnchant().getName();
         int enchantmentLevel = selectedOfferCustom.getEnchantmentLevel();
         int prevLevel = getEnchantmentLevel(item, enchantmentName);
-        int maxEnchantmentLevel = Registry.get(enchantmentName);
+        int maxEnchantmentLevel = (int) CustomEnchantmentsRegistry.get(enchantmentName).get(0);
 
         int requiredLevel = selectedOfferCustom.getCost();
         int playerLevel = player.getLevel();
@@ -297,6 +298,17 @@ public class UtilityMethods {
         inv.setItem(itemSlot, finalItem);
         player.getInventory().setItemInMainHand(originalItem);
         return finalItem;
+    }
+
+    public static int evaluateExpression(String expression, int value) {
+        Expression exp = new ExpressionBuilder(expression)
+            .variables("x")
+            .build()
+            .setVariable("x", value); // Set value for x
+
+        // Evaluate the expression
+        double result = exp.evaluate();
+        return (int) result;
     }
 
     public static int countSurroundingEffectiveBlocks(Block centerBlock, Material checkBlockType) {

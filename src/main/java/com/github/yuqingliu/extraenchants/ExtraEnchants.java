@@ -40,9 +40,6 @@ public class ExtraEnchants extends JavaPlugin {
         // Set a default config.yml if not present
         setDefaultEnchantmentsConfig();
 
-        Constants.setBookshelfMultiplier(
-            this.getConfig().getInt("BookshelfMultiplier")
-        );
         Constants.setRepairAnvilCostPerResource(
             this.getConfig().getDouble("RepairAnvilCostPerResource")
         );
@@ -83,12 +80,6 @@ public class ExtraEnchants extends JavaPlugin {
         boolean changesMade = false;
         List<CustomEnchantment> customEnchantmentRegistry = Database.getCustomEnchantmentRegistry();
 
-        // Check and set other attributes
-        if (!config.isSet("BookshelfMultiplier")) {
-            config.set("BookshelfMultiplier", 5);
-            changesMade = true;
-        }
-
         if (!config.isSet("RepairAnvilCostPerResource")) {
             config.set("RepairAnvilCostPerResource", 1.5);
             changesMade = true;
@@ -104,7 +95,10 @@ public class ExtraEnchants extends JavaPlugin {
             NamespacedKey key = enchantment.getKey();
             String path = "Enchantments." + key.getKey();
             if (!config.isSet(path)) {
-                config.set(path, enchantment.getMaxLevel());
+                List<Object> defaultOptionsVanilla = new ArrayList<>();
+                defaultOptionsVanilla.add(enchantment.getMaxLevel());
+                defaultOptionsVanilla.add("x^2");
+                config.set(path, defaultOptionsVanilla);
                 changesMade = true; // Mark that changes have been made
             }
         }
@@ -114,11 +108,13 @@ public class ExtraEnchants extends JavaPlugin {
             String name = enchantment.getName();
             String path = "CustomEnchantments." + name;
             if (!config.isSet(path)) {
-                config.set(path, enchantment.getMaxLevel());
+                List<Object> defaultOptionsCustom = new ArrayList<>();
+                defaultOptionsCustom.add(enchantment.getMaxLevel());
+                defaultOptionsCustom.add("x^2");
+                config.set(path, defaultOptionsCustom);
                 changesMade = true; // Mark that changes have been made
             }
         }
-
         
         // Check and set the extra enchants
         if (!config.isConfigurationSection("ExtraEnchantments")) {
@@ -127,6 +123,7 @@ public class ExtraEnchants extends JavaPlugin {
             defaultEnchantments.add("<add enchant command>");
             defaultEnchantments.add("<remove enchant command>");
             defaultEnchantments.add(5); // Default level
+            defaultEnchantments.add("x^2");
             defaultEnchantments.add("C133FF"); // Default color
             defaultEnchantments.add(Arrays.asList("DIAMOND_SWORD", "NETHERITE_SWORD", "STICK"));
 
@@ -142,23 +139,33 @@ public class ExtraEnchants extends JavaPlugin {
     }
 
     private void loadEnchantmentsFromConfig() {
-        HashMap<NamespacedKey, Integer> enchantments = new HashMap<>();
-        HashMap<String, Integer> customEnchantments = new HashMap<>();
+        HashMap<NamespacedKey, List<Object>> enchantments = new HashMap<>();
+        HashMap<String, List<Object>> customEnchantments = new HashMap<>();
         FileConfiguration config = this.getConfig();
 
         ConfigurationSection enchantmentsSection = config.getConfigurationSection("Enchantments");
         if (enchantmentsSection != null) {
             for (String key : enchantmentsSection.getKeys(false)) {
-                int level = enchantmentsSection.getInt(key);
-                enchantments.put(new NamespacedKey("minecraft", key), level);
+                Object value = enchantmentsSection.get(key);
+                if(value instanceof List) {
+                    List<?> data = (List<?>) value;
+                    Object level = data.get(0);
+                    Object expression = data.get(1);
+                    enchantments.put(new NamespacedKey("minecraft", key), Arrays.asList(level, expression));
+                }
             }
         }
 
         ConfigurationSection customEnchantmentsSection = config.getConfigurationSection("CustomEnchantments");
         if (customEnchantmentsSection != null) {
             for (String key : customEnchantmentsSection.getKeys(false)) {
-                int level = customEnchantmentsSection.getInt(key);
-                customEnchantments.put(key, level);
+                Object value = customEnchantmentsSection.get(key);
+                if(value instanceof List) {
+                    List<?> data = (List<?>) value;
+                    Object level = data.get(0);
+                    Object expression = data.get(1);
+                    customEnchantments.put(key, Arrays.asList(level, expression));
+                }
             }
         }
 
@@ -178,19 +185,23 @@ public class ExtraEnchants extends JavaPlugin {
                     String addCommand = (String) enchantmentInfo.get(0);
                     String removeCommand = (String) enchantmentInfo.get(1);
                     int level = (int) enchantmentInfo.get(2);
-                    String color = (String) enchantmentInfo.get(3);
-                    List<?> applicable = (List<?>) enchantmentInfo.get(4);
-                    registerEnchant(key, addCommand, removeCommand, level, color, applicable);
+                    Object expression = enchantmentInfo.get(3);
+                    String color = (String) enchantmentInfo.get(4);
+                    List<?> applicable = (List<?>) enchantmentInfo.get(5);
+                    registerEnchant(key, addCommand, removeCommand, level, expression, color, applicable);
                 }
             }
         }
     }
 
-    private void registerEnchant(String name, String addCommand, String removeCommand, int level, String color, List<?> applicable) {
+    private void registerEnchant(String name, String addCommand, String removeCommand, int level, Object expression, String color, List<?> applicable) {
         TextColor col = TextColor.fromHexString("#"+color);
         CustomEnchantment enchant = new CustomEnchantment(this, name, addCommand, removeCommand, level, col, convertToMaterialList(applicable));
         Database.getCustomEnchantmentRegistry().add(enchant);
-        Constants.getCustomEnchantments().put(name, level);
+        List<Object> attributes = new ArrayList<>();
+        attributes.add(level);
+        attributes.add(expression);
+        Constants.getCustomEnchantments().put(name, attributes);
     }
 
     private List<Material> convertToMaterialList(List<?> inputList) {

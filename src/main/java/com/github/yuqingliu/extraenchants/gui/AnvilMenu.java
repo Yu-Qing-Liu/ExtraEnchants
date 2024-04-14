@@ -5,7 +5,6 @@ import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.Sound;
@@ -35,7 +34,8 @@ public class AnvilMenu {
     private static final int RESULT_PLACEHOLDER = 24;
     private static final List<Integer> SLOTS = Arrays.asList(11, 13, 15, 20, 22, 24);
     private static final List<Integer> PLACEHOLDER_SLOTS = Arrays.asList(20, 22);
-
+    private static final HashMap<NamespacedKey, List<Object>> EnchantmentsRegistry = Constants.getEnchantments();
+    private static final HashMap<String, List<Object>> CustomEnchantmentsRegistry = Constants.getCustomEnchantments();
 
     public static void openAnvilMenu(Player player) {
         Inventory inv = Bukkit.createInventory(null, 36, Component.text("Anvil", NamedTextColor.DARK_GRAY));
@@ -226,10 +226,9 @@ public class AnvilMenu {
     private static void applyVanillaEnchants(ItemStack result, Map<Enchantment, Integer> ItemVanillaEnchants, Map<Enchantment, Integer> SacrificeVanillaEnchants) {
         Set<Enchantment> keys = new HashSet<>(ItemVanillaEnchants.keySet());
         keys.addAll(SacrificeVanillaEnchants.keySet());
-        HashMap<NamespacedKey, Integer> Registry = Constants.getEnchantments();
 
         for(Enchantment enchant : keys) {
-            int maxEnchantmentLevel = Registry.get(enchant.getKey());
+            int maxEnchantmentLevel = (int) EnchantmentsRegistry.get(enchant.getKey()).get(0);
             int itemVanillaEnchantLevel = 0;
             int sacrificeVanillaEnchantLevel = 0;
             if(ItemVanillaEnchants.get(enchant) != null) itemVanillaEnchantLevel = ItemVanillaEnchants.get(enchant);
@@ -250,10 +249,9 @@ public class AnvilMenu {
     private static ItemStack applyCustomEnchants(JavaPlugin plugin, Inventory inv, Player player, ItemStack result, Map<CustomEnchantment, Integer> ItemCustomEnchants, Map<CustomEnchantment, Integer> SacrificeCustomEnchants) {
         Set<CustomEnchantment> keys = new HashSet<>(ItemCustomEnchants.keySet());
         keys.addAll(SacrificeCustomEnchants.keySet());
-        HashMap<String, Integer> Registry = Constants.getCustomEnchantments();
         ItemStack finalItem = result.clone();
         for(CustomEnchantment enchant : keys) {
-            int maxEnchantmentLevel = Registry.get(enchant.getName());
+            int maxEnchantmentLevel = (int) CustomEnchantmentsRegistry.get(enchant.getName()).get(0);
             int itemVanillaEnchantLevel = 0;
             int sacrificeVanillaEnchantLevel = 0;
             if(ItemCustomEnchants.get(enchant) != null) itemVanillaEnchantLevel = ItemCustomEnchants.get(enchant);
