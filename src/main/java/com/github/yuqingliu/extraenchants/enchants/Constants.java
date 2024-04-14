@@ -1,6 +1,7 @@
 package com.github.yuqingliu.extraenchants.enchants;
 
 import org.bukkit.NamespacedKey;
+import org.bukkit.Material;
 
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +12,7 @@ public class Constants {
 
     private static HashMap<NamespacedKey, List<Object>> enchantments = new HashMap<>();
     private static HashMap<String, List<Object>> customEnchants = new HashMap<>();
+    private static HashMap<Material, List<Material>> anvilData = new HashMap<>();
 
     public static HashMap<NamespacedKey, List<Object>> getEnchantments() {
         return enchantments;
@@ -26,6 +28,14 @@ public class Constants {
 
     public static void setCustomEnchantments(HashMap<String, List<Object>> customEnchants) {
         Constants.customEnchants = customEnchants;
+    }
+
+    public static HashMap<Material, List<Material>> getAnvilData() {
+        return anvilData;
+    }
+
+    public static void setAnvilData(HashMap<Material, List<Material>> newData) {
+        Constants.anvilData = newData;
     }
 
     public static double getRepairAnvilCostPerResource() {

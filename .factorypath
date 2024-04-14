@@ -46,5 +46,6 @@
     <factorypathentry kind="VARJAR" id="M2_REPO/org/ow2/asm/asm/9.7/asm-9.7.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/ow2/asm/asm-commons/9.7/asm-commons-9.7.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/ow2/asm/asm-tree/9.7/asm-tree-9.7.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/net/objecthunter/exp4j/0.4.8/exp4j-0.4.8.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/de/tr7zw/item-nbt-api/2.12.2/item-nbt-api-2.12.2.jar" enabled="true" runInBatchMode="false"/>
 </factorypath>

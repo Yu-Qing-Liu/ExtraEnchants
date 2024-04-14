@@ -304,6 +304,7 @@ public class GrindstoneMenu {
         if(enchant != null) {
             item.removeEnchantment(enchant);
             player.getWorld().playSound(player.getLocation(), Sound.BLOCK_LAVA_EXTINGUISH, 1.0f, 1.0f);
+            displayOptions(inv, item);
         } 
 
         if(customEnchant != null) {

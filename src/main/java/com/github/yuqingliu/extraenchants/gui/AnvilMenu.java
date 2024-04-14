@@ -147,7 +147,18 @@ public class AnvilMenu {
         Material M1 = item1.getType();
         Material M2 = item2.getType();
 
+        HashMap<Material, List<Material>> anvilRegister = Constants.getAnvilData();
+        
+        // Books are allowed to interact with any
         if(M1 == Material.BOOK || M1 == Material.ENCHANTED_BOOK || M2 == Material.BOOK || M2 == Material.ENCHANTED_BOOK) return true;
+        
+        // Check anvil register for custom combos
+        List<Material> applicable = anvilRegister.get(M1);
+        if(applicable != null && applicable.size() > 0) {
+            if(applicable.contains(M2)) {
+                return true;
+            }
+        }
 
         // Check if both items are made of the same material, which makes them compatible
         if (M1 == M2) {

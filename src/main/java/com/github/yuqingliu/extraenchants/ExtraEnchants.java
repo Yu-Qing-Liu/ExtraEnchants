@@ -49,6 +49,7 @@ public class ExtraEnchants extends JavaPlugin {
 
         loadEnchantmentsFromConfig();
         loadExtraEnchantsFromConfig();
+        loadAnvilMapFromConfig();
 
         /*Commands*/
         this.getCommand("ee").setExecutor(new EECommand(this));
@@ -132,6 +133,14 @@ public class ExtraEnchants extends JavaPlugin {
             changesMade = true;
         }
 
+        // Check and set the anvil map
+        if (!config.isConfigurationSection("ExtraAnvilCombinations")) {
+            // If it doesn't exist, add default values
+            List<Object> defaultExample = Arrays.asList("NAME_TAG", "PAPER");
+            config.set("ExtraAnvilCombinations.NETHERITE_SWORD", defaultExample);
+            changesMade = true;
+        }
+
         // Save the config if any changes have been made
         if (changesMade) {
             this.saveConfig();
@@ -192,6 +201,28 @@ public class ExtraEnchants extends JavaPlugin {
                 }
             }
         }
+    }
+
+    public void loadAnvilMapFromConfig() {
+        FileConfiguration config = this.getConfig();
+        HashMap<Material, List<Material>> anvilData = new HashMap<>();
+
+        ConfigurationSection anvilMap = config.getConfigurationSection("ExtraAnvilCombinations");
+        if(anvilMap != null) {
+            for(String key : anvilMap.getKeys(false)) {
+                Object value = anvilMap.get(key);
+                if(value instanceof List) {
+                    List<?> combinations = (List<?>) value;
+                    Material item = Material.matchMaterial(key);
+                    List<Material> applicable = convertToMaterialList(combinations);
+                    if(item != null) {
+                        anvilData.put(item, applicable);
+                    }
+                }
+            }
+        }
+
+        Constants.setAnvilData(anvilData);
     }
 
     private void registerEnchant(String name, String addCommand, String removeCommand, int level, Object expression, String color, List<?> applicable) {
