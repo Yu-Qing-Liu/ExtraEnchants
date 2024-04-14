@@ -40,9 +40,6 @@ public class ExtraEnchants extends JavaPlugin {
         // Set a default config.yml if not present
         setDefaultEnchantmentsConfig();
 
-        Constants.setBookshelfMultiplier(
-            this.getConfig().getInt("BookshelfMultiplier")
-        );
         Constants.setRepairAnvilCostPerResource(
             this.getConfig().getDouble("RepairAnvilCostPerResource")
         );
@@ -82,12 +79,6 @@ public class ExtraEnchants extends JavaPlugin {
         FileConfiguration config = this.getConfig();
         boolean changesMade = false;
         List<CustomEnchantment> customEnchantmentRegistry = Database.getCustomEnchantmentRegistry();
-
-        // Check and set other attributes
-        if (!config.isSet("BookshelfMultiplier")) {
-            config.set("BookshelfMultiplier", 5);
-            changesMade = true;
-        }
 
         if (!config.isSet("RepairAnvilCostPerResource")) {
             config.set("RepairAnvilCostPerResource", 1.5);

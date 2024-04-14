@@ -6,20 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Constants {
-    private static int bookshelfMultiplier = 5;
     private static double repairAnvilCostPerResource = 1.5;
     private static int anvilCostPerLevel = 3;
 
     private static HashMap<NamespacedKey, List<Object>> enchantments = new HashMap<>();
     private static HashMap<String, List<Object>> customEnchants = new HashMap<>();
-
-    public static int getBookshelfMultiplier() {
-        return bookshelfMultiplier;
-    }
-
-    public static void setBookshelfMultiplier(int bookshelfMultiplier) {
-        Constants.bookshelfMultiplier = bookshelfMultiplier;
-    }
 
     public static HashMap<NamespacedKey, List<Object>> getEnchantments() {
         return enchantments;
