@@ -24,6 +24,10 @@
                   <pattern>de.tr7zw.changeme.nbtapi</pattern>
                   <shadedPattern>com.github.yuqingliu.extraenchants.nbtapi</shadedPattern>
                 </relocation>
+                <relocation>
+                  <pattern>net.objecthunter</pattern>
+                  <shadedPattern>com.github.yuqingliu.extraenchants.exp4j</shadedPattern>
+                </relocation>
               </relocations>
               <filters />
             </configuration>
