@@ -145,7 +145,11 @@ public class EnchantmentTableMenu {
         if(selectedOffer != null) {
             if(selectedOffer.getCost() > 0) {
                 // Apply the enchantment and return
-                UtilityMethods.applyVanillaEnchant(player, selectedOffer, item);
+                if(player.getLevel() >= selectedOffer.getCost()) {
+                    UtilityMethods.applyVanillaEnchant(player, selectedOffer, item);
+                } else {
+                    player.sendMessage("Not enough experience");
+                }
                 displayEnchantmentOptions(inv, item);
                 return;
             }
@@ -181,14 +185,22 @@ public class EnchantmentTableMenu {
                 // Apply the enchantment and return
                 TextColor color = selectedOfferCustom.getEnchant().getColor();
                 String cmd = selectedOfferCustom.getEnchant().getAddCmd();
-                if(cmd != null && !cmd.isEmpty()) {
+                if(cmd != null && !cmd.isEmpty() && player.getLevel() >= selectedOfferCustom.getCost()) {
                     ItemStack enchantedItem = UtilityMethods.applyExtraEnchant(plugin, inv, ITEM_SLOT, player, selectedOfferCustom, item, color);
-                    displayEnchantmentOptions(inv, enchantedItem);
-                } else {
+                    if(enchantedItem != null) {
+                        displayEnchantmentOptions(inv, enchantedItem);
+                        return;
+                    } 
+                } else if(player.getLevel() >= selectedOfferCustom.getCost()) {
                     ItemStack enchantedItem = UtilityMethods.applyCustomEnchant(player, selectedOfferCustom, item, color);
-                    inv.setItem(ITEM_SLOT, enchantedItem);
-                    displayEnchantmentOptions(inv, enchantedItem);
-                } 
+                    if(enchantedItem != null) {
+                        inv.setItem(ITEM_SLOT, enchantedItem);
+                        displayEnchantmentOptions(inv, enchantedItem);
+                        return;
+                    } 
+                }
+                player.sendMessage("Not enough experience");
+                displayEnchantmentOptions(inv, item);
                 return;
             }
             int slotptr = 0;
@@ -239,7 +251,7 @@ public class EnchantmentTableMenu {
         inv.setItem(NEXT_PAGE, nextPagePtr);
     }
 
-    public static void displayNextSelectedEnchantmentOptions(Player player, ItemStack item, Inventory inv, int slot) {
+    public static void displayNextSelectedEnchantmentOptions(JavaPlugin plugin, Player player, ItemStack item, Inventory inv, int slot) {
         if(item == null) return;
         if(PAGE_NUMBER + 1 > MAX_PAGES) return;
         PAGE_NUMBER++;
@@ -250,7 +262,11 @@ public class EnchantmentTableMenu {
         if(selectedOffer != null) {
             if(selectedOffer.getCost() > 0) {
                 // Apply the enchantment and return
-                UtilityMethods.applyVanillaEnchant(player, selectedOffer, item);
+                if(player.getLevel() >= selectedOffer.getCost()) {
+                    UtilityMethods.applyVanillaEnchant(player, selectedOffer, item);
+                } else {
+                    player.sendMessage("Not enough experience");
+                }
                 displayEnchantmentOptions(inv, item);
                 return;
             }
@@ -290,7 +306,22 @@ public class EnchantmentTableMenu {
             if(selectedOfferCustom.getCost() > 0) {
                 // Apply the enchantment and return
                 TextColor color = selectedOfferCustom.getEnchant().getColor();
-                UtilityMethods.applyCustomEnchant(player, selectedOfferCustom, item, color);
+                String cmd = selectedOfferCustom.getEnchant().getAddCmd();
+                if(cmd != null && !cmd.isEmpty() && player.getLevel() >= selectedOfferCustom.getCost()) {
+                    ItemStack enchantedItem = UtilityMethods.applyExtraEnchant(plugin, inv, ITEM_SLOT, player, selectedOfferCustom, item, color);
+                    if(enchantedItem != null) {
+                        displayEnchantmentOptions(inv, enchantedItem);
+                        return;
+                    } 
+                } else if(player.getLevel() >= selectedOfferCustom.getCost()) {
+                    ItemStack enchantedItem = UtilityMethods.applyCustomEnchant(player, selectedOfferCustom, item, color);
+                    if(enchantedItem != null) {
+                        inv.setItem(ITEM_SLOT, enchantedItem);
+                        displayEnchantmentOptions(inv, enchantedItem);
+                        return;
+                    } 
+                }
+                player.sendMessage("Not enough experience");
                 displayEnchantmentOptions(inv, item);
                 return;
             }
@@ -349,7 +380,7 @@ public class EnchantmentTableMenu {
     }
 
 
-    public static void displayPreviousSelectedEnchantmentOptions(Player player, ItemStack item, Inventory inv, int slot) {
+    public static void displayPreviousSelectedEnchantmentOptions(JavaPlugin plugin, Player player, ItemStack item, Inventory inv, int slot) {
         if(item == null) return;
         if(PAGE_NUMBER == 1) {
             displayEnchantmentOptions(inv, item);
@@ -363,7 +394,11 @@ public class EnchantmentTableMenu {
         if(selectedOffer != null) {
             if(selectedOffer.getCost() > 0) {
                 // Apply the enchantment and return
-                UtilityMethods.applyVanillaEnchant(player, selectedOffer, item);
+                if(player.getLevel() >= selectedOffer.getCost()) {
+                    UtilityMethods.applyVanillaEnchant(player, selectedOffer, item);
+                } else {
+                    player.sendMessage("Not enough experience");
+                }
                 displayEnchantmentOptions(inv, item);
                 return;
             }
@@ -403,7 +438,22 @@ public class EnchantmentTableMenu {
             if(selectedOfferCustom.getCost() > 0) {
                 // Apply the enchantment and return
                 TextColor color = selectedOfferCustom.getEnchant().getColor();
-                UtilityMethods.applyCustomEnchant(player, selectedOfferCustom, item, color);
+                String cmd = selectedOfferCustom.getEnchant().getAddCmd();
+                if(cmd != null && !cmd.isEmpty() && player.getLevel() >= selectedOfferCustom.getCost()) {
+                    ItemStack enchantedItem = UtilityMethods.applyExtraEnchant(plugin, inv, ITEM_SLOT, player, selectedOfferCustom, item, color);
+                    if(enchantedItem != null) {
+                        displayEnchantmentOptions(inv, enchantedItem);
+                        return;
+                    } 
+                } else if(player.getLevel() >= selectedOfferCustom.getCost()) {
+                    ItemStack enchantedItem = UtilityMethods.applyCustomEnchant(player, selectedOfferCustom, item, color);
+                    if(enchantedItem != null) {
+                        inv.setItem(ITEM_SLOT, enchantedItem);
+                        displayEnchantmentOptions(inv, enchantedItem);
+                        return;
+                    } 
+                }
+                player.sendMessage("Not enough experience");
                 displayEnchantmentOptions(inv, item);
                 return;
             }

@@ -19,7 +19,6 @@ import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.inventory.PlayerInventory;
 
 import com.github.yuqingliu.extraenchants.gui.EnchantmentTableMenu;
-import com.github.yuqingliu.extraenchants.enchants.utils.UtilityMethods;
 
 import java.util.List;
 import java.util.Arrays;
@@ -113,7 +112,7 @@ public class PlayerInteractsWithEnchantmentTable implements Listener {
                         EnchantmentTableMenu.displayNextEnchantmentOptionsPage(clickedInventory, item);
                     }
                     else if(ptrMeta.displayName().equals(Component.text("Next Page", NamedTextColor.GREEN))) {
-                        EnchantmentTableMenu.displayNextSelectedEnchantmentOptions(player, item, clickedInventory, slot);
+                        EnchantmentTableMenu.displayNextSelectedEnchantmentOptions(plugin, player, item, clickedInventory, slot);
                     }
                 }
                 event.setCancelled(true);
@@ -125,7 +124,7 @@ public class PlayerInteractsWithEnchantmentTable implements Listener {
                         EnchantmentTableMenu.displayPreviousEnchantmentOptionsPage(clickedInventory, item);
                     }
                     else if(ptrMeta.displayName().equals(Component.text("Previous Page", NamedTextColor.GREEN))) {
-                        EnchantmentTableMenu.displayPreviousSelectedEnchantmentOptions(player, item, clickedInventory, slot);
+                        EnchantmentTableMenu.displayPreviousSelectedEnchantmentOptions(plugin, player, item, clickedInventory, slot);
                     }
                 }
                 event.setCancelled(true);

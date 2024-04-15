@@ -97,6 +97,7 @@ public class UtilityMethods {
     }
 
     public static int getEnchantmentLevel(ItemStack item, String enchantmentName) {
+        if(item == null) return 0;
         NBTItem nbtItem = new NBTItem(item);
         int level = 0;
         if (nbtItem != null && nbtItem.hasTag("extra-enchants"+enchantmentName)) {
@@ -120,6 +121,7 @@ public class UtilityMethods {
     }
 
     public static ItemStack addEnchantment(ItemStack item, String enchantmentName, int level, TextColor color, boolean editLore) {
+        if(item == null) return null;
         List<CustomEnchantment> Register = Database.getCustomEnchantmentRegistry();
         CustomEnchantment enchant = null;
         for (CustomEnchantment enchantment : Register) {
@@ -174,6 +176,7 @@ public class UtilityMethods {
     }
 
     public static ItemStack removeEnchantment(ItemStack item, String enchantmentName, boolean editLore) {
+        if(item == null) return null;
         // Remove lore
         if(editLore) {
             ItemMeta meta = item.getItemMeta();
@@ -194,7 +197,7 @@ public class UtilityMethods {
         return nbtItem.getItem();
     }
 
-    public static void applyVanillaEnchant(Player player, EnchantmentOffer selectedOffer, ItemStack item) {
+    public static boolean applyVanillaEnchant(Player player, EnchantmentOffer selectedOffer, ItemStack item) {
         NamespacedKey enchantmentName = selectedOffer.getEnchantment().getKey();
         int enchantmentLevel = selectedOffer.getEnchantmentLevel();
         int prevEnchantLevel = item.getEnchantmentLevel(selectedOffer.getEnchantment());
@@ -204,69 +207,64 @@ public class UtilityMethods {
         int playerLevel = player.getLevel();
         if(playerLevel >= requiredLevel) {
             if(prevEnchantLevel > selectedOffer.getEnchantmentLevel()) {
-                return;
+                return true;
             } else if(prevEnchantLevel == enchantmentLevel) {
-                if(prevEnchantLevel == maxEnchantmentLevel) return;
+                if(prevEnchantLevel == maxEnchantmentLevel) return true;
                 item.addUnsafeEnchantment(selectedOffer.getEnchantment(), selectedOffer.getEnchantmentLevel() + 1);
                 player.setLevel(playerLevel - 1);
                 player.playSound(player.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0f, 1.0f);
+                return true;
             } else {
                 item.addUnsafeEnchantment(selectedOffer.getEnchantment(), selectedOffer.getEnchantmentLevel());
                 player.setLevel(playerLevel - 1);
                 player.playSound(player.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0f, 1.0f);
+                return true;
             }
         }
+        return false;
     }
 
     public static ItemStack applyCustomEnchant(Player player, CustomEnchantmentOffer selectedOfferCustom, ItemStack item, TextColor color) {
+        if(item == null) return null;
         String enchantmentName = selectedOfferCustom.getEnchant().getName();
         int enchantmentLevel = selectedOfferCustom.getEnchantmentLevel();
         int prevLevel = getEnchantmentLevel(item, enchantmentName);
         int maxEnchantmentLevel = (int) CustomEnchantmentsRegistry.get(enchantmentName).get(0);
-
-        int requiredLevel = selectedOfferCustom.getCost();
         int playerLevel = player.getLevel();
-        if(playerLevel >= requiredLevel) {
-            if(prevLevel == enchantmentLevel && prevLevel == maxEnchantmentLevel) return null;
-            player.setLevel(playerLevel - 1);
-            player.playSound(player.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0f, 1.0f);
-            return addEnchantment(item, enchantmentName, enchantmentLevel, color, true);
-        }
-        return null;
+        if(prevLevel == enchantmentLevel && prevLevel == maxEnchantmentLevel) return null;
+        player.setLevel(playerLevel - 1);
+        player.playSound(player.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0f, 1.0f);
+        return addEnchantment(item, enchantmentName, enchantmentLevel, color, true);
     }
 
     public static ItemStack applyExtraEnchant(JavaPlugin plugin, Inventory inv, int itemSlot, Player player, CustomEnchantmentOffer selectedOfferCustom, ItemStack item, TextColor color) {
+        if(item == null) return null;
         String enchantmentName = selectedOfferCustom.getEnchant().getName();
         int enchantmentLevel = selectedOfferCustom.getEnchantmentLevel();
         int prevLevel = getEnchantmentLevel(item, enchantmentName);
         int maxEnchantmentLevel = (int) CustomEnchantmentsRegistry.get(enchantmentName).get(0);
-
-        int requiredLevel = selectedOfferCustom.getCost();
         int playerLevel = player.getLevel();
-        if(playerLevel >= requiredLevel) {
-            if(prevLevel == enchantmentLevel && prevLevel == maxEnchantmentLevel) return null;
-            ItemStack enchantedItem = addEnchantment(item, enchantmentName, enchantmentLevel, color, false);
-            String baseCommand = selectedOfferCustom.getEnchant().getAddCmd();
-            String command = baseCommand.replace("enchant", "enchant " + player.getName());
-            String finalCommand = command + " " + selectedOfferCustom.getEnchantmentLevel();
-            
-            // Move item to player's main hand
-            ItemStack originalItem = player.getInventory().getItemInMainHand();
-            player.getInventory().setItemInMainHand(enchantedItem);
-            // Send command
-            Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), finalCommand);
-            // Move item to slot
-            ItemStack finalItem = player.getInventory().getItemInMainHand();
-            inv.setItem(itemSlot, finalItem);
-            player.getInventory().setItemInMainHand(originalItem);
-            player.setLevel(playerLevel - 1);
-            player.playSound(player.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0f, 1.0f);
-            return finalItem;
-        }
-        return null;
+        if(prevLevel == enchantmentLevel && prevLevel == maxEnchantmentLevel) return null;
+        ItemStack enchantedItem = addEnchantment(item, enchantmentName, enchantmentLevel, color, false);
+        String baseCommand = selectedOfferCustom.getEnchant().getAddCmd();
+        String command = baseCommand.replace("enchant", "enchant " + player.getName());
+        String finalCommand = command + " " + selectedOfferCustom.getEnchantmentLevel();
+        // Move item to player's main hand
+        ItemStack originalItem = player.getInventory().getItemInMainHand();
+        player.getInventory().setItemInMainHand(enchantedItem);
+        // Send command
+        Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), finalCommand);
+        // Move item to slot
+        ItemStack finalItem = player.getInventory().getItemInMainHand();
+        inv.setItem(itemSlot, finalItem);
+        player.getInventory().setItemInMainHand(originalItem);
+        player.setLevel(playerLevel - 1);
+        player.playSound(player.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0f, 1.0f);
+        return finalItem;
     }
 
     public static ItemStack addExtraEnchant(JavaPlugin plugin, Inventory inv, int itemSlot, Player player, CustomEnchantment enchant, int level, ItemStack item, TextColor color) {
+        if(item == null) return null;
         String enchantmentName = enchant.getName();
         ItemStack enchantedItem = addEnchantment(item, enchantmentName, level, color, false);
         String baseCommand = enchant.getAddCmd();
@@ -285,6 +283,7 @@ public class UtilityMethods {
     }
 
     public static ItemStack removeExtraEnchant(JavaPlugin plugin, Inventory inv, int itemSlot, Player player, ItemStack item, CustomEnchantment enchant) {
+        if(item == null) return null;
         ItemStack enchantedItem = removeEnchantment(item, enchant.getName(), false);
         String baseCommand = enchant.getRmCmd();
         String finalCommand = baseCommand.replace("unenchant", "unenchant " + player.getName());
