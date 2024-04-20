@@ -24,7 +24,7 @@ public class Database extends ApplicableItemsRegistry {
         CustomEnchantment wither = new CustomEnchantment(plugin, "Wither", null, null, 2, NamedTextColor.GRAY, weapons_applicable);
         CustomEnchantment venom = new CustomEnchantment(plugin, "Venom", null, null, 2, NamedTextColor.GRAY, weapons_applicable);
         CustomEnchantment replant = new CustomEnchantment(plugin, "Replant", null, null, 1, NamedTextColor.GRAY, hoe_applicable);
-        CustomEnchantment sonic_boom = new CustomEnchantment(plugin, "Sonic-Boom", null, null, 1, NamedTextColor.LIGHT_PURPLE, melee_applicable);
+        CustomEnchantment sonic_boom = new CustomEnchantment(plugin, "SonicBoom", null, null, 1, NamedTextColor.LIGHT_PURPLE, melee_applicable);
         CustomEnchantment autolooting = new CustomEnchantment(plugin, "AutoLooting", null, null, 1, NamedTextColor.GRAY, tools_weapons_applicable);
         CustomEnchantment smelting = new CustomEnchantment(plugin, "Smelting", null, null, 1, NamedTextColor.GRAY, pickaxe_applicable);
         CustomEnchantment delicate = new CustomEnchantment(plugin, "Delicate", null, null, 1, NamedTextColor.GRAY, hoe_applicable);

@@ -17,6 +17,7 @@ com/github/yuqingliu/extraenchants/enchants/weapons/Venom.class
 com/github/yuqingliu/extraenchants/enchants/crossbow/Power.class
 com/github/yuqingliu/extraenchants/enchants/melee/SonicBoom$3.class
 com/github/yuqingliu/extraenchants/enchants/weapons/Wither.class
+com/github/yuqingliu/extraenchants/enchants/tools/SilkTouch.class
 com/github/yuqingliu/extraenchants/gui/EnchantmentTableMenu.class
 com/github/yuqingliu/extraenchants/enchants/crossbow/Snipe.class
 com/github/yuqingliu/extraenchants/events/PlayerInteractsWithEnchantmentTable.class
@@ -24,6 +25,7 @@ com/github/yuqingliu/extraenchants/enchants/ApplicableItemsRegistry.class
 com/github/yuqingliu/extraenchants/enchants/crossbow/Flame.class
 com/github/yuqingliu/extraenchants/enchants/Database.class
 com/github/yuqingliu/extraenchants/gui/GrindstoneMenu.class
+com/github/yuqingliu/extraenchants/enchants/tools/SilkTouch$1.class
 com/github/yuqingliu/extraenchants/events/PlayerInteractsWithAnvil$1.class
 com/github/yuqingliu/extraenchants/enchants/Constants.class
 com/github/yuqingliu/extraenchants/enchants/bow/Homing$1.class

@@ -11,6 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.enchantments.Enchantment;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -95,6 +96,11 @@ public class UtilityMethods {
         if(start < 0) start = 0;
         return rand.nextInt((end - start) + 1) + start;
     }
+
+    public static boolean hasVanillaEnchantment(ItemStack item, Enchantment enchant) {
+        return item != null && item.getItemMeta() != null && item.getItemMeta().hasEnchant(enchant);
+    }
+
 
     public static int getEnchantmentLevel(ItemStack item, String enchantmentName) {
         if(item == null || item.getType() == Material.AIR) return 0;

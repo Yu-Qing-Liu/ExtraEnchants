@@ -72,6 +72,7 @@ public class ExtraEnchants extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new Delicate(this), this);
         getServer().getPluginManager().registerEvents(new Smelting(this), this);
         getServer().getPluginManager().registerEvents(new AutoLooting(this), this);
+        getServer().getPluginManager().registerEvents(new SilkTouch(this), this);
 
     }
 

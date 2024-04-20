@@ -9,6 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.enchantments.Enchantment;
 
 import com.github.yuqingliu.extraenchants.enchants.utils.UtilityMethods;
 import com.github.yuqingliu.extraenchants.enchants.ApplicableItemsRegistry;
@@ -24,16 +25,14 @@ public class AutoLooting implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
         ItemStack tool = player.getInventory().getItemInMainHand();
+        Block block = event.getBlock();
 
         if (ApplicableItemsRegistry.tools_weapons_applicable.contains(tool.getType()) &&
             UtilityMethods.getEnchantmentLevel(tool, "AutoLooting") > 0 &&
             UtilityMethods.getEnchantmentLevel(tool, "Smelting") == 0 &&
-            UtilityMethods.getEnchantmentLevel(tool, "Replant") == 0) {
-            event.setDropItems(false);
-            Block block = event.getBlock();
-            for (ItemStack drop : block.getDrops(tool)) {
-                player.getInventory().addItem(drop);
-            }
+            UtilityMethods.getEnchantmentLevel(tool, "Replant") == 0 && 
+            UtilityMethods.hasVanillaEnchantment(tool, Enchantment.SILK_TOUCH)) {
+            autoloot(event, player, block, tool);
         }
     }
 
@@ -52,6 +51,13 @@ public class AutoLooting implements Listener {
                 }
                 event.getDrops().clear();
             }
+        }
+    }
+
+    public static void autoloot(BlockBreakEvent event, Player player, Block block, ItemStack tool) {
+        event.setDropItems(false);
+        for (ItemStack drop : block.getDrops(tool)) {
+            player.getInventory().addItem(drop);
         }
     }
 }
