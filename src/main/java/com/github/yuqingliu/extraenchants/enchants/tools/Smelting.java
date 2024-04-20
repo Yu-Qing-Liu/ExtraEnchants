@@ -15,6 +15,7 @@ import java.util.Collection;
 
 import com.github.yuqingliu.extraenchants.enchants.utils.UtilityMethods;
 import com.github.yuqingliu.extraenchants.enchants.ApplicableItemsRegistry;
+import com.github.yuqingliu.extraenchants.enchants.universal.AutoLooting;
 
 public class Smelting implements Listener {
     private final JavaPlugin plugin;
@@ -64,6 +65,11 @@ public class Smelting implements Listener {
                     }
                 }
             }
+        } else {
+            if(UtilityMethods.getEnchantmentLevel(tool, "AutoLooting") > 0) {
+                AutoLooting.autoloot(event, player, block, tool);
+            }
+            // Noraml behavior
         }
     }
 

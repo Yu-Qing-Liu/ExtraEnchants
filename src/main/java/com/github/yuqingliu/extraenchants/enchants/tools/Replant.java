@@ -18,6 +18,7 @@ import java.util.HashMap;
 
 import com.github.yuqingliu.extraenchants.enchants.utils.UtilityMethods;
 import com.github.yuqingliu.extraenchants.enchants.ApplicableItemsRegistry;
+import com.github.yuqingliu.extraenchants.enchants.universal.AutoLooting;
 
 public class Replant implements Listener {
     private final JavaPlugin plugin;
@@ -84,6 +85,11 @@ public class Replant implements Listener {
                     }
                 }
             }
+        } else {
+            if(UtilityMethods.getEnchantmentLevel(tool, "AutoLooting") > 0) {
+                AutoLooting.autoloot(event, player, block, tool);
+            }
+            // Noraml behavior
         }
     }
 }
