@@ -97,7 +97,7 @@ public class UtilityMethods {
     }
 
     public static int getEnchantmentLevel(ItemStack item, String enchantmentName) {
-        if(item == null) return 0;
+        if(item == null || item.getType() == Material.AIR) return 0;
         NBTItem nbtItem = new NBTItem(item);
         int level = 0;
         if (nbtItem != null && nbtItem.hasTag("extra-enchants"+enchantmentName)) {
@@ -121,7 +121,7 @@ public class UtilityMethods {
     }
 
     public static ItemStack addEnchantment(ItemStack item, String enchantmentName, int level, TextColor color, boolean editLore) {
-        if(item == null) return null;
+        if(item == null || item.getType() == Material.AIR) return null;
         List<CustomEnchantment> Register = Database.getCustomEnchantmentRegistry();
         CustomEnchantment enchant = null;
         for (CustomEnchantment enchantment : Register) {
@@ -176,7 +176,7 @@ public class UtilityMethods {
     }
 
     public static ItemStack removeEnchantment(ItemStack item, String enchantmentName, boolean editLore) {
-        if(item == null) return null;
+        if(item == null || item.getType() == Material.AIR) return null;
         // Remove lore
         if(editLore) {
             ItemMeta meta = item.getItemMeta();
@@ -225,7 +225,7 @@ public class UtilityMethods {
     }
 
     public static ItemStack applyCustomEnchant(Player player, CustomEnchantmentOffer selectedOfferCustom, ItemStack item, TextColor color) {
-        if(item == null) return null;
+        if(item == null || item.getType() == Material.AIR) return null;
         String enchantmentName = selectedOfferCustom.getEnchant().getName();
         int enchantmentLevel = selectedOfferCustom.getEnchantmentLevel();
         int prevLevel = getEnchantmentLevel(item, enchantmentName);
@@ -238,7 +238,7 @@ public class UtilityMethods {
     }
 
     public static ItemStack applyExtraEnchant(JavaPlugin plugin, Inventory inv, int itemSlot, Player player, CustomEnchantmentOffer selectedOfferCustom, ItemStack item, TextColor color) {
-        if(item == null) return null;
+        if(item == null || item.getType() == Material.AIR) return null;
         String enchantmentName = selectedOfferCustom.getEnchant().getName();
         int enchantmentLevel = selectedOfferCustom.getEnchantmentLevel();
         int prevLevel = getEnchantmentLevel(item, enchantmentName);
@@ -264,7 +264,7 @@ public class UtilityMethods {
     }
 
     public static ItemStack addExtraEnchant(JavaPlugin plugin, Inventory inv, int itemSlot, Player player, CustomEnchantment enchant, int level, ItemStack item, TextColor color) {
-        if(item == null) return null;
+        if(item == null || item.getType() == Material.AIR) return null;
         String enchantmentName = enchant.getName();
         ItemStack enchantedItem = addEnchantment(item, enchantmentName, level, color, false);
         String baseCommand = enchant.getAddCmd();
@@ -283,7 +283,7 @@ public class UtilityMethods {
     }
 
     public static ItemStack removeExtraEnchant(JavaPlugin plugin, Inventory inv, int itemSlot, Player player, ItemStack item, CustomEnchantment enchant) {
-        if(item == null) return null;
+        if(item == null || item.getType() == Material.AIR) return null;
         ItemStack enchantedItem = removeEnchantment(item, enchant.getName(), false);
         String baseCommand = enchant.getRmCmd();
         String finalCommand = baseCommand.replace("unenchant", "unenchant " + player.getName());
