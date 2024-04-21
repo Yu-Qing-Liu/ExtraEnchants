@@ -138,7 +138,6 @@ public class UtilityMethods {
             } 
         }
         if(enchant == null) return null;
-        String description = enchant.getDescription();
         ItemMeta meta = item.getItemMeta();
         if (meta != null && enchant != null) {
             List<Component> existingLore = meta.lore() != null ? meta.lore() : new ArrayList<>();
@@ -158,15 +157,35 @@ public class UtilityMethods {
                 }
                 // Remove the old enchantment lore and description
                 if(editLore) {
-                    existingLore = existingLore.stream()
-                            .filter(loreComponent -> !plainTextSerializer.serialize(loreComponent).contains(enchantmentName) && !plainTextSerializer.serialize(loreComponent).contains(description))
-                            .collect(Collectors.toList());
+                    List<Component> newLore = new ArrayList<>();
+                    boolean found = false;
+
+                    for (int i = 0; i < existingLore.size(); i++) {
+                        Component loreComponent = existingLore.get(i);
+
+                        // Serialize the current lore component to plain text
+                        String serializedComponent = plainTextSerializer.serialize(loreComponent);
+
+                        if (!found && serializedComponent.contains(enchantmentName)) {
+                            // Once the enchantment name is found, skip adding this component and the next one
+                            i++; // Increment to skip the next component (description)
+                            found = true; // Set found to true to break out after processing current loop
+                        } else {
+                            // If the enchantment name is not found, add the component to newLore
+                            newLore.add(loreComponent);
+                        }
+                    }
+
+                    // Update existingLore with the new list that excludes the specified components
+                    existingLore.clear();
+                    existingLore.addAll(newLore);
                 }
             }
 
             // Add lore
             if(editLore) {
                 // Add or upgrade the enchantment
+                String description = enchant.getLeveledDescription(level);
                 Component name_component = Component.text(enchantmentName + " " + toRoman(level), color);
                 Component description_component = Component.text(description, NamedTextColor.GRAY);
                 existingLore.add(name_component);
@@ -197,16 +216,35 @@ public class UtilityMethods {
             } 
         }
         if(enchant == null) return null;
-        String description = enchant.getDescription();
 
         // Remove lore
-        if(editLore) {
-            ItemMeta meta = item.getItemMeta();
-            List<Component> existingLore = meta.lore() != null ? meta.lore() : new ArrayList<>();
-            PlainTextComponentSerializer plainTextSerializer = PlainTextComponentSerializer.plainText();
-            existingLore = existingLore.stream()
-                    .filter(loreComponent -> !plainTextSerializer.serialize(loreComponent).contains(enchantmentName) && !plainTextSerializer.serialize(loreComponent).contains(description))
-                    .collect(Collectors.toList());
+        ItemMeta meta = item.getItemMeta();
+        List<Component> existingLore = meta.lore() != null ? meta.lore() : new ArrayList<>();
+        PlainTextComponentSerializer plainTextSerializer = PlainTextComponentSerializer.plainText();
+        if(editLore && meta != null) {
+            List<Component> newLore = new ArrayList<>();
+            boolean found = false;
+
+            for (int i = 0; i < existingLore.size(); i++) {
+                Component loreComponent = existingLore.get(i);
+
+                // Serialize the current lore component to plain text
+                String serializedComponent = plainTextSerializer.serialize(loreComponent);
+
+                if (!found && serializedComponent.contains(enchantmentName)) {
+                    // Once the enchantment name is found, skip adding this component and the next one
+                    i++; // Increment to skip the next component (description)
+                    found = true; // Set found to true to break out after processing current loop
+                } else {
+                    // If the enchantment name is not found, add the component to newLore
+                    newLore.add(loreComponent);
+                }
+            }
+
+            // Update existingLore with the new list that excludes the specified components
+            existingLore.clear();
+            existingLore.addAll(newLore);
+            // Apply to item
             meta.lore(existingLore);
             item.setItemMeta(meta);
         }

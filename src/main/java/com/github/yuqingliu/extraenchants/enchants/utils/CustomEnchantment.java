@@ -10,6 +10,9 @@ import org.bukkit.Material;
 import java.util.List;
 import java.util.Objects;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class CustomEnchantment {
     private String name;
     private String addCommand;
@@ -35,6 +38,37 @@ public class CustomEnchantment {
 
     public String getDescription() {
         return this.description;
+    }
+
+    public String getLeveledDescription(int level) {
+        String temp = this.description.replace("per level", "");
+
+        Pattern pattern = Pattern.compile("(\\d+)(%?)");
+        Matcher matcher = pattern.matcher(temp);
+
+        // StringBuffer to hold the new description
+        StringBuffer newDescription = new StringBuffer();
+
+        while (matcher.find()) {
+            // Extract the number and the percent symbol if it exists
+            String number = matcher.group(1);
+            String percent = matcher.group(2);
+
+            // Convert the captured number to an integer, multiply by level, and convert back to string
+            int num = Integer.parseInt(number);
+            num *= level; // Multiply the number by the level
+
+            // Append the modified number (and percent if applicable) with color codes
+            String replacement = "§1" + num + percent + "§r";
+            
+            // Replace the matched sequence with our formatted replacement in the StringBuffer
+            matcher.appendReplacement(newDescription, replacement);
+        }
+
+        // Append the tail of the description (part of the string after the last match)
+        matcher.appendTail(newDescription);
+
+        return newDescription.toString();
     }
 
     public int getMaxLevel() {
