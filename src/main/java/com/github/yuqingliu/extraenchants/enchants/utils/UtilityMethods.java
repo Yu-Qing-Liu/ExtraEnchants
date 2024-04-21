@@ -15,6 +15,7 @@ import org.bukkit.enchantments.Enchantment;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 import java.util.List;
@@ -136,6 +137,8 @@ public class UtilityMethods {
                 break;
             } 
         }
+        if(enchant == null) return null;
+        String description = enchant.getDescription();
         ItemMeta meta = item.getItemMeta();
         if (meta != null && enchant != null) {
             List<Component> existingLore = meta.lore() != null ? meta.lore() : new ArrayList<>();
@@ -153,10 +156,10 @@ public class UtilityMethods {
                     // If the new level is not greater, do nothing
                     return null;
                 }
-                // Remove the old enchantment lore
+                // Remove the old enchantment lore and description
                 if(editLore) {
                     existingLore = existingLore.stream()
-                            .filter(loreComponent -> !plainTextSerializer.serialize(loreComponent).contains(enchantmentName))
+                            .filter(loreComponent -> !plainTextSerializer.serialize(loreComponent).contains(enchantmentName) && !plainTextSerializer.serialize(loreComponent).contains(description))
                             .collect(Collectors.toList());
                 }
             }
@@ -164,8 +167,10 @@ public class UtilityMethods {
             // Add lore
             if(editLore) {
                 // Add or upgrade the enchantment
-                Component newEnchantText = Component.text(enchantmentName + " " + toRoman(level), color);
-                existingLore.add(newEnchantText);
+                Component name_component = Component.text(enchantmentName + " " + toRoman(level), color);
+                Component description_component = Component.text(description, NamedTextColor.GRAY);
+                existingLore.add(name_component);
+                existingLore.add(description_component);
 
                 // Update the lore
                 meta.lore(existingLore);
@@ -183,13 +188,24 @@ public class UtilityMethods {
 
     public static ItemStack removeEnchantment(ItemStack item, String enchantmentName, boolean editLore) {
         if(item == null || item.getType() == Material.AIR) return null;
+        List<CustomEnchantment> Register = Database.getCustomEnchantmentRegistry();
+        CustomEnchantment enchant = null;
+        for (CustomEnchantment enchantment : Register) {
+            if(enchantment.getName().equals(enchantmentName)) {
+                enchant = enchantment;
+                break;
+            } 
+        }
+        if(enchant == null) return null;
+        String description = enchant.getDescription();
+
         // Remove lore
         if(editLore) {
             ItemMeta meta = item.getItemMeta();
             List<Component> existingLore = meta.lore() != null ? meta.lore() : new ArrayList<>();
             PlainTextComponentSerializer plainTextSerializer = PlainTextComponentSerializer.plainText();
             existingLore = existingLore.stream()
-                    .filter(loreComponent -> !plainTextSerializer.serialize(loreComponent).contains(enchantmentName))
+                    .filter(loreComponent -> !plainTextSerializer.serialize(loreComponent).contains(enchantmentName) && !plainTextSerializer.serialize(loreComponent).contains(description))
                     .collect(Collectors.toList());
             meta.lore(existingLore);
             item.setItemMeta(meta);

@@ -17,6 +17,7 @@ public class CustomEnchantment {
     private int maxLevel;
     private TextColor color;
     private List<Material> applicable;
+    private String description;
 
     public CustomEnchantment(JavaPlugin plugin, String name, String addCommand, String removeCommand, int maxLevel, TextColor color, List<Material> applicable) {
         this.name = name;
@@ -25,6 +26,15 @@ public class CustomEnchantment {
         this.color = color;
         this.addCommand = addCommand;
         this.removeCommand = removeCommand;
+    }
+
+    public void setDescription(String description) {
+        String formattedDescription = description.replaceAll("(\\d+%?)", "§e$1§r");
+        this.description = formattedDescription;
+    }
+
+    public String getDescription() {
+        return this.description;
     }
 
     public int getMaxLevel() {
