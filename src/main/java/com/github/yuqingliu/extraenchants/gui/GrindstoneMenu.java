@@ -58,7 +58,7 @@ public class GrindstoneMenu {
             ItemMeta metaOffer = enchantOption.getItemMeta();
             if (metaOffer != null) {
                 String enchantmentName = enchant.getKey().getKey();
-                metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), NamedTextColor.AQUA));
+                metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), NamedTextColor.GRAY));
                 enchantOption.setItemMeta(metaOffer);
             }
             inv.setItem(slotptr, enchantOption);
@@ -116,7 +116,7 @@ public class GrindstoneMenu {
             ItemMeta metaOffer = enchantOption.getItemMeta();
             if (metaOffer != null) {
                 String enchantmentName = offer.getKey().getKey();
-                metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), NamedTextColor.AQUA));
+                metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), NamedTextColor.GRAY));
                 enchantOption.setItemMeta(metaOffer);
             }
             inv.setItem(slotptr, enchantOption);
@@ -184,7 +184,7 @@ public class GrindstoneMenu {
             ItemMeta metaOffer = enchantOption.getItemMeta();
             if (metaOffer != null) {
                 String enchantmentName = offer.getKey().getKey();
-                metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), NamedTextColor.AQUA));
+                metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), NamedTextColor.GRAY));
                 enchantOption.setItemMeta(metaOffer);
             }
             inv.setItem(slotptr, enchantOption);
@@ -253,7 +253,7 @@ public class GrindstoneMenu {
             ItemMeta metaOffer = enchantOption.getItemMeta();
             if (metaOffer != null) {
                 String enchantmentName = offer.getKey().getKey();
-                metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), NamedTextColor.AQUA));
+                metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), NamedTextColor.GRAY));
                 enchantOption.setItemMeta(metaOffer);
             }
             inv.setItem(slotptr, enchantOption);

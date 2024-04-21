@@ -61,7 +61,7 @@ public class Snipe implements Listener {
     }
 
     public void setArrowSpeed(Arrow arrow, int level) {
-        double speedMultiplier = 1.0 + (0.25 * level); // 40% increase per level
+        double speedMultiplier = 1.0 + (0.25 * level); // 25% increase per level
         Vector velocity = arrow.getVelocity();
         velocity.multiply(speedMultiplier);
         arrow.setVelocity(velocity); // Apply the new velocity to the arrow

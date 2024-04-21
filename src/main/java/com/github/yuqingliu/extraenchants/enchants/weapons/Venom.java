@@ -44,7 +44,7 @@ public class Venom implements Listener {
                 int effectDurationTicks = 3 * 20 * poisonLevel;
                 
                 // Apply the Venom effect. PotionEffectType.WITHER uses 0-based levels (level 0 = I, level 1 = II, etc.)
-                target.addPotionEffect(new PotionEffect(PotionEffectType.POISON, effectDurationTicks, poisonLevel - 1));
+                target.addPotionEffect(new PotionEffect(PotionEffectType.POISON, effectDurationTicks, 0));
             }
         }
     }
@@ -83,7 +83,7 @@ public class Venom implements Listener {
                     int effectDurationTicks = 3 * 20 * poisonLevel;
 
                     // Apply the Venom effect to the target
-                    target.addPotionEffect(new PotionEffect(PotionEffectType.POISON, effectDurationTicks, poisonLevel - 1));
+                    target.addPotionEffect(new PotionEffect(PotionEffectType.POISON, effectDurationTicks, 0));
                 }
             }
         }

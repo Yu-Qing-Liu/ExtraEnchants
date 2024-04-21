@@ -1,11 +1,9 @@
 package com.github.yuqingliu.extraenchants.enchants.utils;
 
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.Material;
 
 import net.kyori.adventure.text.format.TextColor;
-
-import org.bukkit.Material;
 
 import java.util.List;
 import java.util.Objects;
@@ -22,7 +20,7 @@ public class CustomEnchantment {
     private List<Material> applicable;
     private String description;
 
-    public CustomEnchantment(JavaPlugin plugin, String name, String addCommand, String removeCommand, int maxLevel, TextColor color, List<Material> applicable) {
+    public CustomEnchantment(String name, String addCommand, String removeCommand, int maxLevel, TextColor color, List<Material> applicable) {
         this.name = name;
         this.maxLevel = maxLevel;
         this.applicable = applicable;
@@ -59,7 +57,7 @@ public class CustomEnchantment {
             num *= level; // Multiply the number by the level
 
             // Append the modified number (and percent if applicable) with color codes
-            String replacement = "§1" + num + percent + "§r";
+            String replacement = "§e" + num + percent + "§r";
             
             // Replace the matched sequence with our formatted replacement in the StringBuffer
             matcher.appendReplacement(newDescription, replacement);

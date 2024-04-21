@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.stream.Collectors;
 import java.lang.String;
 
 import com.github.yuqingliu.extraenchants.enchants.*;
@@ -87,9 +86,18 @@ public class UtilityMethods {
         if (original == null || original.isEmpty()) {
             return original;
         }
-        // Replace underscores with spaces and then capitalize the first letter of the resulting string
-        String formatted = original.replace("_", " ");
-        return formatted.substring(0, 1).toUpperCase() + formatted.substring(1).toLowerCase();
+        if (original.split("_").length == 1) return original.substring(0, 1).toUpperCase() + (original.substring(1));
+        // Replace underscores with spaces
+        String[] words = original.replace("_", " ").split("\\s+"); // Split the string into words
+        StringBuilder formatted = new StringBuilder();
+        for (String word : words) {
+            if (!word.isEmpty()) {
+                // Capitalize the first letter of each word and add it to the result
+                formatted.append(word.substring(0, 1).toUpperCase()).append(word.substring(1).toLowerCase()).append(" ");
+            }
+        }
+        // Remove the trailing space
+        return formatted.toString().trim();
     }
 
     public static int RandomIntBetween(int start, int end) {

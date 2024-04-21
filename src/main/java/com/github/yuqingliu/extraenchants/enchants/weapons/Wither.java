@@ -44,7 +44,7 @@ public class Wither implements Listener {
                 int effectDurationTicks = 3 * 20 * witherLevel;
                 
                 // Apply the Wither effect. PotionEffectType.WITHER uses 0-based levels (level 0 = I, level 1 = II, etc.)
-                target.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, effectDurationTicks, witherLevel - 1));
+                target.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, effectDurationTicks, 0));
             }
         }
     }
@@ -83,7 +83,7 @@ public class Wither implements Listener {
                     int effectDurationTicks = 3 * 20 * witherLevel;
 
                     // Apply the Wither effect to the target
-                    target.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, effectDurationTicks, witherLevel - 1));
+                    target.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, effectDurationTicks, 0));
                 }
             }
         }

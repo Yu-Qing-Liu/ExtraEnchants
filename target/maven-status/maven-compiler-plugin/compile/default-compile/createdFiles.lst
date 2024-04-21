@@ -1,6 +1,7 @@
 com/github/yuqingliu/extraenchants/events/PlayerInteractsWithEnchantmentTable$1.class
 com/github/yuqingliu/extraenchants/enchants/utils/CustomEnchantmentOffer.class
 com/github/yuqingliu/extraenchants/ExtraEnchants.class
+com/github/yuqingliu/extraenchants/enchants/bow/Focus$1.class
 com/github/yuqingliu/extraenchants/enchants/universal/AutoLooting.class
 com/github/yuqingliu/extraenchants/events/PlayerInteractsWithGrindstone$1.class
 com/github/yuqingliu/extraenchants/enchants/armor/Mitigation.class
@@ -9,8 +10,10 @@ com/github/yuqingliu/extraenchants/enchants/tools/Smelting.class
 com/github/yuqingliu/extraenchants/enchants/utils/UtilityMethods.class
 com/github/yuqingliu/extraenchants/enchants/melee/SonicBoom$1.class
 com/github/yuqingliu/extraenchants/events/PlayerInteractsWithGrindstone.class
+com/github/yuqingliu/extraenchants/enchants/melee/PowerStrike.class
 com/github/yuqingliu/extraenchants/gui/AnvilMenu.class
 com/github/yuqingliu/extraenchants/enchants/tools/Replant.class
+com/github/yuqingliu/extraenchants/enchants/bow/Focus.class
 com/github/yuqingliu/extraenchants/enchants/bow/Homing.class
 com/github/yuqingliu/extraenchants/enchants/tools/Delicate.class
 com/github/yuqingliu/extraenchants/enchants/weapons/Venom.class

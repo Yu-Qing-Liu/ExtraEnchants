@@ -73,6 +73,8 @@ public class ExtraEnchants extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new Smelting(this), this);
         getServer().getPluginManager().registerEvents(new AutoLooting(this), this);
         getServer().getPluginManager().registerEvents(new SilkTouch(this), this);
+        getServer().getPluginManager().registerEvents(new PowerStrike(this), this);
+        getServer().getPluginManager().registerEvents(new Focus(this), this);
 
     }
 
@@ -234,7 +236,7 @@ public class ExtraEnchants extends JavaPlugin {
 
     private void registerEnchant(String name, String addCommand, String removeCommand, int level, Object expression, String color, String description, List<?> applicable) {
         TextColor col = TextColor.fromHexString("#"+color);
-        CustomEnchantment enchant = new CustomEnchantment(this, name, addCommand, removeCommand, level, col, convertToMaterialList(applicable));
+        CustomEnchantment enchant = new CustomEnchantment(name, addCommand, removeCommand, level, col, convertToMaterialList(applicable));
         enchant.setDescription(description);
         Database.getCustomEnchantmentRegistry().add(enchant);
         List<Object> attributes = new ArrayList<>();
