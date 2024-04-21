@@ -45,7 +45,6 @@ public class AutoLooting implements Listener {
             ItemStack weapon = killer.getInventory().getItemInMainHand();
             if (ApplicableItemsRegistry.tools_weapons_applicable.contains(weapon.getType()) &&
                 UtilityMethods.getEnchantmentLevel(weapon, "AutoLooting") > 0) {
-                event.setDroppedExp(0); // Optional: prevent dropping experience
                 for (ItemStack drop : event.getDrops()) {
                     killer.getInventory().addItem(drop);
                 }

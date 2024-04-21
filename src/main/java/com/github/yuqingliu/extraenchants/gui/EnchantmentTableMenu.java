@@ -73,7 +73,7 @@ public class EnchantmentTableMenu {
             ItemMeta metaOffer = enchantOption.getItemMeta();
             if (metaOffer != null) {
                 String enchantmentName = offer.getEnchantment().getKey().getKey();
-                metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), NamedTextColor.AQUA));
+                metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), NamedTextColor.GRAY));
                 enchantOption.setItemMeta(metaOffer);
             }
             inv.setItem(slotptr, enchantOption);
@@ -165,8 +165,12 @@ public class EnchantmentTableMenu {
                 ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
                 ItemMeta metaOffer = enchantOption.getItemMeta();
                 if (metaOffer != null) {
+                    List<Component> existingLore = metaOffer.lore() != null ? metaOffer.lore() : new ArrayList<>();
                     String enchantmentName = offer.getEnchantment().getKey().getKey();
-                    metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName) + " " + UtilityMethods.toRoman(offer.getEnchantmentLevel()) + " Required Level: " + offer.getCost(), NamedTextColor.GREEN));
+                    Component name = Component.text(UtilityMethods.formatString(enchantmentName) + " " + UtilityMethods.toRoman(offer.getEnchantmentLevel()), NamedTextColor.GRAY);
+                    existingLore.add(name);
+                    metaOffer.lore(existingLore);
+                    metaOffer.displayName(Component.text("Required Level: " + offer.getCost(), NamedTextColor.GREEN));
                     enchantOption.setItemMeta(metaOffer);
                 }
                 inv.setItem(slotptr, enchantOption);
@@ -214,8 +218,14 @@ public class EnchantmentTableMenu {
                 ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
                 ItemMeta metaOffer = enchantOption.getItemMeta();
                 if (metaOffer != null) {
+                    List<Component> existingLore = metaOffer.lore() != null ? metaOffer.lore() : new ArrayList<>();
                     String enchantmentName = offer.getEnchant().getName();
-                    metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName) + " " + UtilityMethods.toRoman(offer.getEnchantmentLevel()) + " Required Level: " + offer.getCost(), NamedTextColor.GREEN));
+                    Component name = Component.text(UtilityMethods.formatString(enchantmentName) + " " + UtilityMethods.toRoman(offer.getEnchantmentLevel()), offer.getEnchant().getColor());
+                    Component description = Component.text(offer.getEnchant().getDescription(), NamedTextColor.GRAY);
+                    existingLore.add(name);
+                    existingLore.add(description);
+                    metaOffer.lore(existingLore);
+                    metaOffer.displayName(Component.text("Required Level: " + offer.getCost(), NamedTextColor.GREEN));
                     enchantOption.setItemMeta(metaOffer);
                 }
                 inv.setItem(slotptr, enchantOption);
@@ -287,8 +297,12 @@ public class EnchantmentTableMenu {
                 ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
                 ItemMeta metaOffer = enchantOption.getItemMeta();
                 if (metaOffer != null) {
+                    List<Component> existingLore = metaOffer.lore() != null ? metaOffer.lore() : new ArrayList<>();
                     String enchantmentName = offer.getEnchantment().getKey().getKey();
-                    metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName) + " " + UtilityMethods.toRoman(offer.getEnchantmentLevel()) + " Required Level: " + offer.getCost(), NamedTextColor.GREEN));
+                    Component name = Component.text(UtilityMethods.formatString(enchantmentName) + " " + UtilityMethods.toRoman(offer.getEnchantmentLevel()), NamedTextColor.GRAY);
+                    existingLore.add(name);
+                    metaOffer.lore(existingLore);
+                    metaOffer.displayName(Component.text("Required Level: " + offer.getCost(), NamedTextColor.GREEN));
                     enchantOption.setItemMeta(metaOffer);
                 }
                 inv.setItem(slotptr, enchantOption);
@@ -342,8 +356,14 @@ public class EnchantmentTableMenu {
                 ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
                 ItemMeta metaOffer = enchantOption.getItemMeta();
                 if (metaOffer != null) {
+                    List<Component> existingLore = metaOffer.lore() != null ? metaOffer.lore() : new ArrayList<>();
                     String enchantmentName = offer.getEnchant().getName();
-                    metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName) + " " + UtilityMethods.toRoman(offer.getEnchantmentLevel()) + " Required Level: " + offer.getCost(), NamedTextColor.GREEN));
+                    Component name = Component.text(UtilityMethods.formatString(enchantmentName), offer.getEnchant().getColor());
+                    Component description = Component.text(offer.getEnchant().getDescription(), NamedTextColor.GRAY);
+                    existingLore.add(name);
+                    existingLore.add(description);
+                    metaOffer.lore(existingLore);
+                    metaOffer.displayName(Component.text("Required Level: " + offer.getCost(), NamedTextColor.GREEN));
                     enchantOption.setItemMeta(metaOffer);
                 }
                 inv.setItem(slotptr, enchantOption);
@@ -419,8 +439,12 @@ public class EnchantmentTableMenu {
                 ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
                 ItemMeta metaOffer = enchantOption.getItemMeta();
                 if (metaOffer != null) {
+                    List<Component> existingLore = metaOffer.lore() != null ? metaOffer.lore() : new ArrayList<>();
                     String enchantmentName = offer.getEnchantment().getKey().getKey();
-                    metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName) + " " + UtilityMethods.toRoman(offer.getEnchantmentLevel()) + " Required Level: " + offer.getCost(), NamedTextColor.GREEN));
+                    Component name = Component.text(UtilityMethods.formatString(enchantmentName) + " " + UtilityMethods.toRoman(offer.getEnchantmentLevel()), NamedTextColor.GRAY);
+                    existingLore.add(name);
+                    metaOffer.lore(existingLore);
+                    metaOffer.displayName(Component.text("Required Level: " + offer.getCost(), NamedTextColor.GREEN));
                     enchantOption.setItemMeta(metaOffer);
                 }
                 inv.setItem(slotptr, enchantOption);
@@ -474,8 +498,14 @@ public class EnchantmentTableMenu {
                 ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
                 ItemMeta metaOffer = enchantOption.getItemMeta();
                 if (metaOffer != null) {
+                    List<Component> existingLore = metaOffer.lore() != null ? metaOffer.lore() : new ArrayList<>();
                     String enchantmentName = offer.getEnchant().getName();
-                    metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName) + " " + UtilityMethods.toRoman(offer.getEnchantmentLevel()) + " Required Level: " + offer.getCost(), NamedTextColor.GREEN));
+                    Component name = Component.text(UtilityMethods.formatString(enchantmentName), offer.getEnchant().getColor());
+                    Component description = Component.text(offer.getEnchant().getDescription(), NamedTextColor.GRAY);
+                    existingLore.add(name);
+                    existingLore.add(description);
+                    metaOffer.lore(existingLore);
+                    metaOffer.displayName(Component.text("Required Level: " + offer.getCost(), NamedTextColor.GREEN));
                     enchantOption.setItemMeta(metaOffer);
                 }
                 inv.setItem(slotptr, enchantOption);
@@ -529,7 +559,7 @@ public class EnchantmentTableMenu {
             ItemMeta metaOffer = enchantOption.getItemMeta();
             if (metaOffer != null) {
                 String enchantmentName = offer.getEnchantment().getKey().getKey();
-                metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), NamedTextColor.AQUA));
+                metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), NamedTextColor.GRAY));
                 enchantOption.setItemMeta(metaOffer);
             }
             inv.setItem(slotptr, enchantOption);
@@ -597,7 +627,7 @@ public class EnchantmentTableMenu {
             ItemMeta metaOffer = enchantOption.getItemMeta();
             if (metaOffer != null) {
                 String enchantmentName = offer.getEnchantment().getKey().getKey();
-                metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), NamedTextColor.AQUA));
+                metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), NamedTextColor.GRAY));
                 enchantOption.setItemMeta(metaOffer);
             }
             inv.setItem(slotptr, enchantOption);
@@ -665,7 +695,7 @@ public class EnchantmentTableMenu {
             ItemMeta metaOffer = enchantOption.getItemMeta();
             if (metaOffer != null) {
                 String enchantmentName = offer.getEnchantment().getKey().getKey();
-                metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), NamedTextColor.AQUA));
+                metaOffer.displayName(Component.text(UtilityMethods.formatString(enchantmentName), NamedTextColor.GRAY));
                 enchantOption.setItemMeta(metaOffer);
             }
             inv.setItem(slotptr, enchantOption);

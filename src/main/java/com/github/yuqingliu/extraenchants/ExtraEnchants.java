@@ -129,8 +129,9 @@ public class ExtraEnchants extends JavaPlugin {
             defaultEnchantments.add("<add enchant command>");
             defaultEnchantments.add("<remove enchant command>");
             defaultEnchantments.add(5); // Default level
-            defaultEnchantments.add("x^2");
+            defaultEnchantments.add("x^2"); // Default cost formula
             defaultEnchantments.add("C133FF"); // Default color
+            defaultEnchantments.add("Example description"); // Default description
             defaultEnchantments.add(Arrays.asList("DIAMOND_SWORD", "NETHERITE_SWORD", "STICK"));
 
             config.set("ExtraEnchantments.Test", defaultEnchantments);
@@ -201,8 +202,9 @@ public class ExtraEnchants extends JavaPlugin {
                     int level = (int) enchantmentInfo.get(2);
                     Object expression = enchantmentInfo.get(3);
                     String color = (String) enchantmentInfo.get(4);
-                    List<?> applicable = (List<?>) enchantmentInfo.get(5);
-                    registerEnchant(key, addCommand, removeCommand, level, expression, color, applicable);
+                    String description = (String) enchantmentInfo.get(5);
+                    List<?> applicable = (List<?>) enchantmentInfo.get(6);
+                    registerEnchant(key, addCommand, removeCommand, level, expression, color, description, applicable);
                 }
             }
         }
@@ -230,9 +232,10 @@ public class ExtraEnchants extends JavaPlugin {
         Constants.setAnvilData(anvilData);
     }
 
-    private void registerEnchant(String name, String addCommand, String removeCommand, int level, Object expression, String color, List<?> applicable) {
+    private void registerEnchant(String name, String addCommand, String removeCommand, int level, Object expression, String color, String description, List<?> applicable) {
         TextColor col = TextColor.fromHexString("#"+color);
         CustomEnchantment enchant = new CustomEnchantment(this, name, addCommand, removeCommand, level, col, convertToMaterialList(applicable));
+        enchant.setDescription(description);
         Database.getCustomEnchantmentRegistry().add(enchant);
         List<Object> attributes = new ArrayList<>();
         attributes.add(level);
