@@ -56,24 +56,27 @@ public class EECommand implements CommandExecutor {
             }
 
             // Attempt to add the enchantment
-            List<CustomEnchantment> Registry = Database.getCustomEnchantmentRegistry();
-            CustomEnchantment enchantment = null;
-            for(CustomEnchantment enchant : Registry) {
-                if(enchantmentName.equals(enchant.getName())) enchantment = enchant;
-            }
-            ItemStack finalItem = null;
-            if(enchantment != null && enchantment.getAddCmd() == null || enchantment.getAddCmd().isEmpty()) {
-                finalItem = UtilityMethods.addEnchantment(item, enchantmentName, level, enchantment.getColor(), true);
-            }
+            try {
+                List<CustomEnchantment> Registry = Database.getCustomEnchantmentRegistry();
+                CustomEnchantment enchantment = null;
+                for(CustomEnchantment enchant : Registry) {
+                    if(enchantmentName.equals(enchant.getName())) enchantment = enchant;
+                }
+                ItemStack finalItem = null;
+                if(enchantment != null && enchantment.getAddCmd() == null || enchantment.getAddCmd().isEmpty()) {
+                    finalItem = UtilityMethods.addEnchantment(item, enchantmentName, level, enchantment.getColor(), true);
+                }
 
-            if (finalItem != null) {
-                player.getInventory().setItemInMainHand(finalItem);
-                player.sendMessage(Component.text("Enchantment applied successfully!", NamedTextColor.GREEN));
-            } else {
+                if (finalItem != null) {
+                    player.getInventory().setItemInMainHand(finalItem);
+                    player.sendMessage(Component.text("Enchantment applied successfully!", NamedTextColor.GREEN));
+                } else {
+                    player.sendMessage(Component.text("Failed to apply enchantment. Check enchantment name and level limits.", NamedTextColor.RED));
+                }
+                return true;
+            } catch (Exception e) {
                 player.sendMessage(Component.text("Failed to apply enchantment. Check enchantment name and level limits.", NamedTextColor.RED));
             }
-
-            return true;
         }
         return false;
     }

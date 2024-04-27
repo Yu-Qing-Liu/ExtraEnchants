@@ -20,6 +20,7 @@ com/github/yuqingliu/extraenchants/enchants/weapons/Weapon.class
 com/github/yuqingliu/extraenchants/enchants/tools/Delicate.class
 com/github/yuqingliu/extraenchants/enchants/weapons/Weapon$1.class
 com/github/yuqingliu/extraenchants/enchants/weapons/Venom.class
+com/github/yuqingliu/extraenchants/commands/EEListCommand.class
 com/github/yuqingliu/extraenchants/enchants/crossbow/Power.class
 com/github/yuqingliu/extraenchants/enchants/weapons/Wither.class
 com/github/yuqingliu/extraenchants/enchants/tools/SilkTouch.class

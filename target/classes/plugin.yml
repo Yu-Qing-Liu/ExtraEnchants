@@ -11,11 +11,19 @@ commands:
     aliases: [extraenchants]
     permission: extraenchants.ee
     permission-message: You do not have permission to use this command.
-  
+  eeList:
+    description: List custom enchantments
+    usage: /eeList
+    aliases: [extraenchantsList]
+    permission: extraenchants.eeList
+    permission-message: You do not have permission to use this command.
+
 permissions:
   extraenchants.ee:
     description: Allows use of /ee
     default: op
-
+  extraenchants.eeList:
+    description: Allows use of /eeList
+    default: op
 
 

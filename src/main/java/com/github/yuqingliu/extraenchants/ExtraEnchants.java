@@ -55,6 +55,7 @@ public class ExtraEnchants extends JavaPlugin {
 
         /*Commands*/
         this.getCommand("ee").setExecutor(new EECommand(this));
+        this.getCommand("eeList").setExecutor(new EEListCommand(this));
 
         /*Events*/
         getServer().getPluginManager().registerEvents(new PlayerInteractsWithEnchantmentTable(this), this);
