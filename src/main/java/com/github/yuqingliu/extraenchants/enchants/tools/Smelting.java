@@ -40,19 +40,15 @@ public class Smelting implements Listener {
 
     public static void smelt(BlockBreakEvent event, Player player, ItemStack tool, Block block, Material blockType) {
         // Get the smelted item equivalent for the block type
-        ItemStack smeltedItemPrototype = getSmeltedItem(blockType);
-        if (smeltedItemPrototype != null) {
+        ItemStack smeltedItem = getSmeltedItem(blockType);
+        if (smeltedItem != null) {
             event.setDropItems(false); // Prevent the block from dropping items normally
             // Calculate the correct amount of smelted items considering Fortune
             Collection<ItemStack> drops = block.getDrops(tool); // This considers Fortune
             int smeltedItemCount = drops.stream().mapToInt(ItemStack::getAmount).sum();
             if(smeltedItemCount > 0) {
-                ItemStack smeltedItem = smeltedItemPrototype.clone();
                 smeltedItem.setAmount(smeltedItemCount); // Set the total count for the smelted item
-                
-                if(UtilityMethods.getEnchantmentLevel(tool, "AutoLooting") == 0) {
-                    block.getWorld().dropItemNaturally(block.getLocation(), smeltedItem);
-                } else {
+                if(UtilityMethods.getEnchantmentLevel(tool, "AutoLooting") > 0) {
                     // If AutoLooting is applied, try to add the item directly to the player's inventory.
                     HashMap<Integer, ItemStack> unadded = player.getInventory().addItem(smeltedItem);
 
@@ -63,6 +59,8 @@ public class Smelting implements Listener {
                             block.getWorld().dropItemNaturally(block.getLocation(), remaining);
                         }
                     }
+                } else {
+                    block.getWorld().dropItemNaturally(block.getLocation(), smeltedItem);
                 }
             }
         } else {

@@ -59,9 +59,7 @@ public class SilkTouch implements Listener {
             } else if(UtilityMethods.getEnchantmentLevel(tool, "Replant") > 0) {
                 Replant.plant(event, player, clonedTool, block);
             }
-        } else if(UtilityMethods.getEnchantmentLevel(tool, "AutoLooting") > 0) {
-            AutoLooting.autoloot(event, player, block, tool);
-        }
+        } 
         // If the block is delicate or the tool does not have Silk Touch, let normal processing occur
     }
 
