@@ -117,6 +117,13 @@ public class Focus implements Listener {
                     this.cancel();
                     return;
                 }
+                
+                // Player is no longer holding bow
+                if(!(UtilityMethods.getEnchantmentLevel(player.getEquipment().getItemInMainHand(), "Focus") > 0)) {
+                    target.removeMetadata(markKey, plugin);
+                    this.cancel();
+                    return;
+                }
 
                 Location rightHand = getRightSide(player.getEyeLocation(), 0.45).subtract(0, .2, 0);
                 double height = target.getHeight();
