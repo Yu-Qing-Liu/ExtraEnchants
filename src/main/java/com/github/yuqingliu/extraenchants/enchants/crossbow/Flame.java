@@ -8,6 +8,7 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 
 import com.github.yuqingliu.extraenchants.enchants.utils.UtilityMethods;
 
@@ -27,12 +28,14 @@ public class Flame implements Listener {
         ItemStack crossbow = event.getBow();
         
         // Ensure the item is a crossbow and has the custom Flame enchantment
-        if (crossbow != null && crossbow.getType() == Material.CROSSBOW && UtilityMethods.getEnchantmentLevel(crossbow, "Flame") > 0) {
+        if (crossbow != null && crossbow.getType() == Material.CROSSBOW) {
             // Check if the projectile is an arrow
-            if (event.getProjectile() instanceof Arrow) {
-                Arrow arrow = (Arrow) event.getProjectile();
-                // Set the arrow on fire for 1000 ticks (50 seconds)
-                arrow.setFireTicks(1000);
+            if(crossbow.hasItemMeta() && crossbow.getItemMeta().hasEnchant(Enchantment.ARROW_FIRE)) {
+                if (event.getProjectile() instanceof Arrow) {
+                    Arrow arrow = (Arrow) event.getProjectile();
+                    // Set the arrow on fire for 1000 ticks (50 seconds)
+                    arrow.setFireTicks(1000);
+                }
             }
         }
     }

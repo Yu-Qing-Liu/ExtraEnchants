@@ -17,14 +17,9 @@ import org.bukkit.util.RayTraceResult;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
-import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.Material;
-import org.bukkit.inventory.meta.ItemMeta;
-
 
 import com.github.yuqingliu.extraenchants.enchants.utils.UtilityMethods;
+import com.github.yuqingliu.extraenchants.enchants.weapons.Weapon;
 
 public class SonicBoom implements Listener {
     private final JavaPlugin plugin;
@@ -120,59 +115,10 @@ public class SonicBoom implements Listener {
             public void run() {
                 if (entity instanceof LivingEntity && !entity.isDead()) {
                     LivingEntity livingEntity = (LivingEntity) entity;
-                    double damage = calculateWeaponDamage(weapon);
-                    livingEntity.damage(damage, player);  // Apply damage as if the player hit the entity with the weapon
+                    Weapon.applyHit(player, livingEntity, weapon, null, true);
                 }
             }
         }.runTaskLater(plugin, delay);  // "plugin" should be your instance of JavaPlugin
-    }
-
-    private double calculateWeaponDamage(ItemStack weapon) {
-        return getAttackDamage(weapon);
-    }
-
-    public static double getAttackDamage(ItemStack weapon) {
-        if (weapon == null) {
-            return 0.0;
-        }
-        ItemMeta meta = weapon.getItemMeta();
-        if (meta != null) {
-            // Ensure the meta supports attributes
-            if (meta.hasAttributeModifiers()) {
-                // Check if there is an attack damage modifier
-                if (meta.getAttributeModifiers(Attribute.GENERIC_ATTACK_DAMAGE) != null) {
-                    for (AttributeModifier modifier : meta.getAttributeModifiers(Attribute.GENERIC_ATTACK_DAMAGE)) {
-                        if (modifier.getSlot() == EquipmentSlot.HAND) { // Check if the modifier is for the main hand
-                            return modifier.getAmount();
-                        }
-                    }
-                }
-            }
-        }
-        // Return a default value or perform additional logic to determine base damage
-        return getDefaultBaseDamage(weapon.getType());
-    }
-
-    /**
-     * Provides a default base damage for weapons based on type.
-     * @param material The material of the weapon.
-     * @return The base damage associated with the weapon type.
-     */
-    public static double getDefaultBaseDamage(Material material) {
-        switch (material) {
-            case WOODEN_SWORD:
-                return 4.0;
-            case STONE_SWORD:
-                return 5.0;
-            case IRON_SWORD:
-                return 6.0;
-            case DIAMOND_SWORD:
-                return 7.0;
-            case NETHERITE_SWORD:
-                return 8.0;
-            default:
-                return 1.0; // Default for non-weapon items
-        }
     }
 
     private long getRemainingCooldownTime(Player player) {

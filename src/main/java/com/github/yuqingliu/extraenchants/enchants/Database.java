@@ -20,8 +20,6 @@ public class Database extends ApplicableItemsRegistry {
         homing.setDescription("Guided arrows");
         CustomEnchantment snipe = new CustomEnchantment("Snipe", null, null, 5, NamedTextColor.BLUE, Arrays.asList(Material.CROSSBOW));
         snipe.setDescription("Increase arrow velocity by 25% per level");
-        CustomEnchantment flame = new CustomEnchantment("Flame", null, null, 1, NamedTextColor.GREEN, Arrays.asList(Material.CROSSBOW));
-        flame.setDescription("Flaming arrows");
         CustomEnchantment mitigation = new CustomEnchantment("Mitigation", null, null, 5, NamedTextColor.BLUE, armor_applicable);
         mitigation.setDescription("1% chance to negate damage per level");
         CustomEnchantment growth = new CustomEnchantment("Growth", null, null, 5, NamedTextColor.BLUE, armor_applicable);
@@ -44,10 +42,11 @@ public class Database extends ApplicableItemsRegistry {
         powerstrike.setDescription("Adds 20% more damage to the first hit dealt");
         CustomEnchantment focus = new CustomEnchantment("Focus", null, null, 5, NamedTextColor.LIGHT_PURPLE, Arrays.asList(Material.BOW));
         focus.setDescription("Marks a target. Deal 20% increased damage to the target per level");
-        
+        CustomEnchantment warped = new CustomEnchantment("Warped", null, null, 1, NamedTextColor.DARK_PURPLE, ranged_applicable);
+        warped.setDescription("Arrows can hit enderman");
+
         customEnchantmentRegistry.add(homing);
         customEnchantmentRegistry.add(snipe);
-        customEnchantmentRegistry.add(flame);
         customEnchantmentRegistry.add(mitigation);
         customEnchantmentRegistry.add(growth);
         customEnchantmentRegistry.add(wither);
@@ -59,6 +58,7 @@ public class Database extends ApplicableItemsRegistry {
         customEnchantmentRegistry.add(delicate);
         customEnchantmentRegistry.add(powerstrike);
         customEnchantmentRegistry.add(focus);
+        customEnchantmentRegistry.add(warped);
     }
 
     public static List<CustomEnchantment> getCustomEnchantmentRegistry() {

@@ -20,6 +20,7 @@ import com.github.yuqingliu.extraenchants.enchants.weapons.*;
 import com.github.yuqingliu.extraenchants.enchants.melee.*;
 import com.github.yuqingliu.extraenchants.enchants.tools.*;
 import com.github.yuqingliu.extraenchants.enchants.universal.*;
+import com.github.yuqingliu.extraenchants.enchants.ranged.*;
 import com.github.yuqingliu.extraenchants.events.*;
 import com.github.yuqingliu.extraenchants.enchants.utils.*;
 import com.github.yuqingliu.extraenchants.commands.*;
@@ -75,6 +76,7 @@ public class ExtraEnchants extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new SilkTouch(this), this);
         getServer().getPluginManager().registerEvents(new PowerStrike(this), this);
         getServer().getPluginManager().registerEvents(new Focus(this), this);
+        getServer().getPluginManager().registerEvents(new Warped(this), this);
 
     }
 

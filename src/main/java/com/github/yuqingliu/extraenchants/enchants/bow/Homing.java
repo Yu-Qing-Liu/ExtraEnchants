@@ -12,8 +12,15 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.Material;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.metadata.MetadataValue;
+
+import java.util.List;
 
 import com.github.yuqingliu.extraenchants.enchants.utils.UtilityMethods;
+import com.github.yuqingliu.extraenchants.enchants.weapons.Weapon;
 
 public class Homing implements Listener {
     private final JavaPlugin plugin;
@@ -31,6 +38,28 @@ public class Homing implements Listener {
         if (UtilityMethods.getEnchantmentLevel(bow, "Homing") > 0) {
             Arrow arrow = (Arrow) event.getProjectile();
             setHomingArrow(player, arrow);
+        }
+    }
+
+    @EventHandler
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+        if (event.getDamager() instanceof Arrow) {
+            Arrow arrow = (Arrow) event.getDamager();
+            if (arrow.getShooter() instanceof LivingEntity) {
+                LivingEntity shooter = (LivingEntity) arrow.getShooter();
+                ItemStack handItem = shooter.getEquipment().getItemInMainHand();
+
+                // Check if the hand item is a crossbow with Homing enchantment
+                if (handItem.getType() == Material.BOW && UtilityMethods.getEnchantmentLevel(handItem, "Homing") > 0) {
+                    // Calculate additional damage based on Power level
+                    double speedPerTick = 63 / 20.0;
+                    Vector terminalVelocity = new Vector(0, -speedPerTick, 0);
+                    double originalDamage = Weapon.calculateBaseDamage(handItem, terminalVelocity, true);
+
+                    // Apply the additional damage
+                    event.setDamage(originalDamage);
+                }
+            }
         }
     }
 

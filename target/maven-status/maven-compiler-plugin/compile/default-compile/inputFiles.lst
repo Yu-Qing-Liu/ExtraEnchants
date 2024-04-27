@@ -6,6 +6,7 @@
 /home/yuqingliu/Documents/PersonalRepos/ExtraEnchants/src/main/java/com/github/yuqingliu/extraenchants/enchants/crossbow/Flame.java
 /home/yuqingliu/Documents/PersonalRepos/ExtraEnchants/src/main/java/com/github/yuqingliu/extraenchants/enchants/tools/SilkTouch.java
 /home/yuqingliu/Documents/PersonalRepos/ExtraEnchants/src/main/java/com/github/yuqingliu/extraenchants/enchants/tools/Replant.java
+/home/yuqingliu/Documents/PersonalRepos/ExtraEnchants/src/main/java/com/github/yuqingliu/extraenchants/enchants/weapons/Weapon.java
 /home/yuqingliu/Documents/PersonalRepos/ExtraEnchants/src/main/java/com/github/yuqingliu/extraenchants/enchants/ApplicableItemsRegistry.java
 /home/yuqingliu/Documents/PersonalRepos/ExtraEnchants/src/main/java/com/github/yuqingliu/extraenchants/enchants/melee/SonicBoom.java
 /home/yuqingliu/Documents/PersonalRepos/ExtraEnchants/src/main/java/com/github/yuqingliu/extraenchants/enchants/crossbow/Snipe.java
@@ -27,4 +28,5 @@
 /home/yuqingliu/Documents/PersonalRepos/ExtraEnchants/src/main/java/com/github/yuqingliu/extraenchants/enchants/bow/Focus.java
 /home/yuqingliu/Documents/PersonalRepos/ExtraEnchants/src/main/java/com/github/yuqingliu/extraenchants/enchants/tools/Smelting.java
 /home/yuqingliu/Documents/PersonalRepos/ExtraEnchants/src/main/java/com/github/yuqingliu/extraenchants/enchants/crossbow/Power.java
+/home/yuqingliu/Documents/PersonalRepos/ExtraEnchants/src/main/java/com/github/yuqingliu/extraenchants/enchants/ranged/Warped.java
 /home/yuqingliu/Documents/PersonalRepos/ExtraEnchants/src/main/java/com/github/yuqingliu/extraenchants/enchants/universal/AutoLooting.java

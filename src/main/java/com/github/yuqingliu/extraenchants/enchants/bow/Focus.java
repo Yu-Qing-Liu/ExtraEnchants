@@ -28,7 +28,6 @@ public class Focus implements Listener {
 
     public Focus(JavaPlugin plugin) {
         this.plugin = plugin;
-        this.plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     @EventHandler
@@ -84,6 +83,18 @@ public class Focus implements Listener {
                     }
                 }
             }
+        } else if (event.getDamager() instanceof Player) {
+            Player player = (Player) event.getDamager();
+            ItemStack bow = player.getInventory().getItemInMainHand();
+            if (bow.getType() == Material.BOW && event.getEntity() instanceof LivingEntity) {
+                String markKey = "MarkedBy:" + player.getUniqueId().toString();
+                LivingEntity target = (LivingEntity) event.getEntity();
+                if (target.hasMetadata(markKey)) {
+                    int level = UtilityMethods.getEnchantmentLevel(bow, "Focus");
+                    double extraDamage = event.getDamage() * 0.20 * level;
+                    event.setDamage(event.getDamage() + extraDamage);
+                }
+            }
         }
     }
 
@@ -123,6 +134,14 @@ public class Focus implements Listener {
                     target.removeMetadata(markKey, plugin);
                     this.cancel();
                     return;
+                }
+                
+                // Check for blocks in the way
+                RayTraceResult blockRayTraceResult = player.getWorld().rayTraceBlocks(rightHand, targetLocation.toVector().subtract(rightHand.toVector()).normalize(), rightHand.distance(targetLocation));
+                if (blockRayTraceResult != null && blockRayTraceResult.getHitBlock() != null && blockRayTraceResult.getHitBlock().getType().isSolid()) {
+                    target.removeMetadata(markKey, plugin);
+                    this.cancel();
+                    return; // Block is obstructing the line of sight
                 }
 
                 for (double d = 0; d <= distance; d += 0.025) {

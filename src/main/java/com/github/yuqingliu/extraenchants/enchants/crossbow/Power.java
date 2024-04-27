@@ -9,6 +9,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.Material;
+import org.bukkit.util.Vector;
+
+import com.github.yuqingliu.extraenchants.enchants.weapons.Weapon;
 
 public class Power implements Listener {
     private final JavaPlugin plugin;
@@ -27,21 +30,15 @@ public class Power implements Listener {
 
                 // Check if the hand item is a crossbow with Power enchantment
                 if (handItem.getType() == Material.CROSSBOW && handItem.containsEnchantment(Enchantment.ARROW_DAMAGE)) {
-                    int powerLevel = handItem.getEnchantmentLevel(Enchantment.ARROW_DAMAGE);
-
-                    // Calculate additional damage based on Power level
-                    double additionalDamage = calculateAdditionalDamage(powerLevel, event.getFinalDamage());
-
-                    // Apply the additional damage
-                    event.setDamage(event.getDamage() + additionalDamage);
+                    // Calculate the original damage based on the level of Power enchantment
+                    double speedPerTick = 63 / 20.0;
+                    Vector terminalVelocity = new Vector(0, -speedPerTick, 0);
+                    double originalDamage = Weapon.calculateBaseDamage(handItem, terminalVelocity, true);
+                    // Set the event's damage to the original damage
+                    event.setDamage(originalDamage);
                 }
             }
         }
-    }
-
-    private double calculateAdditionalDamage(int powerLevel, double baseDamage) {
-        // This is a simplified formula and might need adjustment for balance
-        return baseDamage * (0.25 * (powerLevel + 1));
     }
 }
 

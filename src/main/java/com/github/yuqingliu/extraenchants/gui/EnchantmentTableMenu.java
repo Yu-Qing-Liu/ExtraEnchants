@@ -856,7 +856,8 @@ public class EnchantmentTableMenu {
 
     private static boolean isEnchantable(ItemStack item, Enchantment enchant) {
         final Set<Enchantment> ALLOWED_CROSSBOW_ENCHANTS = new HashSet<>(Arrays.asList(
-            Enchantment.ARROW_DAMAGE
+            Enchantment.ARROW_DAMAGE,
+            Enchantment.ARROW_FIRE
         ));
 
         if(item.getType() == Material.CROSSBOW && ALLOWED_CROSSBOW_ENCHANTS.contains(enchant)) {
