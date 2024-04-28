@@ -18,6 +18,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.inventory.PlayerInventory;
 
+import com.github.yuqingliu.extraenchants.enchants.Constants;
+import com.github.yuqingliu.extraenchants.blocks.CustomBlockUtils;
 import com.github.yuqingliu.extraenchants.gui.EnchantmentTableMenu;
 
 import java.util.List;
@@ -47,8 +49,14 @@ public class PlayerInteractsWithEnchantmentTable implements Listener {
         
         // Check if the event is a right-click on a block
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK && block != null && block.getType() == Material.ENCHANTING_TABLE) {
-            event.setCancelled(true); // Prevent the default enchantment table GUI from opening
-            EnchantmentTableMenu.openEnchantmentTableMenu(player);
+            if(!Constants.applyVanillaEnchantingTableBehavior()) {
+                event.setCancelled(true); // Prevent the default enchantment table GUI from opening
+                EnchantmentTableMenu.openEnchantmentTableMenu(player);
+            } else if (CustomBlockUtils.isCustomEtable(block)) {
+                event.setCancelled(true); // Prevent the default enchantment table GUI from opening
+                EnchantmentTableMenu.openEnchantmentTableMenu(player);
+            }
+            // Normal behavior
         }
     }
 

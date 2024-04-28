@@ -17,8 +17,11 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.persistence.PersistentDataType;
 
+import com.github.yuqingliu.extraenchants.enchants.Constants;
 import com.github.yuqingliu.extraenchants.gui.GrindstoneMenu;
+import com.github.yuqingliu.extraenchants.blocks.CustomBlockUtils;
 
 import java.util.List;
 import java.util.Arrays;
@@ -46,8 +49,14 @@ public class PlayerInteractsWithGrindstone implements Listener {
         
         // Check if the event is a right-click on a block
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK && block != null && block.getType() == Material.GRINDSTONE) {
-            event.setCancelled(true); // Prevent the default enchantment table GUI from opening
-            GrindstoneMenu.openGrindstoneMenu(player);
+            if(!Constants.applyVanillaGrindstoneBehavior()) {
+                event.setCancelled(true); // Prevent the default enchantment table GUI from opening
+                GrindstoneMenu.openGrindstoneMenu(player);
+            } else if(CustomBlockUtils.isCustomGrindstone(block)) {
+                event.setCancelled(true); // Prevent the default enchantment table GUI from opening
+                GrindstoneMenu.openGrindstoneMenu(player);
+            }
+            // Normal behavior
         }
     }
 

@@ -279,12 +279,12 @@ public class UtilityMethods {
             } else if(prevEnchantLevel == enchantmentLevel) {
                 if(prevEnchantLevel == maxEnchantmentLevel) return true;
                 item.addUnsafeEnchantment(selectedOffer.getEnchantment(), selectedOffer.getEnchantmentLevel() + 1);
-                player.setLevel(playerLevel - 1);
+                player.setLevel(playerLevel - Constants.applyCustomCost());
                 player.playSound(player.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0f, 1.0f);
                 return true;
             } else {
                 item.addUnsafeEnchantment(selectedOffer.getEnchantment(), selectedOffer.getEnchantmentLevel());
-                player.setLevel(playerLevel - 1);
+                player.setLevel(playerLevel - Constants.applyCustomCost());
                 player.playSound(player.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0f, 1.0f);
                 return true;
             }
@@ -300,7 +300,7 @@ public class UtilityMethods {
         int maxEnchantmentLevel = (int) CustomEnchantmentsRegistry.get(enchantmentName).get(0);
         int playerLevel = player.getLevel();
         if(prevLevel == enchantmentLevel && prevLevel == maxEnchantmentLevel) return null;
-        player.setLevel(playerLevel - 1);
+        player.setLevel(playerLevel - Constants.applyCustomCost());
         player.playSound(player.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0f, 1.0f);
         return addEnchantment(item, enchantmentName, enchantmentLevel, color, true);
     }
@@ -326,7 +326,7 @@ public class UtilityMethods {
         ItemStack finalItem = player.getInventory().getItemInMainHand();
         inv.setItem(itemSlot, finalItem);
         player.getInventory().setItemInMainHand(originalItem);
-        player.setLevel(playerLevel - 1);
+        player.setLevel(playerLevel - Constants.applyCustomCost());
         player.playSound(player.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0f, 1.0f);
         return finalItem;
     }

@@ -251,7 +251,7 @@ public class AnvilMenu {
                 COST += sacrificeVanillaEnchantLevel - itemVanillaEnchantLevel;
             } else if (sacrificeVanillaEnchantLevel == itemVanillaEnchantLevel && sacrificeVanillaEnchantLevel + 1 <= maxEnchantmentLevel && enchant.canEnchantItem(result)) {
                 result.removeEnchantment(enchant);
-                result.addUnsafeEnchantment(enchant, sacrificeVanillaEnchantLevel + 1);
+                result.addUnsafeEnchantment(enchant, ++sacrificeVanillaEnchantLevel);
                 COST += 1;
             }
         }
@@ -274,7 +274,7 @@ public class AnvilMenu {
                     finalItem = UtilityMethods.addExtraEnchant(plugin, inv, RESULT_SLOT, player, enchant, sacrificeVanillaEnchantLevel, finalItem, enchant.getColor());
                 } else {
                     finalItem = UtilityMethods.removeEnchantment(finalItem, enchant.getName(), true);
-                    finalItem = UtilityMethods.addEnchantment(finalItem, enchant.getName(), sacrificeVanillaEnchantLevel, enchant.getColor(), true);
+                    finalItem = UtilityMethods.addEnchantment(finalItem, enchant.getName(), ++sacrificeVanillaEnchantLevel, enchant.getColor(), true);
                 }
                 COST += sacrificeVanillaEnchantLevel - itemVanillaEnchantLevel;
             } else if (sacrificeVanillaEnchantLevel == itemVanillaEnchantLevel && sacrificeVanillaEnchantLevel + 1 <= maxEnchantmentLevel && enchant.canEnchant(finalItem)) {
@@ -283,7 +283,7 @@ public class AnvilMenu {
                     finalItem = UtilityMethods.addExtraEnchant(plugin, inv, RESULT_SLOT, player, enchant, sacrificeVanillaEnchantLevel + 1, finalItem, enchant.getColor());
                 } else {
                     finalItem = UtilityMethods.removeEnchantment(finalItem, enchant.getName(), true);
-                    finalItem = UtilityMethods.addEnchantment(finalItem, enchant.getName(), sacrificeVanillaEnchantLevel + 1, enchant.getColor(), true);
+                    finalItem = UtilityMethods.addEnchantment(finalItem, enchant.getName(), ++sacrificeVanillaEnchantLevel, enchant.getColor(), true);
                 }
                 COST += 1;
             }

@@ -24,17 +24,21 @@ import com.github.yuqingliu.extraenchants.enchants.ranged.*;
 import com.github.yuqingliu.extraenchants.events.*;
 import com.github.yuqingliu.extraenchants.enchants.utils.*;
 import com.github.yuqingliu.extraenchants.commands.*;
+import com.github.yuqingliu.extraenchants.blocks.*;
 
 import org.bukkit.Material;
 
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextColor;
+
+import java.io.File;
 
 public class ExtraEnchants extends JavaPlugin {
     @Override
     public void onEnable() {
         /*Database*/
         Database.registerEnchants(this);
+        File blocksFile = new File(getDataFolder(), "blocks.csv");
+        CustomBlockDatabase.start(blocksFile);
 
         /*Configuration*/
         this.saveDefaultConfig();
@@ -48,6 +52,18 @@ public class ExtraEnchants extends JavaPlugin {
         Constants.setAnvilCostPerLevel(
             this.getConfig().getInt("AnvilCostPerLevel")
         );
+        Constants.setApplyCustomCost( 
+            this.getConfig().getInt("ApplyCustomCost")
+        );
+        Constants.setApplyVanillaEnchantingTableBehavior( 
+            this.getConfig().getBoolean("ApplyVanillaEnchantingTableBehavior")
+        );
+        Constants.setApplyVanillaGrindstoneBehavior( 
+            this.getConfig().getBoolean("ApplyVanillaGrindstoneBehavior")
+        );
+        Constants.setApplyVanillaAnvilBehavior( 
+            this.getConfig().getBoolean("ApplyVanillaAnvilBehavior")
+        );
 
         loadEnchantmentsFromConfig();
         loadExtraEnchantsFromConfig();
@@ -55,12 +71,16 @@ public class ExtraEnchants extends JavaPlugin {
 
         /*Commands*/
         this.getCommand("ee").setExecutor(new EECommand(this));
-        this.getCommand("eeList").setExecutor(new EEListCommand(this));
+        this.getCommand("eelist").setExecutor(new EEListCommand(this));
+        this.getCommand("eeget").setExecutor(new EEGetCommand(this));
 
         /*Events*/
         getServer().getPluginManager().registerEvents(new PlayerInteractsWithEnchantmentTable(this), this);
         getServer().getPluginManager().registerEvents(new PlayerInteractsWithGrindstone(this), this);
         getServer().getPluginManager().registerEvents(new PlayerInteractsWithAnvil(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerPlacesDestroysAnvil(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerPlacesDestroysEtable(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerPlacesDestroysGrindstone(this), this);
         getServer().getPluginManager().registerEvents(new Homing(this), this);
         getServer().getPluginManager().registerEvents(new Mitigation(this), this);
         getServer().getPluginManager().registerEvents(new Growth(this), this);
@@ -98,6 +118,26 @@ public class ExtraEnchants extends JavaPlugin {
 
         if (!config.isSet("AnvilCostPerLevel")) {
             config.set("AnvilCostPerLevel", 3);
+            changesMade = true;
+        }
+
+        if (!config.isSet("ApplyCustomCost")) {
+            config.set("ApplyCustomCost", 5);
+            changesMade = true;
+        }
+
+        if (!config.isSet("ApplyVanillaEnchantingTableBehavior")) {
+            config.set("ApplyVanillaEnchantingTableBehavior", false);
+            changesMade = true;
+        }
+
+        if (!config.isSet("ApplyVanillaGrindstoneBehavior")) {
+            config.set("ApplyVanillaGrindstoneBehavior", false);
+            changesMade = true;
+        }
+
+        if (!config.isSet("ApplyVanillaAnvilBehavior")) {
+            config.set("ApplyVanillaAnvilBehavior", false);
             changesMade = true;
         }
 

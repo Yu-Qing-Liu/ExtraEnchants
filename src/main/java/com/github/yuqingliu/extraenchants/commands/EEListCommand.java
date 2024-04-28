@@ -23,17 +23,17 @@ public class EEListCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (cmd.getName().equalsIgnoreCase("eeList") && sender instanceof Player) {
+        if (cmd.getName().equalsIgnoreCase("eelist") && sender instanceof Player) {
             Player player = (Player) sender;
 
-            if (!sender.hasPermission("extraenchants.eeList")) {
+            if (!sender.hasPermission("extraenchants.eelist")) {
                 player.sendMessage(Component.text("You do not have permission to use this command.", NamedTextColor.RED));
                 return true;
             }
 
             // Check command arguments
             if (args.length != 0) {
-                player.sendMessage(Component.text("Usage: /eeList", NamedTextColor.RED));
+                player.sendMessage(Component.text("Usage: /eelist", NamedTextColor.RED));
                 return true;
             }
 

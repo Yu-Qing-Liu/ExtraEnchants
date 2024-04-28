@@ -16,8 +16,14 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.BlockState;
 
+import com.github.yuqingliu.extraenchants.enchants.Constants;
 import com.github.yuqingliu.extraenchants.gui.AnvilMenu;
+import com.github.yuqingliu.extraenchants.blocks.CustomBlockUtils;
+
+import de.tr7zw.changeme.nbtapi.NBTBlock;
 
 import java.util.List;
 import java.util.Arrays;
@@ -44,11 +50,16 @@ public class PlayerInteractsWithAnvil implements Listener {
         Block block = event.getClickedBlock();
         Player player = event.getPlayer();
 
-        // Check if event is a right-click on a block
+        // Player interacts with an anvil
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK && block != null && block.getType() == Material.ANVIL) {
-            event.setCancelled(true); // Prevent the default enchantment table GUI from opening
-            
-            AnvilMenu.openAnvilMenu(player);
+            if(!Constants.applyVanillaAnvilBehavior()) {
+                event.setCancelled(true);
+                AnvilMenu.openAnvilMenu(player);
+            } else if(CustomBlockUtils.isCustomAnvil(block)) {
+                event.setCancelled(true);
+                AnvilMenu.openAnvilMenu(player);
+            }
+            // Normal behavior
         }
     }
 
