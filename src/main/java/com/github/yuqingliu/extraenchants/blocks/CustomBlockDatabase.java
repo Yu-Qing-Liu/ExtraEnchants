@@ -79,9 +79,14 @@ public class CustomBlockDatabase {
             // Upload data
             while((line = br.readLine()) != null) {
                 CustomBlock b = new CustomBlock(line);
-                Set<CustomBlock> l = new HashSet<>();
-                l.add(b);
-                blocks.put(b.getWorldName(), l);
+                String worldName = b.getWorldName();
+                if(blocks.containsKey(worldName)) {
+                    blocks.get(worldName).add(b);
+                } else {
+                    Set<CustomBlock> l = new HashSet<>();
+                    l.add(b);
+                    blocks.put(b.getWorldName(), l);
+                }
             }
             br.close();
         } catch (Exception e) {

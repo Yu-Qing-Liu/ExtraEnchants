@@ -103,7 +103,7 @@ public class ExtraEnchants extends JavaPlugin {
 
     @Override
     public void onDisable() {
-
+        CustomBlockDatabase.stop();
     }
 
     private void setDefaultEnchantmentsConfig() {

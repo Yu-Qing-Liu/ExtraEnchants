@@ -359,7 +359,12 @@ public class EnchantmentTableMenu {
             if(selectedOffer.getCost() > 0) {
                 // Apply the enchantment and return
                 if(player.getLevel() >= selectedOffer.getCost()) {
-                    UtilityMethods.applyVanillaEnchant(player, selectedOffer, item);
+                    ItemStack enchantedItem = UtilityMethods.applyVanillaEnchant(player, selectedOffer, item);
+                    if(enchantedItem != null) {
+                        inv.setItem(ITEM_SLOT, enchantedItem);
+                        displayEnchantmentOptions(inv, enchantedItem);
+                        return;
+                    } 
                 } else {
                     player.sendMessage("Not enough experience");
                 }
@@ -486,7 +491,12 @@ public class EnchantmentTableMenu {
             if(selectedOffer.getCost() > 0) {
                 // Apply the enchantment and return
                 if(player.getLevel() >= selectedOffer.getCost()) {
-                    UtilityMethods.applyVanillaEnchant(player, selectedOffer, item);
+                    ItemStack enchantedItem = UtilityMethods.applyVanillaEnchant(player, selectedOffer, item);
+                    if(enchantedItem != null) {
+                        inv.setItem(ITEM_SLOT, enchantedItem);
+                        displayEnchantmentOptions(inv, enchantedItem);
+                        return;
+                    } 
                 } else {
                     player.sendMessage("Not enough experience");
                 }
@@ -628,7 +638,12 @@ public class EnchantmentTableMenu {
             if(selectedOffer.getCost() > 0) {
                 // Apply the enchantment and return
                 if(player.getLevel() >= selectedOffer.getCost()) {
-                    UtilityMethods.applyVanillaEnchant(player, selectedOffer, item);
+                    ItemStack enchantedItem = UtilityMethods.applyVanillaEnchant(player, selectedOffer, item);
+                    if(enchantedItem != null) {
+                        inv.setItem(ITEM_SLOT, enchantedItem);
+                        displayEnchantmentOptions(inv, enchantedItem);
+                        return;
+                    } 
                 } else {
                     player.sendMessage("Not enough experience");
                 }
@@ -854,7 +869,7 @@ public class EnchantmentTableMenu {
         }
     }
 
-    private static boolean isEnchantable(ItemStack item, Enchantment enchant) {
+    public static boolean isEnchantable(ItemStack item, Enchantment enchant) {
         final Set<Enchantment> ALLOWED_CROSSBOW_ENCHANTS = new HashSet<>(Arrays.asList(
             Enchantment.ARROW_DAMAGE,
             Enchantment.ARROW_FIRE
@@ -869,7 +884,7 @@ public class EnchantmentTableMenu {
         }
     }
 
-    private static boolean isCustomEnchantable(ItemStack item, CustomEnchantment enchant) {
+    public static boolean isCustomEnchantable(ItemStack item, CustomEnchantment enchant) {
         return enchant.canEnchant(item);
     }
 

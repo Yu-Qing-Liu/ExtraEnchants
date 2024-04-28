@@ -10,6 +10,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.Sound;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
@@ -104,8 +105,7 @@ public class AnvilMenu {
         }
 
         if(!isCompatible(leftItem, rightItem)) return;
-
-        applyVanillaEnchants(Result, leftItem.getEnchantments(), rightItem.getEnchantments());
+        Result = applyVanillaEnchants(Result, leftItem, rightItem);
         Result = applyCustomEnchants(plugin, inv, player, Result, UtilityMethods.getEnchantments(leftItem), UtilityMethods.getEnchantments(rightItem));
     
         if(COST == 0 && !recursion) {
@@ -150,7 +150,7 @@ public class AnvilMenu {
         HashMap<Material, List<Material>> anvilRegister = Constants.getAnvilData();
         
         // Books are allowed to interact with any
-        if(M1 == Material.BOOK || M1 == Material.ENCHANTED_BOOK || M2 == Material.BOOK || M2 == Material.ENCHANTED_BOOK) return true;
+        if(M1 == Material.ENCHANTED_BOOK || M2 == Material.ENCHANTED_BOOK) return true;
         
         // Check anvil register for custom combos
         List<Material> applicable = anvilRegister.get(M1);
@@ -234,9 +234,29 @@ public class AnvilMenu {
         return false;
     }
 
-    private static void applyVanillaEnchants(ItemStack result, Map<Enchantment, Integer> ItemVanillaEnchants, Map<Enchantment, Integer> SacrificeVanillaEnchants) {
+    private static ItemStack applyVanillaEnchants(ItemStack result, ItemStack leftItem, ItemStack rightItem) {
+        Map <Enchantment, Integer> ItemVanillaEnchants = new HashMap<>();
+        Map <Enchantment, Integer> SacrificeVanillaEnchants = new HashMap<>();
+
+        if (leftItem.hasItemMeta() && leftItem.getItemMeta() instanceof EnchantmentStorageMeta) {
+            // For enchanted books
+            EnchantmentStorageMeta meta = (EnchantmentStorageMeta) leftItem.getItemMeta();
+            ItemVanillaEnchants = meta.getStoredEnchants();
+        } else {
+            ItemVanillaEnchants = leftItem.getEnchantments();
+        }
+
+        if (rightItem.hasItemMeta() && rightItem.getItemMeta() instanceof EnchantmentStorageMeta) {
+            // For enchanted books
+            EnchantmentStorageMeta meta = (EnchantmentStorageMeta) rightItem.getItemMeta();
+            SacrificeVanillaEnchants = meta.getStoredEnchants();
+        } else {
+            SacrificeVanillaEnchants = rightItem.getEnchantments();
+        }
+
         Set<Enchantment> keys = new HashSet<>(ItemVanillaEnchants.keySet());
         keys.addAll(SacrificeVanillaEnchants.keySet());
+        ItemStack finalItem = result.clone();
 
         for(Enchantment enchant : keys) {
             int maxEnchantmentLevel = (int) EnchantmentsRegistry.get(enchant.getKey()).get(0);
@@ -245,16 +265,20 @@ public class AnvilMenu {
             if(ItemVanillaEnchants.get(enchant) != null) itemVanillaEnchantLevel = ItemVanillaEnchants.get(enchant);
             if(SacrificeVanillaEnchants.get(enchant) != null) sacrificeVanillaEnchantLevel = SacrificeVanillaEnchants.get(enchant);
 
-            if(sacrificeVanillaEnchantLevel > itemVanillaEnchantLevel && enchant.canEnchantItem(result)) {
-                result.removeEnchantment(enchant);
-                result.addUnsafeEnchantment(enchant, sacrificeVanillaEnchantLevel);
+            if(sacrificeVanillaEnchantLevel > itemVanillaEnchantLevel && EnchantmentTableMenu.isEnchantable(finalItem, enchant)) {
+                finalItem.removeEnchantment(enchant);
+                finalItem = UtilityMethods.addVanillaEnchant(finalItem, enchant, sacrificeVanillaEnchantLevel);
                 COST += sacrificeVanillaEnchantLevel - itemVanillaEnchantLevel;
-            } else if (sacrificeVanillaEnchantLevel == itemVanillaEnchantLevel && sacrificeVanillaEnchantLevel + 1 <= maxEnchantmentLevel && enchant.canEnchantItem(result)) {
-                result.removeEnchantment(enchant);
-                result.addUnsafeEnchantment(enchant, ++sacrificeVanillaEnchantLevel);
+            } else if (sacrificeVanillaEnchantLevel == itemVanillaEnchantLevel && sacrificeVanillaEnchantLevel + 1 <= maxEnchantmentLevel && EnchantmentTableMenu.isEnchantable(finalItem, enchant)) {
+                finalItem.removeEnchantment(enchant);
+                finalItem = UtilityMethods.addVanillaEnchant(finalItem, enchant, ++sacrificeVanillaEnchantLevel);
                 COST += 1;
             }
         }
+        if(finalItem == null) {
+            return result;
+        }
+        return finalItem;
     }
 
     private static ItemStack applyCustomEnchants(JavaPlugin plugin, Inventory inv, Player player, ItemStack result, Map<CustomEnchantment, Integer> ItemCustomEnchants, Map<CustomEnchantment, Integer> SacrificeCustomEnchants) {
@@ -268,19 +292,19 @@ public class AnvilMenu {
             if(ItemCustomEnchants.get(enchant) != null) itemVanillaEnchantLevel = ItemCustomEnchants.get(enchant);
             if(SacrificeCustomEnchants.get(enchant) != null) sacrificeVanillaEnchantLevel = SacrificeCustomEnchants.get(enchant);
 
-            if(sacrificeVanillaEnchantLevel > itemVanillaEnchantLevel && enchant.canEnchant(finalItem)) {
+            if(sacrificeVanillaEnchantLevel > itemVanillaEnchantLevel && EnchantmentTableMenu.isCustomEnchantable(finalItem, enchant)) {
                 if(enchant.getAddCmd() != null && !enchant.getAddCmd().isEmpty()) {
                     finalItem = UtilityMethods.removeExtraEnchant(plugin, inv, RESULT_SLOT, player, finalItem, enchant);
                     finalItem = UtilityMethods.addExtraEnchant(plugin, inv, RESULT_SLOT, player, enchant, sacrificeVanillaEnchantLevel, finalItem, enchant.getColor());
                 } else {
                     finalItem = UtilityMethods.removeEnchantment(finalItem, enchant.getName(), true);
-                    finalItem = UtilityMethods.addEnchantment(finalItem, enchant.getName(), ++sacrificeVanillaEnchantLevel, enchant.getColor(), true);
+                    finalItem = UtilityMethods.addEnchantment(finalItem, enchant.getName(), sacrificeVanillaEnchantLevel, enchant.getColor(), true);
                 }
                 COST += sacrificeVanillaEnchantLevel - itemVanillaEnchantLevel;
-            } else if (sacrificeVanillaEnchantLevel == itemVanillaEnchantLevel && sacrificeVanillaEnchantLevel + 1 <= maxEnchantmentLevel && enchant.canEnchant(finalItem)) {
+            } else if (sacrificeVanillaEnchantLevel == itemVanillaEnchantLevel && sacrificeVanillaEnchantLevel + 1 <= maxEnchantmentLevel && EnchantmentTableMenu.isCustomEnchantable(finalItem, enchant)) {
                 if(enchant.getAddCmd() != null && !enchant.getAddCmd().isEmpty()) {
                     finalItem = UtilityMethods.removeExtraEnchant(plugin, inv, RESULT_SLOT, player, finalItem, enchant);
-                    finalItem = UtilityMethods.addExtraEnchant(plugin, inv, RESULT_SLOT, player, enchant, sacrificeVanillaEnchantLevel + 1, finalItem, enchant.getColor());
+                    finalItem = UtilityMethods.addExtraEnchant(plugin, inv, RESULT_SLOT, player, enchant, ++sacrificeVanillaEnchantLevel, finalItem, enchant.getColor());
                 } else {
                     finalItem = UtilityMethods.removeEnchantment(finalItem, enchant.getName(), true);
                     finalItem = UtilityMethods.addEnchantment(finalItem, enchant.getName(), ++sacrificeVanillaEnchantLevel, enchant.getColor(), true);

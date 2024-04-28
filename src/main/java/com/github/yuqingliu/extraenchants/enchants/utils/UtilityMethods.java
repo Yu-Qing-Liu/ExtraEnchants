@@ -1,6 +1,7 @@
 package com.github.yuqingliu.extraenchants.enchants.utils;
 
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.entity.Player;
 import org.bukkit.enchantments.EnchantmentOffer;
@@ -137,6 +138,7 @@ public class UtilityMethods {
 
     public static ItemStack addEnchantment(ItemStack item, String enchantmentName, int level, TextColor color, boolean editLore) {
         if(item == null || item.getType() == Material.AIR) return null;
+        if(item.getType() == Material.BOOK) item = new ItemStack(Material.ENCHANTED_BOOK);
         List<CustomEnchantment> Register = Database.getCustomEnchantmentRegistry();
         CustomEnchantment enchant = null;
         for (CustomEnchantment enchantment : Register) {
@@ -265,31 +267,60 @@ public class UtilityMethods {
         return nbtItem.getItem();
     }
 
-    public static boolean applyVanillaEnchant(Player player, EnchantmentOffer selectedOffer, ItemStack item) {
-        NamespacedKey enchantmentName = selectedOffer.getEnchantment().getKey();
-        int enchantmentLevel = selectedOffer.getEnchantmentLevel();
-        int prevEnchantLevel = item.getEnchantmentLevel(selectedOffer.getEnchantment());
-        int maxEnchantmentLevel = (int) EnchantmentsRegistry.get(enchantmentName).get(0);
+    public static ItemStack addVanillaEnchant(ItemStack item, Enchantment enchant, int level) {
+        if (item == null || item.getType() == Material.AIR) return null;
+        // Check if the item is an enchanted book or a regular item
+        if (item.getType() == Material.BOOK) {
+            // If it's a book, convert it into an enchanted book
+            item = new ItemStack(Material.ENCHANTED_BOOK);
+        }
+
+        // Add the enchantment to the item
+        if (item.getItemMeta() instanceof EnchantmentStorageMeta) {
+            // If it's an enchanted book, add the enchantment to the stored enchantments
+            EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();
+            meta.addStoredEnchant(enchant, level, true);
+            item.setItemMeta(meta);
+        } else {
+            // If it's a regular item, add the enchantment directly
+            item.addUnsafeEnchantment(enchant, level);
+        }
+
+        return item;
+    }
+
+    public static ItemStack applyVanillaEnchant(Player player, EnchantmentOffer selectedOffer, ItemStack item) {
+        if (item == null || item.getType() == Material.AIR) return null;
 
         int requiredLevel = selectedOffer.getCost();
         int playerLevel = player.getLevel();
-        if(playerLevel >= requiredLevel) {
-            if(prevEnchantLevel > selectedOffer.getEnchantmentLevel()) {
-                return true;
-            } else if(prevEnchantLevel == enchantmentLevel) {
-                if(prevEnchantLevel == maxEnchantmentLevel) return true;
-                item.addUnsafeEnchantment(selectedOffer.getEnchantment(), selectedOffer.getEnchantmentLevel() + 1);
-                player.setLevel(playerLevel - Constants.applyCustomCost());
-                player.playSound(player.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0f, 1.0f);
-                return true;
-            } else {
-                item.addUnsafeEnchantment(selectedOffer.getEnchantment(), selectedOffer.getEnchantmentLevel());
-                player.setLevel(playerLevel - Constants.applyCustomCost());
-                player.playSound(player.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0f, 1.0f);
-                return true;
-            }
+        if (playerLevel < requiredLevel) return item;
+
+        Enchantment enchantment = selectedOffer.getEnchantment();
+        int enchantmentLevel = selectedOffer.getEnchantmentLevel();
+
+        // Check if the item is an enchanted book or a regular item
+        if (item.getType() == Material.BOOK) {
+            // If it's a book, convert it into an enchanted book
+            item = new ItemStack(Material.ENCHANTED_BOOK);
         }
-        return false;
+
+        // Add the enchantment to the item
+        if (item.getItemMeta() instanceof EnchantmentStorageMeta) {
+            // If it's an enchanted book, add the enchantment to the stored enchantments
+            EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();
+            meta.addStoredEnchant(enchantment, enchantmentLevel, true);
+            item.setItemMeta(meta);
+        } else {
+            // If it's a regular item, add the enchantment directly
+            item.addUnsafeEnchantment(enchantment, enchantmentLevel);
+        }
+
+        // Deduct the player's level and play a sound
+        player.setLevel(playerLevel - Constants.applyCustomCost());
+        player.playSound(player.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0f, 1.0f);
+
+        return item;
     }
 
     public static ItemStack applyCustomEnchant(Player player, CustomEnchantmentOffer selectedOfferCustom, ItemStack item, TextColor color) {

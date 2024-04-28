@@ -106,10 +106,7 @@ public class CustomBlockUtils extends CustomBlockDatabase {
         CustomBlock cblock = new CustomBlock(block, "custom-anvil");
         Set<CustomBlock> blockList = blocks.get(block.getWorld().getName());
         if(blockList == null || blockList.isEmpty()) return false;
-        for(CustomBlock b : blockList) {
-            if(b.equals(cblock)) return true;
-        }
-        return false;
+        return blockList.contains(cblock);
     }
 
     // Method to check if a block is a custom etable
@@ -117,10 +114,7 @@ public class CustomBlockUtils extends CustomBlockDatabase {
         CustomBlock cblock = new CustomBlock(block, "custom-etable");
         Set<CustomBlock> blockList = blocks.get(block.getWorld().getName());
         if(blockList == null || blockList.isEmpty()) return false;
-        for(CustomBlock b : blockList) {
-            if(b.equals(cblock)) return true;
-        }
-        return false;
+        return blockList.contains(cblock);
     }
 
     // Method to check if a block is a custom grindstone
@@ -128,11 +122,6 @@ public class CustomBlockUtils extends CustomBlockDatabase {
         CustomBlock cblock = new CustomBlock(block, "custom-grindstone");
         Set<CustomBlock> blockList = blocks.get(block.getWorld().getName());
         if(blockList == null || blockList.isEmpty()) return false;
-        for(CustomBlock b : blockList) {
-            if(b.equals(cblock)) return true;
-        }
-        return false;
+        return blockList.contains(cblock);
     }
 }
-
-
