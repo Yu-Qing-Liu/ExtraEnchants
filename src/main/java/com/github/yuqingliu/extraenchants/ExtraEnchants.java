@@ -98,6 +98,8 @@ public class ExtraEnchants extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PowerStrike(this), this);
         getServer().getPluginManager().registerEvents(new Focus(this), this);
         getServer().getPluginManager().registerEvents(new Warped(this), this);
+        getServer().getPluginManager().registerEvents(new LifeSteal(this), this);
+        getServer().getPluginManager().registerEvents(new RapidFire(this), this);
 
     }
 
@@ -162,6 +164,9 @@ public class ExtraEnchants extends JavaPlugin {
                 List<Object> defaultOptionsCustom = new ArrayList<>();
                 defaultOptionsCustom.add(enchantment.getMaxLevel());
                 defaultOptionsCustom.add("x^2");
+                if(name.equals("SonicBoom")) defaultOptionsCustom.add(5);
+                if(name.equals("RapidFire")) defaultOptionsCustom.add(5);
+                else defaultOptionsCustom.add(0);
                 config.set(path, defaultOptionsCustom);
                 changesMade = true; // Mark that changes have been made
             }
@@ -224,7 +229,8 @@ public class ExtraEnchants extends JavaPlugin {
                     List<?> data = (List<?>) value;
                     Object level = data.get(0);
                     Object expression = data.get(1);
-                    customEnchantments.put(key, Arrays.asList(level, expression));
+                    Object cooldown = data.get(2);
+                    customEnchantments.put(key, Arrays.asList(level, expression, cooldown));
                 }
             }
         }

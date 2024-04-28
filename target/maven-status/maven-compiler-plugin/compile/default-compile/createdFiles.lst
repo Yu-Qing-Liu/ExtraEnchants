@@ -19,7 +19,9 @@ com/github/yuqingliu/extraenchants/events/PlayerPlacesDestroysGrindstone.class
 com/github/yuqingliu/extraenchants/enchants/ApplicableItemsRegistry.class
 com/github/yuqingliu/extraenchants/commands/EEGetCommand.class
 com/github/yuqingliu/extraenchants/enchants/tools/SilkTouch$1.class
+com/github/yuqingliu/extraenchants/enchants/crossbow/RapidFire.class
 com/github/yuqingliu/extraenchants/enchants/bow/Homing$1.class
+com/github/yuqingliu/extraenchants/enchants/melee/LifeSteal.class
 com/github/yuqingliu/extraenchants/enchants/armor/Growth.class
 com/github/yuqingliu/extraenchants/events/PlayerInteractsWithAnvil.class
 com/github/yuqingliu/extraenchants/enchants/utils/CustomEnchantment.class
@@ -48,4 +50,5 @@ com/github/yuqingliu/extraenchants/blocks/CustomBlockDatabase.class
 com/github/yuqingliu/extraenchants/events/PlayerInteractsWithAnvil$1.class
 com/github/yuqingliu/extraenchants/enchants/Constants.class
 com/github/yuqingliu/extraenchants/commands/EECommand.class
+com/github/yuqingliu/extraenchants/enchants/crossbow/RapidFire$1.class
 com/github/yuqingliu/extraenchants/blocks/threads/AddCustomBlockTask.class

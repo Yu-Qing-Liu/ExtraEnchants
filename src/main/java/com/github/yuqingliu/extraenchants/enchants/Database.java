@@ -44,6 +44,10 @@ public class Database extends ApplicableItemsRegistry {
         focus.setDescription("Marks a target. Deal 20% increased damage to the target per level");
         CustomEnchantment warped = new CustomEnchantment("Warped", null, null, 1, NamedTextColor.DARK_PURPLE, ranged_applicable);
         warped.setDescription("Arrows can hit enderman");
+        CustomEnchantment lifesteal = new CustomEnchantment("LifeSteal", null, null, 4, NamedTextColor.GOLD, melee_applicable);
+        lifesteal.setDescription("Steals 1% of the victim's total health per level");
+        CustomEnchantment rapidfire = new CustomEnchantment("RapidFire", null, null, 1, NamedTextColor.LIGHT_PURPLE, Arrays.asList(Material.CROSSBOW));
+        rapidfire.setDescription("Shoots a barrage of magical projectile");
 
         customEnchantmentRegistry.add(homing);
         customEnchantmentRegistry.add(snipe);
@@ -59,6 +63,8 @@ public class Database extends ApplicableItemsRegistry {
         customEnchantmentRegistry.add(powerstrike);
         customEnchantmentRegistry.add(focus);
         customEnchantmentRegistry.add(warped);
+        customEnchantmentRegistry.add(lifesteal);
+        customEnchantmentRegistry.add(rapidfire);
     }
 
     public static List<CustomEnchantment> getCustomEnchantmentRegistry() {

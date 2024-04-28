@@ -297,7 +297,9 @@ public class UtilityMethods {
         if (playerLevel < requiredLevel) return item;
 
         Enchantment enchantment = selectedOffer.getEnchantment();
-        int enchantmentLevel = selectedOffer.getEnchantmentLevel();
+        int level = selectedOffer.getEnchantmentLevel();
+        int prevLevel = item.getEnchantmentLevel(enchantment);
+        int maxLevel = (int) EnchantmentsRegistry.get(enchantment.getKey()).get(0);
 
         // Check if the item is an enchanted book or a regular item
         if (item.getType() == Material.BOOK) {
@@ -305,15 +307,29 @@ public class UtilityMethods {
             item = new ItemStack(Material.ENCHANTED_BOOK);
         }
 
+        if(item.getItemMeta() instanceof EnchantmentStorageMeta) {
+            EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();
+            prevLevel = meta.getStoredEnchantLevel(enchantment);
+        }
+
+        if (level == prevLevel) {
+            if(level == maxLevel) return item;
+            // If the new level is the same and it's below max, upgrade by 1
+            level++;
+        } else if (level <= prevLevel) {
+            // If the new level is not greater, do nothing
+            return item;
+        }
+
         // Add the enchantment to the item
         if (item.getItemMeta() instanceof EnchantmentStorageMeta) {
             // If it's an enchanted book, add the enchantment to the stored enchantments
             EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();
-            meta.addStoredEnchant(enchantment, enchantmentLevel, true);
+            meta.addStoredEnchant(enchantment, level, true);
             item.setItemMeta(meta);
         } else {
             // If it's a regular item, add the enchantment directly
-            item.addUnsafeEnchantment(enchantment, enchantmentLevel);
+            item.addUnsafeEnchantment(enchantment, level);
         }
 
         // Deduct the player's level and play a sound

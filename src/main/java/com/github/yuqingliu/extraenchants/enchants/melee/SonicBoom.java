@@ -19,11 +19,11 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 
 import com.github.yuqingliu.extraenchants.enchants.utils.UtilityMethods;
+import com.github.yuqingliu.extraenchants.enchants.Constants;
 import com.github.yuqingliu.extraenchants.enchants.weapons.Weapon;
 
 public class SonicBoom implements Listener {
     private final JavaPlugin plugin;
-    private final int cooldown = 5000;
     private final HashMap<UUID, Long> cooldowns = new HashMap<>();
 
     public SonicBoom(JavaPlugin plugin) {
@@ -124,7 +124,7 @@ public class SonicBoom implements Listener {
     private long getRemainingCooldownTime(Player player) {
         long lastUsed = cooldowns.getOrDefault(player.getUniqueId(), 0L);
         long elapsed = System.currentTimeMillis() - lastUsed;
-        long cooldownDuration = cooldown;
+        long cooldownDuration = (int) Constants.getCustomEnchantments().get("SonicBoom").get(2) * 1000;
         return cooldownDuration - elapsed;
     }
 }

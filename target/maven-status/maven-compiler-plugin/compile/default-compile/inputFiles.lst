@@ -8,6 +8,7 @@
 /home/yuqingliu/Documents/PersonalRepos/ExtraEnchants/src/main/java/com/github/yuqingliu/extraenchants/blocks/threads/AddCustomBlockTask.java
 /home/yuqingliu/Documents/PersonalRepos/ExtraEnchants/src/main/java/com/github/yuqingliu/extraenchants/enchants/tools/SilkTouch.java
 /home/yuqingliu/Documents/PersonalRepos/ExtraEnchants/src/main/java/com/github/yuqingliu/extraenchants/events/PlayerPlacesDestroysAnvil.java
+/home/yuqingliu/Documents/PersonalRepos/ExtraEnchants/src/main/java/com/github/yuqingliu/extraenchants/enchants/crossbow/RapidFire.java
 /home/yuqingliu/Documents/PersonalRepos/ExtraEnchants/src/main/java/com/github/yuqingliu/extraenchants/enchants/tools/Replant.java
 /home/yuqingliu/Documents/PersonalRepos/ExtraEnchants/src/main/java/com/github/yuqingliu/extraenchants/enchants/weapons/Weapon.java
 /home/yuqingliu/Documents/PersonalRepos/ExtraEnchants/src/main/java/com/github/yuqingliu/extraenchants/events/PlayerPlacesDestroysGrindstone.java
@@ -18,6 +19,7 @@
 /home/yuqingliu/Documents/PersonalRepos/ExtraEnchants/src/main/java/com/github/yuqingliu/extraenchants/enchants/melee/PowerStrike.java
 /home/yuqingliu/Documents/PersonalRepos/ExtraEnchants/src/main/java/com/github/yuqingliu/extraenchants/ExtraEnchants.java
 /home/yuqingliu/Documents/PersonalRepos/ExtraEnchants/src/main/java/com/github/yuqingliu/extraenchants/commands/EEGetCommand.java
+/home/yuqingliu/Documents/PersonalRepos/ExtraEnchants/src/main/java/com/github/yuqingliu/extraenchants/enchants/melee/LifeSteal.java
 /home/yuqingliu/Documents/PersonalRepos/ExtraEnchants/src/main/java/com/github/yuqingliu/extraenchants/commands/EEListCommand.java
 /home/yuqingliu/Documents/PersonalRepos/ExtraEnchants/src/main/java/com/github/yuqingliu/extraenchants/enchants/Constants.java
 /home/yuqingliu/Documents/PersonalRepos/ExtraEnchants/src/main/java/com/github/yuqingliu/extraenchants/events/PlayerInteractsWithGrindstone.java

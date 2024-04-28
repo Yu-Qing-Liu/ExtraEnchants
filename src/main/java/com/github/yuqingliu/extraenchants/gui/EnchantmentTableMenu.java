@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Registry;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -891,18 +892,22 @@ public class EnchantmentTableMenu {
     public static List<EnchantmentOffer> getEnchants(ItemStack item) {
         List<EnchantmentOffer> applicableEnchants = new ArrayList<>();
         Map<Enchantment, Integer> itemEnchants = item.getEnchantments();
+        if(item.getItemMeta() instanceof EnchantmentStorageMeta) {
+            EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();
+            itemEnchants = meta.getStoredEnchants();
+        }
 
         for (Enchantment enchantment : Registry.ENCHANTMENT) {
             boolean enchantable = isEnchantable(item, enchantment);
             if (enchantable) {
                 // Get the level from applicableEnchants
                 NamespacedKey key = enchantment.getKey();
-                int level = (int) EnchantmentRegistry.get(key).get(0);
+                int maxLevel = (int) EnchantmentRegistry.get(key).get(0);
                 int itemEnchantLevel = 0;
                 if(itemEnchants.get(enchantment) != null) itemEnchantLevel = itemEnchants.get(enchantment);
-                if(itemEnchantLevel == level) continue;
-                if(level > 0) {
-                    EnchantmentOffer offer = new EnchantmentOffer(enchantment, level, 0);
+                if(itemEnchantLevel == maxLevel) continue;
+                if(maxLevel > 0) {
+                    EnchantmentOffer offer = new EnchantmentOffer(enchantment, maxLevel, 0);
                     applicableEnchants.add(offer);
                 }
             }
@@ -920,12 +925,12 @@ public class EnchantmentTableMenu {
             if (enchantable) {
                 // Get the level from applicableEnchants
                 String key = enchantment.getName();
-                int level = (int) CustomEnchantmentRegistry.get(key).get(0);
+                int maxLevel = (int) CustomEnchantmentRegistry.get(key).get(0);
                 int itemEnchantLevel = 0;
                 if(itemEnchants.get(enchantment) != null) itemEnchantLevel = itemEnchants.get(enchantment);
-                if(itemEnchantLevel == level) continue;
-                if(level > 0) {
-                    CustomEnchantmentOffer offer = new CustomEnchantmentOffer(enchantment, level, 0);
+                if(itemEnchantLevel == maxLevel) continue;
+                if(maxLevel > 0) {
+                    CustomEnchantmentOffer offer = new CustomEnchantmentOffer(enchantment, maxLevel, 0);
                     applicableEnchants.add(offer);
                 }
             }

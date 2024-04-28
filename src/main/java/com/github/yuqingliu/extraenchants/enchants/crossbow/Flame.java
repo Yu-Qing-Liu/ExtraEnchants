@@ -10,8 +10,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 
-import com.github.yuqingliu.extraenchants.enchants.utils.UtilityMethods;
-
 public class Flame implements Listener {
     private final JavaPlugin plugin;
 
@@ -40,4 +38,3 @@ public class Flame implements Listener {
         }
     }
 }
-

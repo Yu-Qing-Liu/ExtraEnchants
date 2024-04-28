@@ -21,7 +21,6 @@ public class PowerStrike implements Listener {
     public PowerStrike(JavaPlugin plugin) {
         this.plugin = plugin;
         this.playerEntityHits = new HashMap<>();
-        this.plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     @EventHandler
@@ -59,4 +58,3 @@ public class PowerStrike implements Listener {
         }
     }
 }
-
