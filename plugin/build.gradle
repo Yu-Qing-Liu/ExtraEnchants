@@ -1,0 +1,49 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '7.1.2' // This plugin is the Gradle equivalent of Maven Shade Plugin
+}
+
+group = 'com.github.yuqingliu.extraenchants'
+version = '1.0-SNAPSHOT'
+mainClassName = 'com.github.yuqingliu.extraenchants.ExtraEnchants'
+
+repositories {
+    mavenCentral()
+    maven {
+        url 'https://papermc.io/repo/repository/maven-public/'
+    }
+    maven {
+        url 'https://repo.codemc.org/repository/maven-public/'
+    }
+}
+
+dependencies {
+    implementation 'net.objecthunter:exp4j:0.4.8'
+    implementation 'de.tr7zw:item-nbt-api:2.12.2'
+
+    compileOnly 'io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT'
+    testImplementation 'junit:junit:4.11'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+application {
+    // Define the main class for the application.
+    mainClass = 'com.github.yuqingliu.extraenchants.ExtraEnchants'
+}
+
+shadowJar {
+    archiveBaseName.set('ExtraEnchants')
+    archiveVersion.set('1.0')
+    archiveClassifier.set('')
+    
+    relocate 'de.tr7zw.changeme.nbtapi', 'com.github.yuqingliu.extraenchants.nbtapi'
+    relocate 'net.objecthunter', 'com.github.yuqingliu.extraenchants.exp4j'
+}
+
+build.dependsOn shadowJar
