@@ -9,13 +9,13 @@ import com.github.yuqingliu.extraenchants.enchantment.implementations.VanillaEnc
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
-public class SwiftSneak extends VanillaEnchantment {
-    public SwiftSneak(TextColor nameColor) {
+public class AquaInfinity extends VanillaEnchantment {
+    public AquaInfinity(TextColor nameColor) {
         super(
-            Enchantment.SWIFT_SNEAK,
-            Component.text("Swift Sneak", nameColor),
-            Enchantment.SWIFT_SNEAK.getMaxLevel(),
-            Component.text(Enchantment.SWIFT_SNEAK.getKey().getKey(), nameColor),
+            Enchantment.WATER_WORKER,
+            Component.text("Aqua Infinity", nameColor),
+            Enchantment.WATER_WORKER.getMaxLevel(),
+            Component.text(Enchantment.WATER_WORKER.getKey().getKey(), nameColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

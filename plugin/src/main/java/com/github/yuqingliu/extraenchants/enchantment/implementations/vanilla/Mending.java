@@ -9,13 +9,13 @@ import com.github.yuqingliu.extraenchants.enchantment.implementations.VanillaEnc
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
-public class SwiftSneak extends VanillaEnchantment {
-    public SwiftSneak(TextColor nameColor) {
+public class Mending extends VanillaEnchantment {
+    public Mending(TextColor nameColor) {
         super(
-            Enchantment.SWIFT_SNEAK,
-            Component.text("Swift Sneak", nameColor),
-            Enchantment.SWIFT_SNEAK.getMaxLevel(),
-            Component.text(Enchantment.SWIFT_SNEAK.getKey().getKey(), nameColor),
+            Enchantment.MENDING,
+            Component.text("Mending", nameColor),
+            Enchantment.MENDING.getMaxLevel(),
+            Component.text(Enchantment.MENDING.getKey().getKey(), nameColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

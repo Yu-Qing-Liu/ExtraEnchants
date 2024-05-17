@@ -9,13 +9,13 @@ import com.github.yuqingliu.extraenchants.enchantment.implementations.VanillaEnc
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
-public class SwiftSneak extends VanillaEnchantment {
-    public SwiftSneak(TextColor nameColor) {
+public class FireProtection extends VanillaEnchantment {
+    public FireProtection(TextColor nameColor) {
         super(
-            Enchantment.SWIFT_SNEAK,
-            Component.text("Swift Sneak", nameColor),
-            Enchantment.SWIFT_SNEAK.getMaxLevel(),
-            Component.text(Enchantment.SWIFT_SNEAK.getKey().getKey(), nameColor),
+            Enchantment.PROTECTION_FIRE,
+            Component.text("Fire Protection", nameColor),
+            Enchantment.PROTECTION_FIRE.getMaxLevel(),
+            Component.text(Enchantment.PROTECTION_FIRE.getKey().getKey(), nameColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

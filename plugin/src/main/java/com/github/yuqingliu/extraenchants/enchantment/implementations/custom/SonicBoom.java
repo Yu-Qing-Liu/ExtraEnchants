@@ -8,13 +8,13 @@ import com.github.yuqingliu.extraenchants.item.ApplicableItemsRegistry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
-public class Homing extends CustomEnchantment {
-    public Homing(TextColor nameColor, TextColor descriptionColor, ApplicableItemsRegistry registry) {
+public class SonicBoom extends CustomEnchantment {
+    public SonicBoom(TextColor nameColor, TextColor descriptionColor, ApplicableItemsRegistry registry) {
         super(
-            Component.text("Homing", nameColor),
+            Component.text("Sonic Boom", nameColor),
             1,
-            Component.text("Guided arrows", descriptionColor),
-            registry.getBowApplicable(),
+            Component.text("Warden's Ability", descriptionColor),
+            registry.getMeleeApplicable(),
             new ArrayList<>(),
             "x^2",
             "x"

@@ -15,6 +15,8 @@ import com.github.yuqingliu.extraenchants.utils.TextUtils;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 
 public class CustomEnchantment extends AbstractEnchantment {
+    private TextUtils textUtils = new TextUtils();
+
     public CustomEnchantment(Component name, int maxLevel, Component description, List<Material> applicable, List<Component> applicableDisplayNames, String levelFormula, String costFormula) {
         super(name, maxLevel, description, applicable, applicableDisplayNames, levelFormula, costFormula);
     }
@@ -56,7 +58,7 @@ public class CustomEnchantment extends AbstractEnchantment {
                     }
                 }
                 existingLore = newLore;
-                Component enchantName = name.append(Component.text(" " + TextUtils.toRoman(level), name.color()));
+                Component enchantName = name.append(Component.text(" " + textUtils.toRoman(level), name.color()));
                 existingLore.add(enchantName);
                 existingLore.add(description);
                 meta.lore(existingLore);

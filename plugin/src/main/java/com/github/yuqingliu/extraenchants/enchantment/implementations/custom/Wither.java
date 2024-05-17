@@ -8,13 +8,13 @@ import com.github.yuqingliu.extraenchants.item.ApplicableItemsRegistry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
-public class Homing extends CustomEnchantment {
-    public Homing(TextColor nameColor, TextColor descriptionColor, ApplicableItemsRegistry registry) {
+public class Wither extends CustomEnchantment {
+    public Wither(TextColor nameColor, TextColor descriptionColor, ApplicableItemsRegistry registry) {
         super(
-            Component.text("Homing", nameColor),
+            Component.text("Wither", nameColor),
             1,
-            Component.text("Guided arrows", descriptionColor),
-            registry.getBowApplicable(),
+            Component.text("Applies wither effect for 3 seconds per level", descriptionColor),
+            registry.getWeaponsApplicable(),
             new ArrayList<>(),
             "x^2",
             "x"

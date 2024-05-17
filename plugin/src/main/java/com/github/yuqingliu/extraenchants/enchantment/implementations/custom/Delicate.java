@@ -8,13 +8,13 @@ import com.github.yuqingliu.extraenchants.item.ApplicableItemsRegistry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
-public class Homing extends CustomEnchantment {
-    public Homing(TextColor nameColor, TextColor descriptionColor, ApplicableItemsRegistry registry) {
+public class Delicate extends CustomEnchantment {
+    public Delicate(TextColor nameColor, TextColor descriptionColor, ApplicableItemsRegistry registry) {
         super(
-            Component.text("Homing", nameColor),
+            Component.text("Delicate", nameColor),
             1,
-            Component.text("Guided arrows", descriptionColor),
-            registry.getBowApplicable(),
+            Component.text("Avoids breaking immature crops", descriptionColor),
+            registry.getHoeApplicable(),
             new ArrayList<>(),
             "x^2",
             "x"
