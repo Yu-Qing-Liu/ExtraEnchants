@@ -22,6 +22,12 @@ dependencies {
     implementation 'net.objecthunter:exp4j:0.4.8'
     implementation 'de.tr7zw:item-nbt-api:2.12.2'
 
+    compileOnly("org.projectlombok:lombok:1.18.30")
+    annotationProcessor("org.projectlombok:lombok:1.18.30")
+
+    testCompileOnly("org.projectlombok:lombok:1.18.30")
+    testAnnotationProcessor("org.projectlombok:lombok:1.18.30")
+
     compileOnly 'io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT'
     testImplementation 'junit:junit:4.11'
 }

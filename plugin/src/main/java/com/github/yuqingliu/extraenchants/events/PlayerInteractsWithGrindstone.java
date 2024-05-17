@@ -17,11 +17,12 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.persistence.PersistentDataType;
 
-import com.github.yuqingliu.extraenchants.enchants.Constants;
 import com.github.yuqingliu.extraenchants.gui.GrindstoneMenu;
-import com.github.yuqingliu.extraenchants.blocks.CustomBlockUtils;
+import com.github.yuqingliu.extraenchants.utils.ItemUtils;
+import com.github.yuqingliu.extraenchants.persistence.blocks.CustomBlockUtils;
+import com.github.yuqingliu.extraenchants.configuration.ConfigurationManager;
+import com.github.yuqingliu.extraenchants.configuration.implementations.GlobalConstants;
 
 import java.util.List;
 import java.util.Arrays;
@@ -32,14 +33,18 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class PlayerInteractsWithGrindstone implements Listener {
     private JavaPlugin plugin;
+    private ItemUtils itemUtils;
+    private GlobalConstants globalConstants;
     private static final int ITEM_SLOT = 25;
     private static final int PREVIOUS_PAGE = 6;
     private static final int NEXT_PAGE = 51;
     List<Integer> frame = Arrays.asList(7,8,15,16,17,24,26,33,34,35,42,43,44,52,53);
     List<Integer> options = Arrays.asList(0,1,2,3,4,5,9,10,11,12,13,14,18,19,20,21,22,23,27,28,29,30,31,32,36,37,38,39,40,41,45,46,47,48,49,50);
 
-    public PlayerInteractsWithGrindstone(JavaPlugin plugin) {
+    public PlayerInteractsWithGrindstone(JavaPlugin plugin, ItemUtils itemUtils, ConfigurationManager configurationManager) {
         this.plugin = plugin;
+        this.itemUtils = itemUtils;
+        this.globalConstants = (GlobalConstants) configurationManager.getConstants().get("GlobalConstants");
     }
 
     @EventHandler
@@ -49,7 +54,7 @@ public class PlayerInteractsWithGrindstone implements Listener {
         
         // Check if the event is a right-click on a block
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK && block != null && block.getType() == Material.GRINDSTONE) {
-            if(!Constants.applyVanillaGrindstoneBehavior()) {
+            if(!globalConstants.getApplyVanillaGrindstoneBehavior()) {
                 event.setCancelled(true); // Prevent the default enchantment table GUI from opening
                 GrindstoneMenu.openGrindstoneMenu(player);
             } else if(CustomBlockUtils.isCustomGrindstone(block)) {

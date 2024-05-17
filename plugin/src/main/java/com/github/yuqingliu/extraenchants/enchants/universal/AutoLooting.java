@@ -32,7 +32,6 @@ public class AutoLooting implements Listener {
             UtilityMethods.getEnchantmentLevel(tool, "Smelting") == 0 &&
             UtilityMethods.getEnchantmentLevel(tool, "Replant") == 0 && 
             !UtilityMethods.hasVanillaEnchantment(tool, Enchantment.SILK_TOUCH)) {
-            event.setDropItems(false);
             autoloot(event, player, block, tool);
         }
     }
@@ -56,6 +55,7 @@ public class AutoLooting implements Listener {
 
     public static void autoloot(BlockBreakEvent event, Player player, Block block, ItemStack tool) {
         for (ItemStack drop : block.getDrops(tool)) {
+            event.setDropItems(false);
             player.getInventory().addItem(drop);
         }
     }

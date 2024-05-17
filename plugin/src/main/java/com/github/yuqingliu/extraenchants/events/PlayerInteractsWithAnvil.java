@@ -16,14 +16,10 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.block.data.BlockData;
-import org.bukkit.block.BlockState;
 
 import com.github.yuqingliu.extraenchants.enchants.Constants;
 import com.github.yuqingliu.extraenchants.gui.AnvilMenu;
 import com.github.yuqingliu.extraenchants.blocks.CustomBlockUtils;
-
-import de.tr7zw.changeme.nbtapi.NBTBlock;
 
 import java.util.List;
 import java.util.Arrays;
