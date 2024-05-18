@@ -1,4 +1,4 @@
-package com.github.yuqingliu.extraenchants.blocks;
+package com.github.yuqingliu.extraenchants.persistence.blocks;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

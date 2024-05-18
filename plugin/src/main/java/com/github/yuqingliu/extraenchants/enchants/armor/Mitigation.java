@@ -5,16 +5,15 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.Sound;
-import com.github.yuqingliu.extraenchants.enchants.utils.UtilityMethods;
 
+import com.github.yuqingliu.extraenchants.enchantment.Enchantment;
+
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public class Mitigation implements Listener {
-    private final JavaPlugin plugin;
-
-    public Mitigation(JavaPlugin plugin) {
-        this.plugin = plugin;
-    }
+    private final Enchantment enchant;
 
     @EventHandler
     public void onPlayerDamage(EntityDamageEvent event) {
@@ -25,7 +24,7 @@ public class Mitigation implements Listener {
             int totalMitigationLevels = 0;
             for (ItemStack armor : armors) {
                 if (armor != null) {
-                    int mitigationLevel = UtilityMethods.getEnchantmentLevel(armor, "Mitigation");
+                    int mitigationLevel = enchant.getEnchantmentLevel(armor);
                     totalMitigationLevels += mitigationLevel;
                 }
             }

@@ -20,7 +20,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 import com.github.yuqingliu.extraenchants.enchantment.Enchantment;
 import com.github.yuqingliu.extraenchants.enchantment.EnchantmentOffer;
-import com.github.yuqingliu.extraenchants.enchants.utils.*;
+import com.github.yuqingliu.extraenchants.utils.MathUtils;
 import com.github.yuqingliu.extraenchants.utils.TextUtils;
 
 public class EnchantmentTableMenu {
@@ -67,10 +67,17 @@ public class EnchantmentTableMenu {
         for (EnchantmentOffer offer : applicableEnchants) {
             pageData.get(PAGE_NUMBER).put(slotptr, offer);
             ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
+            Enchantment enchantment = offer.getEnchantment();
             ItemMeta metaOffer = enchantOption.getItemMeta();
             if (metaOffer != null) {
-                Component enchantmentName = offer.getEnchantment().getName();
-                metaOffer.displayName(enchantmentName);
+                List<Component> existingLore = metaOffer.lore() != null ? metaOffer.lore() : new ArrayList<>();
+                Component name = enchantment.getName();
+                Component description = enchantment.getDescription();
+                if(!description.equals(Component.empty())) {
+                    existingLore.add(description);
+                }
+                metaOffer.lore(existingLore);
+                metaOffer.displayName(name);
                 enchantOption.setItemMeta(metaOffer);
             }
             inv.setItem(slotptr, enchantOption);
@@ -123,10 +130,17 @@ public class EnchantmentTableMenu {
             EnchantmentOffer offer = pageData.get(PAGE_NUMBER).get(slotptr);
             if(offer == null) continue;
             ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
+            Enchantment enchantment = offer.getEnchantment();
             ItemMeta metaOffer = enchantOption.getItemMeta();
             if (metaOffer != null) {
-                Component enchantmentName = offer.getEnchantment().getName();
-                metaOffer.displayName(enchantmentName);
+                List<Component> existingLore = metaOffer.lore() != null ? metaOffer.lore() : new ArrayList<>();
+                Component name = enchantment.getName();
+                Component description = enchantment.getDescription();
+                if(!description.equals(Component.empty())) {
+                    existingLore.add(description);
+                }
+                metaOffer.lore(existingLore);
+                metaOffer.displayName(name);
                 enchantOption.setItemMeta(metaOffer);
             }
             inv.setItem(slotptr, enchantOption);
@@ -165,10 +179,17 @@ public class EnchantmentTableMenu {
             if(exists) continue;
             pageData.get(PAGE_NUMBER).put(slotptr, offer);
             ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
+            Enchantment enchantment = offer.getEnchantment();
             ItemMeta metaOffer = enchantOption.getItemMeta();
             if (metaOffer != null) {
-                Component enchantmentName = offer.getEnchantment().getName();
-                metaOffer.displayName(enchantmentName);
+                List<Component> existingLore = metaOffer.lore() != null ? metaOffer.lore() : new ArrayList<>();
+                Component name = enchantment.getName();
+                Component description = enchantment.getDescription();
+                if(!description.equals(Component.empty())) {
+                    existingLore.add(description);
+                }
+                metaOffer.lore(existingLore);
+                metaOffer.displayName(name);
                 enchantOption.setItemMeta(metaOffer);
             }
             inv.setItem(slotptr, enchantOption);
@@ -198,10 +219,17 @@ public class EnchantmentTableMenu {
             EnchantmentOffer offer = pageData.get(PAGE_NUMBER).get(slotptr);
             if(offer == null) continue;
             ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
+            Enchantment enchantment = offer.getEnchantment();
             ItemMeta metaOffer = enchantOption.getItemMeta();
             if (metaOffer != null) {
-                Component enchantmentName = offer.getEnchantment().getName();
-                metaOffer.displayName(enchantmentName);
+                List<Component> existingLore = metaOffer.lore() != null ? metaOffer.lore() : new ArrayList<>();
+                Component name = enchantment.getName();
+                Component description = enchantment.getDescription();
+                if(!description.equals(Component.empty())) {
+                    existingLore.add(description);
+                }
+                metaOffer.lore(existingLore);
+                metaOffer.displayName(name);
                 enchantOption.setItemMeta(metaOffer);
             }
             inv.setItem(slotptr, enchantOption);
@@ -247,8 +275,8 @@ public class EnchantmentTableMenu {
             for (int i = 1; i <= maxEnchantmentLevel; i++) {
                 String levelFormula = enchantment.getRequiredLevelFormula();
                 String costFormula = enchantment.getCostFormula();
-                int levelRequired = UtilityMethods.evaluateExpression(levelFormula, i);
-                int cost = UtilityMethods.evaluateExpression(costFormula, i);
+                int levelRequired = MathUtils.evaluateExpression(levelFormula, i);
+                int cost = MathUtils.evaluateExpression(costFormula, i);
                 EnchantmentOffer offer = new EnchantmentOffer(enchantment, i, levelRequired, cost);
                 pageData.get(PAGE_NUMBER).put(slotptr, offer);
                 ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
@@ -256,11 +284,17 @@ public class EnchantmentTableMenu {
                 if (metaOffer != null) {
                     List<Component> existingLore = metaOffer.lore() != null ? metaOffer.lore() : new ArrayList<>();
                     Component enchantmentName = enchantment.getName();
-                    Component name = enchantmentName.append(Component.text(TextUtils.toRoman(i), enchantment.getNameColor()));
-                    existingLore.add(name);
+                    Component name = enchantmentName.append(Component.text(" " + TextUtils.toRoman(i), enchantment.getNameColor()));
+                    Component lvlReq = Component.text("Required Level: " + offer.getRequiredLevel(), NamedTextColor.GREEN);
+                    Component expCost = Component.text("Experience Cost: " + offer.getCost(), NamedTextColor.DARK_GREEN);
+                    Component description = enchantment.getLeveledDescription(i);
+                    existingLore.add(lvlReq);
+                    existingLore.add(expCost);
+                    if(!description.equals(Component.empty())) {
+                        existingLore.add(description);
+                    }
                     metaOffer.lore(existingLore);
-                    metaOffer.displayName(Component.text("Required Level: " + offer.getRequiredLevel(), NamedTextColor.GREEN));
-                    metaOffer.displayName(Component.text("Experience Cost: " + offer.getCost(), NamedTextColor.DARK_GREEN));
+                    metaOffer.displayName(name);
                     enchantOption.setItemMeta(metaOffer);
                 }
                 inv.setItem(slotptr, enchantOption);
@@ -333,8 +367,8 @@ public class EnchantmentTableMenu {
             for (int i = startLevel; i <= maxEnchantmentLevel; i++) {
                 String levelFormula = enchantment.getRequiredLevelFormula();
                 String costFormula = enchantment.getCostFormula();
-                int levelRequired = UtilityMethods.evaluateExpression(levelFormula, i);
-                int cost = UtilityMethods.evaluateExpression(costFormula, i);
+                int levelRequired = MathUtils.evaluateExpression(levelFormula, i);
+                int cost = MathUtils.evaluateExpression(costFormula, i);
                 EnchantmentOffer offer = new EnchantmentOffer(enchantment, i, levelRequired, cost);
                 pageData.get(PAGE_NUMBER).put(slotptr, offer);
                 ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
@@ -342,11 +376,17 @@ public class EnchantmentTableMenu {
                 if (metaOffer != null) {
                     List<Component> existingLore = metaOffer.lore() != null ? metaOffer.lore() : new ArrayList<>();
                     Component enchantmentName = enchantment.getName();
-                    Component name = enchantmentName.append(Component.text(TextUtils.toRoman(i), enchantment.getNameColor()));
-                    existingLore.add(name);
+                    Component name = enchantmentName.append(Component.text(" " + TextUtils.toRoman(i), enchantment.getNameColor()));
+                    Component lvlReq = Component.text("Required Level: " + offer.getRequiredLevel(), NamedTextColor.GREEN);
+                    Component expCost = Component.text("Experience Cost: " + offer.getCost(), NamedTextColor.DARK_GREEN);
+                    Component description = enchantment.getLeveledDescription(i);
+                    existingLore.add(lvlReq);
+                    existingLore.add(expCost);
+                    if(!description.equals(Component.empty())) {
+                        existingLore.add(description);
+                    }
                     metaOffer.lore(existingLore);
-                    metaOffer.displayName(Component.text("Required Level: " + offer.getRequiredLevel(), NamedTextColor.GREEN));
-                    metaOffer.displayName(Component.text("Experience Cost: " + offer.getCost(), NamedTextColor.DARK_GREEN));
+                    metaOffer.displayName(name);
                     enchantOption.setItemMeta(metaOffer);
                 }
                 inv.setItem(slotptr, enchantOption);
@@ -419,8 +459,8 @@ public class EnchantmentTableMenu {
             for (int i = startLevel - CAPACITY; i <= maxEnchantmentLevel; i++) {
                 String levelFormula = enchantment.getRequiredLevelFormula();
                 String costFormula = enchantment.getCostFormula();
-                int levelRequired = UtilityMethods.evaluateExpression(levelFormula, i);
-                int cost = UtilityMethods.evaluateExpression(costFormula, i);
+                int levelRequired = MathUtils.evaluateExpression(levelFormula, i);
+                int cost = MathUtils.evaluateExpression(costFormula, i);
                 EnchantmentOffer offer = new EnchantmentOffer(enchantment, i, levelRequired, cost);
                 pageData.get(PAGE_NUMBER).put(slotptr, offer);
                 ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
@@ -428,11 +468,17 @@ public class EnchantmentTableMenu {
                 if (metaOffer != null) {
                     List<Component> existingLore = metaOffer.lore() != null ? metaOffer.lore() : new ArrayList<>();
                     Component enchantmentName = enchantment.getName();
-                    Component name = enchantmentName.append(Component.text(TextUtils.toRoman(i), enchantment.getNameColor()));
-                    existingLore.add(name);
+                    Component name = enchantmentName.append(Component.text(" " + TextUtils.toRoman(i), enchantment.getNameColor()));
+                    Component lvlReq = Component.text("Required Level: " + offer.getRequiredLevel(), NamedTextColor.GREEN);
+                    Component expCost = Component.text("Experience Cost: " + offer.getCost(), NamedTextColor.DARK_GREEN);
+                    Component description = enchantment.getLeveledDescription(i);
+                    existingLore.add(lvlReq);
+                    existingLore.add(expCost);
+                    if(!description.equals(Component.empty())) {
+                        existingLore.add(description);
+                    }
                     metaOffer.lore(existingLore);
-                    metaOffer.displayName(Component.text("Required Level: " + offer.getRequiredLevel(), NamedTextColor.GREEN));
-                    metaOffer.displayName(Component.text("Experience Cost: " + offer.getCost(), NamedTextColor.DARK_GREEN));
+                    metaOffer.displayName(name);
                     enchantOption.setItemMeta(metaOffer);
                 }
                 inv.setItem(slotptr, enchantOption);

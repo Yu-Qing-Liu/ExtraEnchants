@@ -13,21 +13,34 @@ import com.github.yuqingliu.extraenchants.enchantment.AbstractEnchantment;
 
 public class VanillaEnchantment extends AbstractEnchantment {
     private Enchantment enchantment;  
-
+    
     public VanillaEnchantment(Enchantment enchantment, Component name, int maxLevel, Component description, List<Material> applicable, List<Component> applicableDisplayNames, String levelFormula, String costFormula) {
         super(name, maxLevel, description, applicable, applicableDisplayNames, levelFormula, costFormula);
         this.enchantment = enchantment;
     }
 
+    @Override
+    public Component getDescription() {
+        return Component.empty();   
+    }
+
+    @Override
+    public Component getLeveledDescription(int level) {
+        return Component.empty();
+    }
+    
+    @Override
     public int getEnchantmentLevel(ItemStack item) {
         return item.getEnchantmentLevel(enchantment);
     }
-
+    
+    @Override
     public boolean canEnchant(ItemStack item) {
         Component displayName = item.displayName();
         return enchantment.canEnchantItem(item) || applicable.contains(item.getType()) || applicableDisplayNames.contains(displayName);
     }
-
+    
+    @Override
     public ItemStack applyEnchantment(ItemStack item, int level) {
         if(level <= maxLevel) {
             if(item.getType() == Material.BOOK) {
@@ -43,7 +56,8 @@ public class VanillaEnchantment extends AbstractEnchantment {
         }
         return item;
     }
-
+    
+    @Override
     public ItemStack removeEnchantment(ItemStack item) {
         if(item.getItemMeta() instanceof EnchantmentStorageMeta) {
             EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();

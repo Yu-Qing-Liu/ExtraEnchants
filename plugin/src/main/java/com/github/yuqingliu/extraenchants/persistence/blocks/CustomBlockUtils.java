@@ -1,4 +1,4 @@
-package com.github.yuqingliu.extraenchants.blocks;
+package com.github.yuqingliu.extraenchants.persistence.blocks;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -6,14 +6,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Arrays;
 import java.util.Set;
 import java.util.HashSet;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-import com.github.yuqingliu.extraenchants.blocks.threads.*;
+import com.github.yuqingliu.extraenchants.persistence.blocks.threads.*;
 
 import de.tr7zw.changeme.nbtapi.NBTItem;
 

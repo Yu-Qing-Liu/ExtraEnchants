@@ -12,18 +12,19 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
+import com.github.yuqingliu.extraenchants.enchantment.Enchantment;
+
 import org.bukkit.entity.Arrow;
 
 import java.util.List;
 
-import com.github.yuqingliu.extraenchants.enchants.utils.UtilityMethods;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class Venom implements Listener {
     private final JavaPlugin plugin;
-
-    public Venom(JavaPlugin plugin) {
-        this.plugin = plugin;
-    }
+    private final Enchantment enchant;
 
     @EventHandler
     public void onEntityDamage(EntityDamageByEntityEvent event) {
@@ -35,7 +36,7 @@ public class Venom implements Listener {
         ItemStack item = player.getInventory().getItemInMainHand();
 
         // Retrieve the level of the Venom enchantment
-        int poisonLevel = UtilityMethods.getEnchantmentLevel(item, "Venom");
+        int poisonLevel = enchant.getEnchantmentLevel(item);
         if (poisonLevel > 0) {
             if (event.getEntity() instanceof LivingEntity) {
                 LivingEntity target = (LivingEntity) event.getEntity();
@@ -53,12 +54,11 @@ public class Venom implements Listener {
     public void onBowShoot(EntityShootBowEvent event) {
         if (!(event.getEntity() instanceof Player)) return;
 
-        Player player = (Player) event.getEntity();
         ItemStack bow = event.getBow();
 
         if (bow == null) return;
 
-        int poisonLevel = UtilityMethods.getEnchantmentLevel(bow, "Venom");
+        int poisonLevel = enchant.getEnchantmentLevel(bow);
         if (poisonLevel > 0) {
             // Tag the arrow with the "Venom" enchantment level
             if (event.getProjectile() instanceof Arrow) {

@@ -7,23 +7,21 @@ import org.bukkit.entity.Player;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 
-import com.github.yuqingliu.extraenchants.enchants.utils.UtilityMethods;
+import com.github.yuqingliu.extraenchants.enchantment.Enchantment;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public class LifeSteal implements Listener {
-    private final JavaPlugin plugin;
-
-    public LifeSteal(JavaPlugin plugin) {
-        this.plugin = plugin;
-    }
+    private final Enchantment enchant;
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
         if (event.getDamager() instanceof Player) {
             Player player = (Player) event.getDamager();
             ItemStack weapon = player.getInventory().getItemInMainHand();
-            int level = UtilityMethods.getEnchantmentLevel(weapon, "LifeSteal");
+            int level = enchant.getEnchantmentLevel(weapon);
             if (level > 0 && event.getEntity() instanceof LivingEntity) {
                 LivingEntity target = (LivingEntity) event.getEntity();
                 double targetCurrentHealth = target.getHealth();

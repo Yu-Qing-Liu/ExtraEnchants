@@ -8,7 +8,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -18,17 +17,18 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import org.bukkit.Location;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.Color;
 
-import com.github.yuqingliu.extraenchants.enchants.utils.UtilityMethods;
+import com.github.yuqingliu.extraenchants.enchantment.Enchantment;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public class Focus implements Listener {
     private final JavaPlugin plugin;
+    private final Enchantment enchant;
     private Particle.DustOptions beam = new Particle.DustOptions(Color.fromRGB(255, 0, 0), 0.1F);
-
-    public Focus(JavaPlugin plugin) {
-        this.plugin = plugin;
-    }
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
@@ -77,25 +77,13 @@ public class Focus implements Listener {
                     String markKey = "MarkedBy:" + player.getUniqueId().toString();
                     LivingEntity target = (LivingEntity) event.getEntity();
                     if (target.hasMetadata(markKey)) {
-                        int level = UtilityMethods.getEnchantmentLevel(bow, "Focus");
+                        int level = enchant.getEnchantmentLevel(bow);
                         double extraDamage = event.getDamage() * 0.20 * level;
                         event.setDamage(event.getDamage() + extraDamage);
                     }
                 }
             }
-        } else if (event.getDamager() instanceof Player) {
-            Player player = (Player) event.getDamager();
-            ItemStack bow = player.getInventory().getItemInMainHand();
-            if (bow.getType() == Material.BOW && event.getEntity() instanceof LivingEntity) {
-                String markKey = "MarkedBy:" + player.getUniqueId().toString();
-                LivingEntity target = (LivingEntity) event.getEntity();
-                if (target.hasMetadata(markKey)) {
-                    int level = UtilityMethods.getEnchantmentLevel(bow, "Focus");
-                    double extraDamage = event.getDamage() * 0.20 * level;
-                    event.setDamage(event.getDamage() + extraDamage);
-                }
-            }
-        }
+        } 
     }
 
     public static Location getRightSide(Location location, double distance) {
@@ -119,7 +107,7 @@ public class Focus implements Listener {
                 }
                 
                 // Player is no longer holding bow
-                if(!(UtilityMethods.getEnchantmentLevel(player.getEquipment().getItemInMainHand(), "Focus") > 0)) {
+                if(!(enchant.getEnchantmentLevel(player.getEquipment().getItemInMainHand()) > 0)) {
                     target.removeMetadata(markKey, plugin);
                     this.cancel();
                     return;

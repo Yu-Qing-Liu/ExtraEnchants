@@ -4,7 +4,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Arrow;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Entity;
@@ -12,15 +11,14 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.util.Vector;
 
-import com.github.yuqingliu.extraenchants.enchants.utils.UtilityMethods;
-import com.github.yuqingliu.extraenchants.enchants.weapons.Weapon;
+import com.github.yuqingliu.extraenchants.enchantment.Enchantment;
+import com.github.yuqingliu.extraenchants.item.weapon.implementations.RangedWeapon;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public class Warped implements Listener {
-    private final JavaPlugin plugin;
-
-    public Warped(JavaPlugin plugin) {
-        this.plugin = plugin;
-    }
+    private final Enchantment enchant;
 
     @EventHandler
     public void onArrowApproachEnderman(ProjectileHitEvent event) {
@@ -33,16 +31,15 @@ public class Warped implements Listener {
         }
         Player player = (Player) arrow.getShooter();
         ItemStack weapon = player.getInventory().getItemInMainHand();
-        int enchantmentLevel = UtilityMethods.getEnchantmentLevel(weapon, "Warped");
+        int enchantmentLevel = enchant.getEnchantmentLevel(weapon);
         if (enchantmentLevel > 0) {
             Entity enderman = event.getHitEntity();
             if(enderman != null && enderman.getType() == EntityType.ENDERMAN) {
                 event.setCancelled(true); // Cancel the arrow impact event to prevent it from bouncing
                 arrow.remove(); // Removes the arrow to prevent it from bouncing back
                 Enderman entity = (Enderman) enderman;
-                double speedPerTick = 63 / 20.0;
-                Vector terminalVelocity = new Vector(0, -speedPerTick, 0);
-                Weapon.applyHit(player, entity, weapon, terminalVelocity, true);
+                RangedWeapon item = new RangedWeapon(weapon);
+                item.applyHit(player, entity);
             }
         }
     }

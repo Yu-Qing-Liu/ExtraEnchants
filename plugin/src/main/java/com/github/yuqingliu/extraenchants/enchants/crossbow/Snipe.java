@@ -7,19 +7,17 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 import org.bukkit.Material;
 
-import com.github.yuqingliu.extraenchants.enchants.utils.UtilityMethods;
-import com.github.yuqingliu.extraenchants.enchants.weapons.Weapon;
+import com.github.yuqingliu.extraenchants.enchantment.Enchantment;
+import com.github.yuqingliu.extraenchants.item.weapon.implementations.RangedWeapon;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public class Snipe implements Listener {
-    private final JavaPlugin plugin;
-
-    public Snipe(JavaPlugin plugin) {
-        this.plugin = plugin;
-    }
+    private final Enchantment enchant;
 
     @EventHandler
     public void onCrossBowShoot(EntityShootBowEvent event) {
@@ -28,7 +26,7 @@ public class Snipe implements Listener {
         if (bow == null || bow.getType() != Material.CROSSBOW) return;
         
         // Check for "Snipe" enchantment presence and level
-        int level = UtilityMethods.getEnchantmentLevel(bow, "Snipe");
+        int level = enchant.getEnchantmentLevel(bow);
         if (level > 0 && event.getProjectile() instanceof Arrow) { // Check specifically for Arrow
             Arrow arrow = (Arrow) event.getProjectile();
             setArrowSpeed(arrow, level);
@@ -44,11 +42,10 @@ public class Snipe implements Listener {
                 ItemStack bow = shooter.getInventory().getItemInMainHand();
                 
                 // Ensure the shooter is using a crossbow with the Snipe enchantment
-                if (bow.getType() == Material.CROSSBOW && UtilityMethods.getEnchantmentLevel(bow, "Snipe") > 0) {
+                if (bow.getType() == Material.CROSSBOW && enchant.getEnchantmentLevel(bow) > 0) {
                     // Calculate the original damage based on the level of Snipe enchantment
-                    double speedPerTick = 63 / 20.0;
-                    Vector terminalVelocity = new Vector(0, -speedPerTick, 0);
-                    double originalDamage = Weapon.calculateBaseDamage(bow, terminalVelocity, true);
+                    RangedWeapon weapon = new RangedWeapon(bow);
+                    double originalDamage = weapon.getDamage();
                     // Set the event's damage to the original damage
                     event.setDamage(originalDamage);
                 }

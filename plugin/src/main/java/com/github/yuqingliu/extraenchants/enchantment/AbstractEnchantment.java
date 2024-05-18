@@ -1,7 +1,5 @@
 package com.github.yuqingliu.extraenchants.enchantment;
 
-import com.github.yuqingliu.extraenchants.utils.TextUtils;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -25,17 +23,9 @@ public abstract class AbstractEnchantment {
     protected final String requiredLevelFormula;
     protected final String costFormula;
 
-    public Component getLeveledDescription(int level) {
-        return TextUtils.replaceComponent(description, "per level", Component.text(""));
-    }
+    public abstract Component getDescription();
 
-    public TextColor getNameColor() {
-        return this.name.color();
-    }
-
-    public TextColor getDescriptionColor() {
-        return this.description.color();
-    }
+    public abstract Component getLeveledDescription(int level);
 
     public abstract int getEnchantmentLevel(ItemStack item);
 
@@ -44,6 +34,14 @@ public abstract class AbstractEnchantment {
     public abstract ItemStack applyEnchantment(ItemStack item, int level);
 
     public abstract ItemStack removeEnchantment(ItemStack item);
+
+    public TextColor getNameColor() {
+        return this.name.color();
+    }
+
+    public TextColor getDescriptionColor() {
+        return this.description.color();
+    }
 
     @Override
     public boolean equals(Object o) {

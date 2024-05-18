@@ -5,22 +5,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.block.Block;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
-import com.github.yuqingliu.extraenchants.blocks.*;
+import com.github.yuqingliu.extraenchants.persistence.blocks.*;
 
 import de.tr7zw.changeme.nbtapi.NBTItem;
 
 public class PlayerPlacesDestroysGrindstone implements Listener {
-    private JavaPlugin plugin;
-
-    public PlayerPlacesDestroysGrindstone(JavaPlugin plugin) {
-        this.plugin = plugin;
-    }
-
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
         Block placedBlock = event.getBlockPlaced();

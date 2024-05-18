@@ -1,18 +1,15 @@
 package com.github.yuqingliu.extraenchants.commands;
 
 import com.github.yuqingliu.extraenchants.ExtraEnchants;
-import com.github.yuqingliu.extraenchants.blocks.CustomBlockUtils;
+import com.github.yuqingliu.extraenchants.persistence.blocks.CustomBlockUtils;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import de.tr7zw.changeme.nbtapi.NBTItem;
 
 public class EEGetCommand implements CommandExecutor {
     private final ExtraEnchants plugin;

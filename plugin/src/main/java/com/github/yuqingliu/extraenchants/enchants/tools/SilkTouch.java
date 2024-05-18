@@ -6,23 +6,22 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.entity.Player;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Collection;
 import java.util.HashMap;
 
-import com.github.yuqingliu.extraenchants.enchants.utils.UtilityMethods;
-import com.github.yuqingliu.extraenchants.enchants.universal.AutoLooting;
+import lombok.RequiredArgsConstructor;
 
+import com.github.yuqingliu.extraenchants.enchantment.Enchantment;
+
+@RequiredArgsConstructor
 public class SilkTouch implements Listener {
-    private final JavaPlugin plugin;
-
-    public SilkTouch(JavaPlugin plugin) {
-        this.plugin = plugin;
-    }
+    private final Enchantment silkTouch;
+    private final Enchantment autoLooting;
+    private final Enchantment smelting;
+    private final Enchantment replant;
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
@@ -31,19 +30,19 @@ public class SilkTouch implements Listener {
         Block block = event.getBlock();
         Material blockType = block.getType();
 
-        if (UtilityMethods.hasVanillaEnchantment(tool, Enchantment.SILK_TOUCH) && !isDelicate(blockType)) {
+        if (silkTouch.getEnchantmentLevel(tool) > 0 && !isDelicate(blockType)) {
             // Silk Touch is on the tool and the block is not delicate
             ItemStack clonedTool = cloneToolWithoutSilkTouch(tool);
             // Prevent Silk Touch from applying its effect
             // Simulate drops as if Silk Touch were not applied using the cloned tool
-            if(UtilityMethods.getEnchantmentLevel(tool, "AutoLooting")== 0 && 
-               UtilityMethods.getEnchantmentLevel(tool, "Smelting") == 0 &&
-               UtilityMethods.getEnchantmentLevel(tool, "Replant") == 0){
+            if(autoLooting.getEnchantmentLevel(tool) == 0 && 
+               smelting.getEnchantmentLevel(tool) == 0 &&
+               replant.getEnchantmentLevel(tool) == 0){
                 event.setDropItems(false);
                 Collection<ItemStack> drops = block.getDrops(clonedTool);
                 drops.forEach(drop -> block.getWorld().dropItemNaturally(block.getLocation(), drop));
-            } else if(UtilityMethods.getEnchantmentLevel(tool, "Smelting") == 0 &&
-                      UtilityMethods.getEnchantmentLevel(tool, "Replant") == 0) {
+            } else if(smelting.getEnchantmentLevel(tool) == 0 &&
+                      replant.getEnchantmentLevel(tool) == 0) {
                 event.setDropItems(false);
                 // AutoLooting is active, move items directly to the player's inventory
                 Collection<ItemStack> drops = block.getDrops(clonedTool);
@@ -54,9 +53,11 @@ public class SilkTouch implements Listener {
                     // Drop any overflow items naturally at the block location
                     unadded.values().forEach(item -> block.getWorld().dropItemNaturally(block.getLocation(), item));
                 }
-            } else if(UtilityMethods.getEnchantmentLevel(tool, "Smelting") > 0) {
+            } else if(smelting.getEnchantmentLevel(tool) > 0) {
+                Smelting Smelting = new Smelting(smelting, autoLooting);
                 Smelting.smelt(event, player, clonedTool, block, blockType);
-            } else if(UtilityMethods.getEnchantmentLevel(tool, "Replant") > 0) {
+            } else if(replant.getEnchantmentLevel(tool) > 0) {
+                Replant Replant = new Replant(replant, autoLooting);
                 Replant.plant(event, player, clonedTool, block);
             }
         } 
@@ -108,8 +109,8 @@ public class SilkTouch implements Listener {
         ItemStack clone = tool.clone();
         ItemMeta meta = clone.getItemMeta(); // Get the meta data of the cloned item
 
-        if (meta != null && meta.hasEnchant(Enchantment.SILK_TOUCH)) {
-            meta.removeEnchant(Enchantment.SILK_TOUCH); // Remove the Silk Touch enchantment
+        if (meta != null && meta.hasEnchant(org.bukkit.enchantments.Enchantment.SILK_TOUCH)) {
+            meta.removeEnchant(org.bukkit.enchantments.Enchantment.SILK_TOUCH); // Remove the Silk Touch enchantment
             clone.setItemMeta(meta); // Set the modified meta back to the cloned item
         } 
 

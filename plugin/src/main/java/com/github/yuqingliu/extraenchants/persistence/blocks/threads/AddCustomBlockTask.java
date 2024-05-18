@@ -1,10 +1,10 @@
-package com.github.yuqingliu.extraenchants.blocks.threads;
+package com.github.yuqingliu.extraenchants.persistence.blocks.threads;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 
-import com.github.yuqingliu.extraenchants.blocks.CustomBlock;
+import com.github.yuqingliu.extraenchants.persistence.blocks.CustomBlock;
 
 public class AddCustomBlockTask implements Runnable {
     private CustomBlock block;

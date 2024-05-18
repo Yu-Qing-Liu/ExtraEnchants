@@ -1,6 +1,7 @@
 package com.github.yuqingliu.extraenchants.utils;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 import java.util.Map;
@@ -31,6 +32,28 @@ public class TextUtils {
         return roman.toString();
     }
 
+    public static int fromRoman(String roman) {
+        int result = 0;
+        int prevValue = 0;
+        for (int i = roman.length() - 1; i >= 0; i--) {
+            char ch = roman.charAt(i);
+            Integer value = romanNumerals.get(ch);
+            if (value != null) {
+                if (value < prevValue) {
+                    // Subtract this value for subtractive notation
+                    result -= value;
+                } else {
+                    result += value;
+                }
+                prevValue = value;
+            } else {
+                // Handle the case where the map returns null due to an unexpected character
+                return 0;
+            }
+        }
+        return result;
+    }
+
     /**
     * Replaces parts of a component by string match, by a new component.
     *
@@ -58,5 +81,13 @@ public class TextUtils {
 
     public static String componentToString(Component component) {
         return PlainTextComponentSerializer.plainText().serialize(component);
+    }
+
+    public static String componentToJson(Component component) {
+        return GsonComponentSerializer.gson().serialize(component);
+    }
+
+    public static Component jsonToComponent(String json) {
+        return GsonComponentSerializer.gson().deserialize(json);
     }
 }

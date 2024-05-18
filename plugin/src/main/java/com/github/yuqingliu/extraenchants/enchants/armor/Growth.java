@@ -6,23 +6,24 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
+
+import com.github.yuqingliu.extraenchants.Scheduler;
+import com.github.yuqingliu.extraenchants.enchantment.Enchantment;
+
+import lombok.RequiredArgsConstructor;
+
+import java.time.Duration;
+
 import org.bukkit.attribute.Attribute;
 
-import com.github.yuqingliu.extraenchants.enchants.utils.UtilityMethods;
-
+@RequiredArgsConstructor
 public class Growth implements Listener {
-    private final JavaPlugin plugin;
-
-    public Growth(JavaPlugin plugin) {
-        this.plugin = plugin;
-    }
+    private final Enchantment enchant;
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         if (event.getWhoClicked() instanceof Player) {
-            // Delay the update to next tick to ensure the inventory change is processed
-            plugin.getServer().getScheduler().runTask(plugin, () -> updatePlayerHealth((Player) event.getWhoClicked()));
+            Scheduler.runLater(() -> updatePlayerHealth((Player) event.getWhoClicked()), Duration.ofMillis(50));
         }
     }
 
@@ -33,9 +34,9 @@ public class Growth implements Listener {
 
     private void updatePlayerHealth(Player player) {
         double extraHearts = 0;
-        for (ItemStack item : player.getInventory().getArmorContents()) {
-            if (item != null) {
-                int level = UtilityMethods.getEnchantmentLevel(item, "Growth");
+        for (ItemStack armor : player.getInventory().getArmorContents()) {
+            if (armor != null) {
+                int level = enchant.getEnchantmentLevel(armor);
                 extraHearts += level;
             }
         }

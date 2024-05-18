@@ -5,21 +5,20 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
+
+import com.github.yuqingliu.extraenchants.enchantment.Enchantment;
+
+import lombok.RequiredArgsConstructor;
+
 import org.bukkit.entity.Player;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.enchantments.Enchantment;
 
-import com.github.yuqingliu.extraenchants.enchants.utils.UtilityMethods;
-import com.github.yuqingliu.extraenchants.enchants.ApplicableItemsRegistry;
-
+@RequiredArgsConstructor
 public class AutoLooting implements Listener {
-    private final JavaPlugin plugin;
-
-    public AutoLooting(JavaPlugin plugin) {
-        this.plugin = plugin;
-    }
+    private final Enchantment autoLooting;
+    private final Enchantment smelting;
+    private final Enchantment replant;
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
@@ -27,11 +26,10 @@ public class AutoLooting implements Listener {
         ItemStack tool = player.getInventory().getItemInMainHand();
         Block block = event.getBlock();
 
-        if (ApplicableItemsRegistry.tools_weapons_applicable.contains(tool.getType()) &&
-            UtilityMethods.getEnchantmentLevel(tool, "AutoLooting") > 0 &&
-            UtilityMethods.getEnchantmentLevel(tool, "Smelting") == 0 &&
-            UtilityMethods.getEnchantmentLevel(tool, "Replant") == 0 && 
-            !UtilityMethods.hasVanillaEnchantment(tool, Enchantment.SILK_TOUCH)) {
+        if (autoLooting.getEnchantmentLevel(tool) > 0 &&
+            smelting.getEnchantmentLevel(tool) == 0 &&
+            replant.getEnchantmentLevel(tool) == 0 && 
+            tool.getEnchantmentLevel(org.bukkit.enchantments.Enchantment.SILK_TOUCH) == 0) {
             autoloot(event, player, block, tool);
         }
     }
@@ -43,8 +41,7 @@ public class AutoLooting implements Listener {
 
         if (killer != null) {
             ItemStack weapon = killer.getInventory().getItemInMainHand();
-            if (ApplicableItemsRegistry.tools_weapons_applicable.contains(weapon.getType()) &&
-                UtilityMethods.getEnchantmentLevel(weapon, "AutoLooting") > 0) {
+            if (autoLooting.getEnchantmentLevel(weapon) > 0) {
                 for (ItemStack drop : event.getDrops()) {
                     killer.getInventory().addItem(drop);
                 }

@@ -1,4 +1,4 @@
-package com.github.yuqingliu.extraenchants.blocks;
+package com.github.yuqingliu.extraenchants.persistence.blocks;
 
 import java.util.*;
 import java.io.File;
