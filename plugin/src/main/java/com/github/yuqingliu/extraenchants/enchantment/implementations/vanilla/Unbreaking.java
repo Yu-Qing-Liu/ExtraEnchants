@@ -10,12 +10,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class Unbreaking extends VanillaEnchantment {
-    public Unbreaking(TextColor nameColor) {
+    public Unbreaking(TextColor nameColor, TextColor descriptionColor) {
         super(
             Enchantment.DURABILITY,
             Component.text("Unbreaking", nameColor),
             Enchantment.DURABILITY.getMaxLevel(),
-            Component.text("Increases item durability.", nameColor),
+            Component.text("Increases item durability.", descriptionColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

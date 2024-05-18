@@ -12,12 +12,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class Flame extends VanillaEnchantment {
-    public Flame(TextColor nameColor) {
+    public Flame(TextColor nameColor, TextColor descriptionColor) {
         super(
             Enchantment.ARROW_FIRE,
             Component.text("Flame", nameColor),
             Enchantment.ARROW_FIRE.getMaxLevel(),
-            Component.text("Arrows set targets on fire.", nameColor),
+            Component.text("Arrows set targets on fire.", descriptionColor),
             Arrays.asList(Material.CROSSBOW),
             new ArrayList<>(),
             "x^2",

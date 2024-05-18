@@ -10,12 +10,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class Loyalty extends VanillaEnchantment {
-    public Loyalty(TextColor nameColor) {
+    public Loyalty(TextColor nameColor, TextColor descriptionColor) {
         super(
             Enchantment.LOYALTY,
             Component.text("Loyalty", nameColor),
             Enchantment.LOYALTY.getMaxLevel(),
-            Component.text("Trident returns after being thrown.", nameColor),
+            Component.text("Trident returns after being thrown.", descriptionColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

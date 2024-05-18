@@ -10,12 +10,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class FireAspect extends VanillaEnchantment {
-    public FireAspect(TextColor nameColor) {
+    public FireAspect(TextColor nameColor, TextColor descriptionColor) {
         super(
             Enchantment.FIRE_ASPECT,
             Component.text("Fire Aspect", nameColor),
             Enchantment.FIRE_ASPECT.getMaxLevel(),
-            Component.text("Sets target on fire.", nameColor),
+            Component.text("Sets target on fire.", descriptionColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

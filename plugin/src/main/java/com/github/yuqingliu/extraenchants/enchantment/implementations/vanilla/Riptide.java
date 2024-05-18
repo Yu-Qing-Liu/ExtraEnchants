@@ -10,12 +10,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class Riptide extends VanillaEnchantment {
-    public Riptide(TextColor nameColor) {
+    public Riptide(TextColor nameColor, TextColor descriptionColor) {
         super(
             Enchantment.RIPTIDE,
             Component.text("Riptide", nameColor),
             Enchantment.RIPTIDE.getMaxLevel(),
-            Component.text("Trident launches player with itself when thrown. Functions only in water or rain.", nameColor),
+            Component.text("Trident launches player with itself when thrown. Functions only in water or rain.", descriptionColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

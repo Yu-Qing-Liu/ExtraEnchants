@@ -10,12 +10,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class Punch extends VanillaEnchantment {
-    public Punch(TextColor nameColor) {
+    public Punch(TextColor nameColor, TextColor descriptionColor) {
         super(
             Enchantment.ARROW_KNOCKBACK,
             Component.text("Punch", nameColor),
             Enchantment.ARROW_KNOCKBACK.getMaxLevel(),
-            Component.text("Increases arrow knockback.", nameColor),
+            Component.text("Increases arrow knockback.", descriptionColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

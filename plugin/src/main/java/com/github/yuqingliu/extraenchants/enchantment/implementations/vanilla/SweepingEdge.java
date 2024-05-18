@@ -10,12 +10,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class SweepingEdge extends VanillaEnchantment {
-    public SweepingEdge(TextColor nameColor) {
+    public SweepingEdge(TextColor nameColor, TextColor descriptionColor) {
         super(
             Enchantment.SWEEPING_EDGE,
             Component.text("Sweeping Edge", nameColor),
             Enchantment.SWEEPING_EDGE.getMaxLevel(),
-            Component.text("Increases sweeping attack damage.", nameColor),
+            Component.text("Increases sweeping attack damage.", descriptionColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

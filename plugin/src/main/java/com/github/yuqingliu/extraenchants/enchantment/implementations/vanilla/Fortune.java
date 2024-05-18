@@ -10,12 +10,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class Fortune extends VanillaEnchantment {
-    public Fortune(TextColor nameColor) {
+    public Fortune(TextColor nameColor, TextColor descriptionColor) {
         super(
             Enchantment.LOOT_BONUS_BLOCKS,
             Component.text("Fortune", nameColor),
             Enchantment.LOOT_BONUS_BLOCKS.getMaxLevel(),
-            Component.text("Increases certain item drop chances from blocks.", nameColor),
+            Component.text("Increases certain item drop chances from blocks.", descriptionColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

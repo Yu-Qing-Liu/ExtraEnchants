@@ -10,12 +10,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class Impaling extends VanillaEnchantment {
-    public Impaling(TextColor nameColor) {
+    public Impaling(TextColor nameColor, TextColor descriptionColor) {
         super(
             Enchantment.IMPALING,
             Component.text("Impaling", nameColor),
             Enchantment.IMPALING.getMaxLevel(),
-            Component.text("Trident deals additional damage to mobs that spawn naturally in the ocean.", nameColor),
+            Component.text("Trident deals additional damage to mobs that spawn naturally in the ocean.", descriptionColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

@@ -10,12 +10,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class SilkTouch extends VanillaEnchantment {
-    public SilkTouch(TextColor nameColor) {
+    public SilkTouch(TextColor nameColor, TextColor descriptionColor) {
         super(
             Enchantment.SILK_TOUCH,
             Component.text("Silk Touch", nameColor),
             Enchantment.SILK_TOUCH.getMaxLevel(),
-            Component.text("Mined blocks will drop as blocks instead of breaking into other items/blocks.", nameColor),
+            Component.text("Mined blocks will drop as blocks instead of breaking into other items/blocks.", descriptionColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

@@ -27,6 +27,7 @@ public class GrindstoneMenu {
     private final int PREVIOUS_PAGE = 6;
     private final int NEXT_PAGE = 51;
     private final int FINAL_SLOT = 50;
+    private final int ITEM_SLOT = 25;
     private final List<Integer> BORDER_SLOTS = Arrays.asList(5,14,23,32,41,50); 
     private int PAGE_NUMBER = 1;
     private int MAX_PAGES = 25;
@@ -251,11 +252,10 @@ public class GrindstoneMenu {
         if(item == null) return;
         Enchantment enchant = pageData.get(PAGE_NUMBER).get(slot);
         if(enchant != null) {
-            enchant.removeEnchantment(item); 
+            ItemStack newItem = enchant.removeEnchantment(item); 
+            inv.setItem(ITEM_SLOT, newItem);
             player.getWorld().playSound(player.getLocation(), Sound.BLOCK_LAVA_EXTINGUISH, 1.0f, 1.0f);
-            displayOptions(inv, item);
+            displayOptions(inv, newItem);
         } 
     }
-
-
 }

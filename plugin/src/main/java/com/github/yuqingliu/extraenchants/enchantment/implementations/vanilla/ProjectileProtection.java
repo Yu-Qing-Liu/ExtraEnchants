@@ -10,12 +10,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class ProjectileProtection extends VanillaEnchantment {
-    public ProjectileProtection(TextColor nameColor) {
+    public ProjectileProtection(TextColor nameColor, TextColor descriptionColor) {
         super(
             Enchantment.PROTECTION_PROJECTILE,
             Component.text("Projectile Protection", nameColor),
             Enchantment.PROTECTION_PROJECTILE.getMaxLevel(),
-            Component.text("Reduces projectile damage.", nameColor),
+            Component.text("Reduces projectile damage.", descriptionColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

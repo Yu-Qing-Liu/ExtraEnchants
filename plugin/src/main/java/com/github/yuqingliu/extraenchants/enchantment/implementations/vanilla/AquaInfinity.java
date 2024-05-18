@@ -10,12 +10,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class AquaInfinity extends VanillaEnchantment {
-    public AquaInfinity(TextColor nameColor) {
+    public AquaInfinity(TextColor nameColor, TextColor descriptionColor) {
         super(
             Enchantment.WATER_WORKER,
             Component.text("Aqua Infinity", nameColor),
             Enchantment.WATER_WORKER.getMaxLevel(),
-            Component.text("Increase the rate of underwater mining speed.", nameColor),
+            Component.text("Increase the rate of underwater mining speed.", descriptionColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

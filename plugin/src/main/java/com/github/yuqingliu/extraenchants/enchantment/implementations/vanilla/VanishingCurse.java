@@ -10,12 +10,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class VanishingCurse extends VanillaEnchantment {
-    public VanishingCurse(TextColor nameColor) {
+    public VanishingCurse(TextColor nameColor, TextColor descriptionColor) {
         super(
             Enchantment.VANISHING_CURSE,
             Component.text("Curse of Vanishing", nameColor),
             Enchantment.VANISHING_CURSE.getMaxLevel(),
-            Component.text("Item destroyed upon death.", nameColor),
+            Component.text("Item destroyed upon death.", descriptionColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

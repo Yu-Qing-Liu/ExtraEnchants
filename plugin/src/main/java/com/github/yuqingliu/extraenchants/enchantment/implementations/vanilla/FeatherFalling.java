@@ -10,12 +10,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class FeatherFalling extends VanillaEnchantment {
-    public FeatherFalling(TextColor nameColor) {
+    public FeatherFalling(TextColor nameColor, TextColor descriptionColor) {
         super(
             Enchantment.PROTECTION_FALL,
             Component.text("Feather Falling", nameColor),
             Enchantment.PROTECTION_FALL.getMaxLevel(),
-            Component.text("Reduces fall damage.", nameColor),
+            Component.text("Reduces fall damage.", descriptionColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

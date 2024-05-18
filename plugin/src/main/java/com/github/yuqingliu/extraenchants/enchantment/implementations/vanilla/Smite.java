@@ -10,12 +10,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class Smite extends VanillaEnchantment {
-    public Smite(TextColor nameColor) {
+    public Smite(TextColor nameColor, TextColor descriptionColor) {
         super(
             Enchantment.DAMAGE_UNDEAD,
             Component.text("Smite", nameColor),
             Enchantment.DAMAGE_UNDEAD.getMaxLevel(),
-            Component.text("Increases damage to undead mobs.", nameColor),
+            Component.text("Increases damage to undead mobs.", descriptionColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

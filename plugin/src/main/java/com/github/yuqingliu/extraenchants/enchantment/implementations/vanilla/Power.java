@@ -12,12 +12,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class Power extends VanillaEnchantment {
-    public Power(TextColor nameColor) {
+    public Power(TextColor nameColor, TextColor descriptionColor) {
         super(
             Enchantment.ARROW_DAMAGE,
             Component.text("Power", nameColor),
             Enchantment.ARROW_DAMAGE.getMaxLevel(),
-            Component.text("Increases arrow damage.", nameColor),
+            Component.text("Increases arrow damage.", descriptionColor),
             Arrays.asList(Material.CROSSBOW),
             new ArrayList<>(),
             "x^2",

@@ -10,12 +10,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class Mending extends VanillaEnchantment {
-    public Mending(TextColor nameColor) {
+    public Mending(TextColor nameColor, TextColor descriptionColor) {
         super(
             Enchantment.MENDING,
             Component.text("Mending", nameColor),
             Enchantment.MENDING.getMaxLevel(),
-            Component.text("Repairs the item when gaining XP orbs.", nameColor),
+            Component.text("Repairs the item when gaining XP orbs.", descriptionColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

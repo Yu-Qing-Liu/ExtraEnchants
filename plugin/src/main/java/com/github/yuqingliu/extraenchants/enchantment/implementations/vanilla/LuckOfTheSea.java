@@ -10,12 +10,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class LuckOfTheSea extends VanillaEnchantment {
-    public LuckOfTheSea(TextColor nameColor) {
+    public LuckOfTheSea(TextColor nameColor, TextColor descriptionColor) {
         super(
             Enchantment.LUCK,
             Component.text("Luck of the Sea", nameColor),
             Enchantment.LUCK.getMaxLevel(),
-            Component.text("Increases rate of fishing rare loot.", nameColor),
+            Component.text("Increases rate of fishing rare loot.", descriptionColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

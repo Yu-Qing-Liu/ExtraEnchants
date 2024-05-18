@@ -10,12 +10,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class Channeling extends VanillaEnchantment {
-    public Channeling(TextColor nameColor) {
+    public Channeling(TextColor nameColor, TextColor descriptionColor) {
         super(
             Enchantment.CHANNELING,
             Component.text("Channeling", nameColor),
             Enchantment.CHANNELING.getMaxLevel(),
-            Component.text("Trident channels a bolt of lightning toward a hit entity. Functions only during thunderstorms.", nameColor),
+            Component.text("Trident channels a bolt of lightning toward a hit entity. Functions only during thunderstorms.", descriptionColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

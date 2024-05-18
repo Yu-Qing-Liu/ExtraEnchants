@@ -10,12 +10,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class Thorns extends VanillaEnchantment {
-    public Thorns(TextColor nameColor) {
+    public Thorns(TextColor nameColor, TextColor descriptionColor) {
         super(
             Enchantment.THORNS,
             Component.text("Thorns", nameColor),
             Enchantment.THORNS.getMaxLevel(),
-            Component.text("Reflects some of the damage taken when hit, at the cost of reducing durability.", nameColor),
+            Component.text("Reflects some of the damage taken when hit, at the cost of reducing durability.", descriptionColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

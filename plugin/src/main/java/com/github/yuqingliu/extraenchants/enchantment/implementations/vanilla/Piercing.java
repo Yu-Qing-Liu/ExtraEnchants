@@ -10,12 +10,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class Piercing extends VanillaEnchantment {
-    public Piercing(TextColor nameColor) {
+    public Piercing(TextColor nameColor, TextColor descriptionColor) {
         super(
             Enchantment.PIERCING,
             Component.text("Piercing", nameColor),
             Enchantment.PIERCING.getMaxLevel(),
-            Component.text("Arrows pass through multiple entities.", nameColor),
+            Component.text("Arrows pass through multiple entities.", descriptionColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

@@ -10,12 +10,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class Knockback extends VanillaEnchantment {
-    public Knockback(TextColor nameColor) {
+    public Knockback(TextColor nameColor, TextColor descriptionColor) {
         super(
             Enchantment.KNOCKBACK,
             Component.text("Knockback", nameColor),
             Enchantment.KNOCKBACK.getMaxLevel(),
-            Component.text("Knocks back mobs away from you when hit.", nameColor),
+            Component.text("Knocks back mobs away from you when hit.", descriptionColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

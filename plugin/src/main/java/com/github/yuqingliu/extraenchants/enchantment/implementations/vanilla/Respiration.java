@@ -10,12 +10,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class Respiration extends VanillaEnchantment {
-    public Respiration(TextColor nameColor) {
+    public Respiration(TextColor nameColor, TextColor descriptionColor) {
         super(
             Enchantment.OXYGEN,
             Component.text("Respiration", nameColor),
             Enchantment.OXYGEN.getMaxLevel(),
-            Component.text("Extends underwater breathing time.", nameColor),
+            Component.text("Extends underwater breathing time.", descriptionColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

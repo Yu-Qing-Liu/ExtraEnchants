@@ -9,7 +9,9 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 import java.util.List;
+import java.util.Queue;
 import java.util.regex.Pattern;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 
 import org.bukkit.inventory.meta.ItemMeta;
@@ -20,6 +22,8 @@ import com.github.yuqingliu.extraenchants.utils.TextUtils;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 
 public class CustomEnchantment extends AbstractEnchantment {
+    private Component comma = Component.text(", ", NamedTextColor.BLUE);
+
     public CustomEnchantment(Component name, int maxLevel, Component description, List<Material> applicable, List<Component> applicableDisplayNames, String levelFormula, String costFormula) {
         super(name, maxLevel, description, applicable, applicableDisplayNames, levelFormula, costFormula);
     }
@@ -29,8 +33,8 @@ public class CustomEnchantment extends AbstractEnchantment {
     public int getEnchantmentLevel(ItemStack item) {
         NBTItem nbtItem = new NBTItem(item);
         int level = 0;
-        if(nbtItem != null && nbtItem.hasTag("extra-enchants."+name)) {
-            level = nbtItem.getInteger("extra-enchants."+name);
+        if(nbtItem != null && nbtItem.hasTag("extra-enchants." + name)) {
+            level = nbtItem.getInteger("extra-enchants." + name);
         }
         return level;
     }
@@ -57,15 +61,7 @@ public class CustomEnchantment extends AbstractEnchantment {
             if (meta != null) {
                 Component eLevel = Component.text(" " + TextUtils.toRoman(level), name.color());
                 List<Component> existingLore = meta.lore() != null ? meta.lore() : new ArrayList<>();
-                Component enchantmentSection;
-                if (existingLore.isEmpty()) {
-                    enchantmentSection = Component.empty();
-                    existingLore.add(enchantmentSection);
-                } else {
-                    enchantmentSection = existingLore.get(0);
-                }
-                enchantmentSection = addOrUpdateEnchantmentFromSection(enchantmentSection, name, eLevel);
-                existingLore.set(0, enchantmentSection);
+                existingLore = addOrUpdateEnchantmentFromSection(existingLore, name, eLevel);
                 meta.lore(existingLore);
                 item.setItemMeta(meta);
             }
@@ -82,72 +78,114 @@ public class CustomEnchantment extends AbstractEnchantment {
         item = nbtItem.getItem();
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
-            Component enchantName = name.append(Component.text(" " + TextUtils.toRoman(getEnchantmentLevel(item)), name.color()));
             List<Component> existingLore = meta.lore() != null ? meta.lore() : new ArrayList<>();
-
-            if (!existingLore.isEmpty()) {
-                Component enchantmentSection = existingLore.get(0);
-                enchantmentSection = removeEnchantmentFromSection(enchantmentSection, enchantName);
-                existingLore.set(0, enchantmentSection);
-            }
-
+            existingLore = removeEnchantmentFromSection(existingLore, name);
             meta.lore(existingLore);
             item.setItemMeta(meta);
         }
         return item;
     }
 
-    private Component addOrUpdateEnchantmentFromSection(Component enchantmentSection, Component enchant, Component eLevel) {
-        if (enchantmentSection == null || enchantmentSection.equals(Component.empty())) {
-            return enchant.append(eLevel);
-        }
-        Component newComponent = Component.empty();
-        boolean found = false;
-        for (Component child : enchantmentSection.children()) {
-            if(found) {
-                break;
-            }
-            if (child.equals(enchant)) {
-                newComponent = newComponent.append(enchant).append(eLevel);
-                found = true;
-            } else {
-                newComponent = newComponent.append(child);
-            }
-            newComponent = newComponent.append(Component.text(" , ", NamedTextColor.BLUE));
-        }
-        if (!found) {
-            newComponent = newComponent.append(enchant).append(eLevel);
-        }
-        return newComponent;
+    private int getComponentSize(Component component) {
+        return component.children().size();
     }
 
-    public static Component removeEnchantmentFromSection(Component component, Component enchantment) {
-        if (component == null) {
-            return Component.empty();
-        }
-        Component newComponent = Component.empty();
-        List<Component> children = component.children();
-        for (int i = 0; i < children.size(); i++) {
-            Component child = children.get(i);
-            if (child.equals(enchantment)) {
-                continue; // Skip this enchantment
+    private List<Component> addOrUpdateEnchantmentFromSection(List<Component> lore, Component enchant, Component eLevel) {
+        int maxComponents = 7;
+
+        if (lore.isEmpty()) {
+            Component currentLine = Component.empty().append(enchant).append(eLevel);
+            lore.add(currentLine);
+            return lore;
+        } else {
+            // Scan component to find if the enchantment exists, if it exists, update its level;
+            for (int i = 0; i < lore.size(); i++) {
+                Component line = lore.get(i);
+                List<Component> newChildren = new ArrayList<>();
+                boolean found = false;
+
+                for (Component child : line.children()) {
+                    if (found) {
+                        newChildren.add(eLevel);
+                        found = false; // reset after adding the level
+                    } else {
+                        if (child.equals(enchant)) {
+                            newChildren.add(enchant);
+                            found = true; // mark found and add level in the next iteration
+                        } else {
+                            newChildren.add(child);
+                        }
+                    }
+                }
+
+                if (found) {
+                    Component newLine = Component.empty();
+                    for (Component child : newChildren) {
+                        newLine = newLine.append(child);
+                    }
+                    lore.set(i, newLine);
+                    return lore;
+                }
             }
-            newComponent = newComponent.append(child);
-            // Append a comma if this is not the last component
-            if (i < children.size() - 1) {
-                Component nextChild = children.get(i + 1);
-                if (!nextChild.equals(enchantment)) {
-                    newComponent = newComponent.append(Component.text(", ", NamedTextColor.BLUE));
+
+            // Last line has space, append the component at the end of it
+            Component currentLine = lore.get(lore.size() - 1);
+            if (getComponentSize(currentLine) < maxComponents) {
+                Component newLine = currentLine.append(comma).append(enchant).append(eLevel);
+                lore.set(lore.size() - 1, newLine);
+                return lore;
+            }
+
+            // Did not find component and last line is full, add a new line with the enchantment as its first element
+            Component newLine = Component.empty().append(enchant).append(eLevel);
+            lore.add(newLine);
+            return lore;
+        }
+    }
+
+    public List<Component> removeEnchantmentFromSection(List<Component> lore, Component enchant) {
+        int maxComponents = 3;
+        List<Component> newLore = new ArrayList<>();
+        List<Component> filteredComponents = new ArrayList<>();
+
+        // Flatten and filter the lore components in one go, removing all commas
+        for (Component line : lore) {
+            List<Component> children = line.children();
+            for (int i = 0; i < children.size(); i++) {
+                Component child = children.get(i);
+                if (child.equals(enchant)) {
+                    i++;
+                } else if (!child.equals(comma) && !child.equals(Component.empty())) {
+                    filteredComponents.add(child);
                 }
             }
         }
-        // Remove trailing comma if it exists
-        String plainText = PlainTextComponentSerializer.plainText().serialize(newComponent);
-        if (plainText.endsWith(", ")) {
-            plainText = plainText.substring(0, plainText.length() - 2);
-            newComponent = Component.text(plainText, newComponent.style());
-        }
-        return newComponent;
-    }
 
+        // Reconstruct the final lore from filtered components, ensuring max 8 components per line
+        Component line = Component.empty();
+        int componentCount = 0;
+        for (int i = 1; i < filteredComponents.size(); i+=2) {
+            Component component = filteredComponents.get(i - 1);
+            Component level = filteredComponents.get(i);
+
+            if (componentCount < maxComponents) {
+                if (componentCount > 0) {
+                    line = line.append(comma); // Append comma between components
+                }
+                line = line.append(component);
+                line = line.append(level);
+                componentCount++;
+            } else {
+                newLore.add(line);
+                line = Component.empty().append(component);
+                line = line.append(level);
+                componentCount = 1;
+            }
+        }
+        if (!line.equals(Component.empty())) {
+            newLore.add(line);
+        }
+
+        return newLore;
+    }
 }

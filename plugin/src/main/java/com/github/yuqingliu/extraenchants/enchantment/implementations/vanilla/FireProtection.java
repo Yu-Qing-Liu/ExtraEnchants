@@ -10,12 +10,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class FireProtection extends VanillaEnchantment {
-    public FireProtection(TextColor nameColor) {
+    public FireProtection(TextColor nameColor, TextColor descriptionColor) {
         super(
             Enchantment.PROTECTION_FIRE,
             Component.text("Fire Protection", nameColor),
             Enchantment.PROTECTION_FIRE.getMaxLevel(),
-            Component.text("Reduces fire damage and burn time.", nameColor),
+            Component.text("Reduces fire damage and burn time.", descriptionColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

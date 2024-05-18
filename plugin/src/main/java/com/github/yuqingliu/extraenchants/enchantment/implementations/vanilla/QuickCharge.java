@@ -10,12 +10,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class QuickCharge extends VanillaEnchantment {
-    public QuickCharge(TextColor nameColor) {
+    public QuickCharge(TextColor nameColor, TextColor descriptionColor) {
         super(
             Enchantment.QUICK_CHARGE,
             Component.text("QuickCharge", nameColor),
             Enchantment.QUICK_CHARGE.getMaxLevel(),
-            Component.text("Decreases crossbow charging time.", nameColor),
+            Component.text("Decreases crossbow charging time.", descriptionColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

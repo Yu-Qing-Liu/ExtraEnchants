@@ -10,12 +10,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class SwiftSneak extends VanillaEnchantment {
-    public SwiftSneak(TextColor nameColor) {
+    public SwiftSneak(TextColor nameColor, TextColor descriptionColor) {
         super(
             Enchantment.SWIFT_SNEAK,
             Component.text("Swift Sneak", nameColor),
             Enchantment.SWIFT_SNEAK.getMaxLevel(),
-            Component.text("Increased player speed when crouching.", nameColor),
+            Component.text("Increased player speed when crouching.", descriptionColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

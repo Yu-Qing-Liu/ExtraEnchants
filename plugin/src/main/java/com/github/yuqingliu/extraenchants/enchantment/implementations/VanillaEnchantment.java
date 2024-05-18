@@ -26,6 +26,9 @@ public class VanillaEnchantment extends AbstractEnchantment {
     
     @Override
     public boolean canEnchant(ItemStack item) {
+        if(item.getType() == Material.BOOK || item.getType() == Material.ENCHANTED_BOOK) {
+            return true;
+        } 
         Component displayName = item.displayName();
         return enchantment.canEnchantItem(item) || applicable.contains(item.getType()) || applicableDisplayNames.contains(displayName);
     }

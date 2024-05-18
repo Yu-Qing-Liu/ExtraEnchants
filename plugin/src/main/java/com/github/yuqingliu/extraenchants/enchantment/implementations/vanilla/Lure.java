@@ -10,12 +10,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class Lure extends VanillaEnchantment {
-    public Lure(TextColor nameColor) {
+    public Lure(TextColor nameColor, TextColor descriptionColor) {
         super(
             Enchantment.LURE,
             Component.text("Lure", nameColor),
             Enchantment.LURE.getMaxLevel(),
-            Component.text("Decreases wait time until fish/junk/loot bites.", nameColor),
+            Component.text("Decreases wait time until fish/junk/loot bites.", descriptionColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",
