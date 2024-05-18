@@ -73,7 +73,7 @@ public class EnchantmentTableMenu {
                 List<Component> existingLore = metaOffer.lore() != null ? metaOffer.lore() : new ArrayList<>();
                 Component name = enchantment.getName();
                 Component description = enchantment.getDescription();
-                if(!description.equals(Component.empty())) {
+                if(!TextUtils.componentContains(description, "vanilla")) {
                     existingLore.add(description);
                 }
                 metaOffer.lore(existingLore);
@@ -136,7 +136,7 @@ public class EnchantmentTableMenu {
                 List<Component> existingLore = metaOffer.lore() != null ? metaOffer.lore() : new ArrayList<>();
                 Component name = enchantment.getName();
                 Component description = enchantment.getDescription();
-                if(!description.equals(Component.empty())) {
+                if(!TextUtils.componentContains(description, "vanilla")) {
                     existingLore.add(description);
                 }
                 metaOffer.lore(existingLore);
@@ -185,7 +185,7 @@ public class EnchantmentTableMenu {
                 List<Component> existingLore = metaOffer.lore() != null ? metaOffer.lore() : new ArrayList<>();
                 Component name = enchantment.getName();
                 Component description = enchantment.getDescription();
-                if(!description.equals(Component.empty())) {
+                if(!TextUtils.componentContains(description, "vanilla")) {
                     existingLore.add(description);
                 }
                 metaOffer.lore(existingLore);
@@ -225,7 +225,7 @@ public class EnchantmentTableMenu {
                 List<Component> existingLore = metaOffer.lore() != null ? metaOffer.lore() : new ArrayList<>();
                 Component name = enchantment.getName();
                 Component description = enchantment.getDescription();
-                if(!description.equals(Component.empty())) {
+                if(!TextUtils.componentContains(description, "vanilla")) {
                     existingLore.add(description);
                 }
                 metaOffer.lore(existingLore);

@@ -21,7 +21,7 @@ public class VanillaEnchantment extends AbstractEnchantment {
 
     @Override
     public Component getDescription() {
-        return Component.empty();   
+        return description.append(Component.text("-vanilla", description.color()));
     }
 
     @Override

@@ -168,7 +168,7 @@ public class EnchantmentManager {
             List<Material> applicableItems = parseMaterialList(applicableMaterials);
             List<Component> applicableNames = parseNamesList(applicableDisplayNames);
             for(org.bukkit.enchantments.Enchantment enchantment : Registry.ENCHANTMENT) {
-                if(enchantment.getKey().getKey().equals(TextUtils.componentToString(description))) {
+                if(enchantment.getKey().getKey().equals(TextUtils.componentToString(description).replace("-vanilla", ""))) {
                     return new Enchantment(
                         new VanillaEnchantment(
                             enchantment,

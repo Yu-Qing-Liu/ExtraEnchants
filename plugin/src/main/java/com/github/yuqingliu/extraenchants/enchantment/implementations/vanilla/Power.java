@@ -1,7 +1,9 @@
 package com.github.yuqingliu.extraenchants.enchantment.implementations.vanilla;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 
 import com.github.yuqingliu.extraenchants.enchantment.implementations.VanillaEnchantment;
@@ -16,7 +18,7 @@ public class Power extends VanillaEnchantment {
             Component.text("Power", nameColor),
             Enchantment.ARROW_DAMAGE.getMaxLevel(),
             Component.text(Enchantment.ARROW_DAMAGE.getKey().getKey(), nameColor),
-            new ArrayList<>(),
+            Arrays.asList(Material.CROSSBOW),
             new ArrayList<>(),
             "x^2",
             "x"
