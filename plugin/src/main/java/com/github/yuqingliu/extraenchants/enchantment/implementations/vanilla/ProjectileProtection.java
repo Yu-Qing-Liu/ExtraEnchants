@@ -15,7 +15,7 @@ public class ProjectileProtection extends VanillaEnchantment {
             Enchantment.PROTECTION_PROJECTILE,
             Component.text("Projectile Protection", nameColor),
             Enchantment.PROTECTION_PROJECTILE.getMaxLevel(),
-            Component.text(Enchantment.PROTECTION_PROJECTILE.getKey().getKey(), nameColor),
+            Component.text("Reduces projectile damage.", nameColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

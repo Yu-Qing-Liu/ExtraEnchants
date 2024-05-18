@@ -15,7 +15,7 @@ public class FrostWalker extends VanillaEnchantment {
             Enchantment.FROST_WALKER,
             Component.text("Frost Walker", nameColor),
             Enchantment.FROST_WALKER.getMaxLevel(),
-            Component.text(Enchantment.FROST_WALKER.getKey().getKey(), nameColor),
+            Component.text("Changes the water source blocks beneath the player into frosted ice and prevents the damage the player would take from standing on magma blocks.", nameColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

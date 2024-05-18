@@ -15,7 +15,7 @@ public class Lure extends VanillaEnchantment {
             Enchantment.LURE,
             Component.text("Lure", nameColor),
             Enchantment.LURE.getMaxLevel(),
-            Component.text(Enchantment.LURE.getKey().getKey(), nameColor),
+            Component.text("Decreases wait time until fish/junk/loot bites.", nameColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

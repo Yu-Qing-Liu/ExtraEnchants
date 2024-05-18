@@ -15,7 +15,7 @@ public class Channeling extends VanillaEnchantment {
             Enchantment.CHANNELING,
             Component.text("Channeling", nameColor),
             Enchantment.CHANNELING.getMaxLevel(),
-            Component.text(Enchantment.CHANNELING.getKey().getKey(), nameColor),
+            Component.text("Trident channels a bolt of lightning toward a hit entity. Functions only during thunderstorms.", nameColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

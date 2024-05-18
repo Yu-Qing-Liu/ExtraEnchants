@@ -15,7 +15,7 @@ public class DepthStrider extends VanillaEnchantment {
             Enchantment.DEPTH_STRIDER,
             Component.text("Depth Strider", nameColor),
             Enchantment.DEPTH_STRIDER.getMaxLevel(),
-            Component.text(Enchantment.DEPTH_STRIDER.getKey().getKey(), nameColor),
+            Component.text("Increases underwater movement speed.", nameColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

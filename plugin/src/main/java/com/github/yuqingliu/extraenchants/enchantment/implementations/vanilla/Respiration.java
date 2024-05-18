@@ -15,7 +15,7 @@ public class Respiration extends VanillaEnchantment {
             Enchantment.OXYGEN,
             Component.text("Respiration", nameColor),
             Enchantment.OXYGEN.getMaxLevel(),
-            Component.text(Enchantment.OXYGEN.getKey().getKey(), nameColor),
+            Component.text("Extends underwater breathing time.", nameColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

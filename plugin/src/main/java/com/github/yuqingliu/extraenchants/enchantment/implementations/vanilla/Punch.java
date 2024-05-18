@@ -15,7 +15,7 @@ public class Punch extends VanillaEnchantment {
             Enchantment.ARROW_KNOCKBACK,
             Component.text("Punch", nameColor),
             Enchantment.ARROW_KNOCKBACK.getMaxLevel(),
-            Component.text(Enchantment.ARROW_KNOCKBACK.getKey().getKey(), nameColor),
+            Component.text("Increases arrow knockback.", nameColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

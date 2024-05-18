@@ -15,7 +15,7 @@ public class QuickCharge extends VanillaEnchantment {
             Enchantment.QUICK_CHARGE,
             Component.text("QuickCharge", nameColor),
             Enchantment.QUICK_CHARGE.getMaxLevel(),
-            Component.text(Enchantment.QUICK_CHARGE.getKey().getKey(), nameColor),
+            Component.text("Decreases crossbow charging time.", nameColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

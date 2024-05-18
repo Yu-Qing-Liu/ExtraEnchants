@@ -15,7 +15,7 @@ public class SwiftSneak extends VanillaEnchantment {
             Enchantment.SWIFT_SNEAK,
             Component.text("Swift Sneak", nameColor),
             Enchantment.SWIFT_SNEAK.getMaxLevel(),
-            Component.text(Enchantment.SWIFT_SNEAK.getKey().getKey(), nameColor),
+            Component.text("Increased player speed when crouching.", nameColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

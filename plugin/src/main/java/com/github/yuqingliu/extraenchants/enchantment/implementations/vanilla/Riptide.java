@@ -15,7 +15,7 @@ public class Riptide extends VanillaEnchantment {
             Enchantment.RIPTIDE,
             Component.text("Riptide", nameColor),
             Enchantment.RIPTIDE.getMaxLevel(),
-            Component.text(Enchantment.RIPTIDE.getKey().getKey(), nameColor),
+            Component.text("Trident launches player with itself when thrown. Functions only in water or rain.", nameColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

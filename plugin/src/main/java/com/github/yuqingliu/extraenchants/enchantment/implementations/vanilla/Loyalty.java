@@ -15,7 +15,7 @@ public class Loyalty extends VanillaEnchantment {
             Enchantment.LOYALTY,
             Component.text("Loyalty", nameColor),
             Enchantment.LOYALTY.getMaxLevel(),
-            Component.text(Enchantment.LOYALTY.getKey().getKey(), nameColor),
+            Component.text("Trident returns after being thrown.", nameColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

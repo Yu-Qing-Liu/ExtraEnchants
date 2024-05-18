@@ -15,7 +15,7 @@ public class Thorns extends VanillaEnchantment {
             Enchantment.THORNS,
             Component.text("Thorns", nameColor),
             Enchantment.THORNS.getMaxLevel(),
-            Component.text(Enchantment.THORNS.getKey().getKey(), nameColor),
+            Component.text("Reflects some of the damage taken when hit, at the cost of reducing durability.", nameColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

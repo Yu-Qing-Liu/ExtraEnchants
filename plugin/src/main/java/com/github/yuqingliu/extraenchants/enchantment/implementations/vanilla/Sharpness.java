@@ -15,7 +15,7 @@ public class Sharpness extends VanillaEnchantment {
             Enchantment.DAMAGE_ALL,
             Component.text("Sharpness", nameColor),
             Enchantment.DAMAGE_ALL.getMaxLevel(),
-            Component.text(Enchantment.DAMAGE_ALL.getKey().getKey(), nameColor),
+            Component.text("Increases weapon damage.", nameColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

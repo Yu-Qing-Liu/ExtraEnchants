@@ -15,7 +15,7 @@ public class FireProtection extends VanillaEnchantment {
             Enchantment.PROTECTION_FIRE,
             Component.text("Fire Protection", nameColor),
             Enchantment.PROTECTION_FIRE.getMaxLevel(),
-            Component.text(Enchantment.PROTECTION_FIRE.getKey().getKey(), nameColor),
+            Component.text("Reduces fire damage and burn time.", nameColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

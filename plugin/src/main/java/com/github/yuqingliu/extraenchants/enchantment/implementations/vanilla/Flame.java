@@ -17,7 +17,7 @@ public class Flame extends VanillaEnchantment {
             Enchantment.ARROW_FIRE,
             Component.text("Flame", nameColor),
             Enchantment.ARROW_FIRE.getMaxLevel(),
-            Component.text(Enchantment.ARROW_FIRE.getKey().getKey(), nameColor),
+            Component.text("Arrows set targets on fire.", nameColor),
             Arrays.asList(Material.CROSSBOW),
             new ArrayList<>(),
             "x^2",

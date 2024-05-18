@@ -15,7 +15,7 @@ public class Efficiency extends VanillaEnchantment {
             Enchantment.DIG_SPEED,
             Component.text("Efficiency", nameColor),
             Enchantment.DIG_SPEED.getMaxLevel(),
-            Component.text(Enchantment.DIG_SPEED.getKey().getKey(), nameColor),
+            Component.text("When applied to an axe it increases the chance that the axe may stun a shield.", nameColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

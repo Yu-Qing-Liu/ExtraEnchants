@@ -27,9 +27,9 @@ public class EnchantmentManager {
     protected JavaPlugin plugin;
     protected FileConfiguration config;
     protected ApplicableItemsRegistry applicable;
-    private NamedTextColor vanilla = NamedTextColor.GRAY;
+    private NamedTextColor vanilla = NamedTextColor.AQUA;
+    private NamedTextColor custom = NamedTextColor.BLUE;
     private NamedTextColor descriptionColor = NamedTextColor.GRAY;
-    private NamedTextColor legendary = NamedTextColor.GOLD;
     private final Map<String, Enchantment> enchantmentRegistry = new HashMap<>();
 
     public EnchantmentManager(ExtraEnchants plugin) {
@@ -77,22 +77,22 @@ public class EnchantmentManager {
         enchantmentRegistry.put(Unbreaking.class.getSimpleName(), new Enchantment(new Unbreaking(vanilla)));
         enchantmentRegistry.put(VanishingCurse.class.getSimpleName(), new Enchantment(new VanishingCurse(vanilla)));
         // Custom enchants
-        enchantmentRegistry.put(AutoLooting.class.getSimpleName(), new Enchantment(new AutoLooting(legendary, descriptionColor, applicable)));
-        enchantmentRegistry.put(Delicate.class.getSimpleName(), new Enchantment(new Delicate(legendary, descriptionColor, applicable)));
-        enchantmentRegistry.put(Focus.class.getSimpleName(), new Enchantment(new Focus(legendary, descriptionColor, applicable)));
-        enchantmentRegistry.put(Growth.class.getSimpleName(), new Enchantment(new Growth(legendary, descriptionColor, applicable)));
-        enchantmentRegistry.put(Homing.class.getSimpleName(), new Enchantment(new Homing(legendary, descriptionColor, applicable)));
-        enchantmentRegistry.put(LifeSteal.class.getSimpleName(), new Enchantment(new LifeSteal(legendary, descriptionColor, applicable)));
-        enchantmentRegistry.put(Mitigation.class.getSimpleName(), new Enchantment(new Mitigation(legendary, descriptionColor, applicable)));
-        enchantmentRegistry.put(PowerStrike.class.getSimpleName(), new Enchantment(new PowerStrike(legendary, descriptionColor, applicable)));
-        enchantmentRegistry.put(RapidFire.class.getSimpleName(), new Enchantment(new RapidFire(legendary, descriptionColor, applicable)));
-        enchantmentRegistry.put(Replant.class.getSimpleName(), new Enchantment(new Replant(legendary, descriptionColor, applicable)));
-        enchantmentRegistry.put(Smelting.class.getSimpleName(), new Enchantment(new Smelting(legendary, descriptionColor, applicable)));
-        enchantmentRegistry.put(Snipe.class.getSimpleName(), new Enchantment(new Snipe(legendary, descriptionColor, applicable)));
-        enchantmentRegistry.put(SonicBoom.class.getSimpleName(), new Enchantment(new SonicBoom(legendary, descriptionColor, applicable)));
-        enchantmentRegistry.put(Venom.class.getSimpleName(), new Enchantment(new Venom(legendary, descriptionColor, applicable)));
-        enchantmentRegistry.put(Warped.class.getSimpleName(), new Enchantment(new Warped(legendary, descriptionColor, applicable)));
-        enchantmentRegistry.put(Wither.class.getSimpleName(), new Enchantment(new Wither(legendary, descriptionColor, applicable)));
+        enchantmentRegistry.put(AutoLooting.class.getSimpleName(), new Enchantment(new AutoLooting(custom, descriptionColor, applicable)));
+        enchantmentRegistry.put(Delicate.class.getSimpleName(), new Enchantment(new Delicate(custom, descriptionColor, applicable)));
+        enchantmentRegistry.put(Focus.class.getSimpleName(), new Enchantment(new Focus(custom, descriptionColor, applicable)));
+        enchantmentRegistry.put(Growth.class.getSimpleName(), new Enchantment(new Growth(custom, descriptionColor, applicable)));
+        enchantmentRegistry.put(Homing.class.getSimpleName(), new Enchantment(new Homing(custom, descriptionColor, applicable)));
+        enchantmentRegistry.put(LifeSteal.class.getSimpleName(), new Enchantment(new LifeSteal(custom, descriptionColor, applicable)));
+        enchantmentRegistry.put(Mitigation.class.getSimpleName(), new Enchantment(new Mitigation(custom, descriptionColor, applicable)));
+        enchantmentRegistry.put(PowerStrike.class.getSimpleName(), new Enchantment(new PowerStrike(custom, descriptionColor, applicable)));
+        enchantmentRegistry.put(RapidFire.class.getSimpleName(), new Enchantment(new RapidFire(custom, descriptionColor, applicable)));
+        enchantmentRegistry.put(Replant.class.getSimpleName(), new Enchantment(new Replant(custom, descriptionColor, applicable)));
+        enchantmentRegistry.put(Smelting.class.getSimpleName(), new Enchantment(new Smelting(custom, descriptionColor, applicable)));
+        enchantmentRegistry.put(Snipe.class.getSimpleName(), new Enchantment(new Snipe(custom, descriptionColor, applicable)));
+        enchantmentRegistry.put(SonicBoom.class.getSimpleName(), new Enchantment(new SonicBoom(custom, descriptionColor, applicable)));
+        enchantmentRegistry.put(Venom.class.getSimpleName(), new Enchantment(new Venom(custom, descriptionColor, applicable)));
+        enchantmentRegistry.put(Warped.class.getSimpleName(), new Enchantment(new Warped(custom, descriptionColor, applicable)));
+        enchantmentRegistry.put(Wither.class.getSimpleName(), new Enchantment(new Wither(custom, descriptionColor, applicable)));
     }
 
     public Map<String, Enchantment> getEnchantments() {
@@ -145,7 +145,7 @@ public class EnchantmentManager {
         if(enchantmentsSection != null) {
             for(String key : enchantmentsSection.getKeys(false)) {
                 Object value = enchantmentsSection.get(key);
-                Enchantment enchantment = createEnchantment(value);
+                Enchantment enchantment = createEnchantment(value, key);
                 if(enchantment != null) {
                     enchantmentRegistry.put(key, enchantment);
                 }
@@ -153,7 +153,7 @@ public class EnchantmentManager {
         }
     }
 
-    private Enchantment createEnchantment(Object data) {
+    private Enchantment createEnchantment(Object data, String key) {
         if(data instanceof List) {
             List<?> info = (List<?>) data;
             String sname = (String) info.get(0);
@@ -167,21 +167,20 @@ public class EnchantmentManager {
             List<?> applicableDisplayNames = (List<?>) info.get(6);
             List<Material> applicableItems = parseMaterialList(applicableMaterials);
             List<Component> applicableNames = parseNamesList(applicableDisplayNames);
-            for(org.bukkit.enchantments.Enchantment enchantment : Registry.ENCHANTMENT) {
-                if(enchantment.getKey().getKey().equals(TextUtils.componentToString(description).replace("-vanilla", ""))) {
-                    return new Enchantment(
-                        new VanillaEnchantment(
-                            enchantment,
-                            name,
-                            maxLevel,
-                            description,
-                            applicableItems,
-                            applicableNames,
-                            levelFormula,
-                            costFormula
-                        )
-                    );
-                }
+            org.bukkit.enchantments.Enchantment enchantment = TextUtils.getVanillaEnchantment(key);
+            if(enchantment != null) {
+                return new Enchantment(
+                    new VanillaEnchantment(
+                        enchantment,
+                        name,
+                        maxLevel,
+                        description,
+                        applicableItems,
+                        applicableNames,
+                        levelFormula,
+                        costFormula
+                    )
+                );
             }
             return new Enchantment(
                 new CustomEnchantment(

@@ -15,7 +15,7 @@ public class Fortune extends VanillaEnchantment {
             Enchantment.LOOT_BONUS_BLOCKS,
             Component.text("Fortune", nameColor),
             Enchantment.LOOT_BONUS_BLOCKS.getMaxLevel(),
-            Component.text(Enchantment.LOOT_BONUS_BLOCKS.getKey().getKey(), nameColor),
+            Component.text("Increases certain item drop chances from blocks.", nameColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

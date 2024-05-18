@@ -15,7 +15,7 @@ public class AquaInfinity extends VanillaEnchantment {
             Enchantment.WATER_WORKER,
             Component.text("Aqua Infinity", nameColor),
             Enchantment.WATER_WORKER.getMaxLevel(),
-            Component.text(Enchantment.WATER_WORKER.getKey().getKey(), nameColor),
+            Component.text("Increase the rate of underwater mining speed.", nameColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

@@ -15,7 +15,7 @@ public class Smite extends VanillaEnchantment {
             Enchantment.DAMAGE_UNDEAD,
             Component.text("Smite", nameColor),
             Enchantment.DAMAGE_UNDEAD.getMaxLevel(),
-            Component.text(Enchantment.DAMAGE_UNDEAD.getKey().getKey(), nameColor),
+            Component.text("Increases damage to undead mobs.", nameColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

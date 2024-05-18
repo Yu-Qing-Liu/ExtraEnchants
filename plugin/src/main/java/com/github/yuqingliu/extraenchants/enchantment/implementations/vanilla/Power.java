@@ -17,7 +17,7 @@ public class Power extends VanillaEnchantment {
             Enchantment.ARROW_DAMAGE,
             Component.text("Power", nameColor),
             Enchantment.ARROW_DAMAGE.getMaxLevel(),
-            Component.text(Enchantment.ARROW_DAMAGE.getKey().getKey(), nameColor),
+            Component.text("Increases arrow damage.", nameColor),
             Arrays.asList(Material.CROSSBOW),
             new ArrayList<>(),
             "x^2",

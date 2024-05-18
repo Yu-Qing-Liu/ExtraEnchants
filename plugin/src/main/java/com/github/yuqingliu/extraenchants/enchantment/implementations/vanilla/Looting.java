@@ -15,7 +15,7 @@ public class Looting extends VanillaEnchantment {
             Enchantment.LOOT_BONUS_MOBS,
             Component.text("Looting", nameColor),
             Enchantment.LOOT_BONUS_MOBS.getMaxLevel(),
-            Component.text(Enchantment.LOOT_BONUS_MOBS.getKey().getKey(), nameColor),
+            Component.text("Increases amount of loot earned from mobs.", nameColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

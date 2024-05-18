@@ -7,6 +7,8 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.bukkit.enchantments.Enchantment;
+
 public class TextUtils {
     private static final Map<Character, Integer> romanNumerals = Map.of(
         'I', 1,
@@ -89,5 +91,50 @@ public class TextUtils {
 
     public static Component jsonToComponent(String json) {
         return GsonComponentSerializer.gson().deserialize(json);
+    }
+
+    public static Enchantment getVanillaEnchantment(String key) {
+        return switch(key) {
+            case "AquaInfinity" -> Enchantment.WATER_WORKER;
+            case "BaneOfArthropods" -> Enchantment.DAMAGE_ARTHROPODS;
+            case "BindingCurse" -> Enchantment.BINDING_CURSE;
+            case "BlastProtection" -> Enchantment.PROTECTION_EXPLOSIONS;
+            case "Channeling" -> Enchantment.CHANNELING;
+            case "DepthStrider" -> Enchantment.DEPTH_STRIDER;
+            case "Efficiency" -> Enchantment.DIG_SPEED;
+            case "FeatherFalling" -> Enchantment.PROTECTION_FALL;
+            case "FireAspect" -> Enchantment.FIRE_ASPECT;
+            case "FireProtection" -> Enchantment.PROTECTION_FIRE;
+            case "Flame" -> Enchantment.ARROW_FIRE;
+            case "Fortune" -> Enchantment.LOOT_BONUS_BLOCKS;
+            case "FrostWalker" -> Enchantment.FROST_WALKER;
+            case "Impaling" -> Enchantment.IMPALING;
+            case "Infinity" -> Enchantment.ARROW_INFINITE;
+            case "Knockback" -> Enchantment.KNOCKBACK;
+            case "Looting" -> Enchantment.LOOT_BONUS_MOBS;
+            case "Loyalty" -> Enchantment.LOYALTY;
+            case "LuckOfTheSea" -> Enchantment.LUCK;
+            case "Lure" -> Enchantment.LURE;
+            case "Mending" -> Enchantment.MENDING;
+            case "Multishot" -> Enchantment.MULTISHOT;
+            case "Piercing" -> Enchantment.PIERCING;
+            case "Power" -> Enchantment.ARROW_DAMAGE;
+            case "ProjectileProtection" -> Enchantment.PROTECTION_PROJECTILE;
+            case "Protection" -> Enchantment.PROTECTION_ENVIRONMENTAL;
+            case "Punch" -> Enchantment.ARROW_KNOCKBACK;
+            case "QuickCharge" -> Enchantment.QUICK_CHARGE;
+            case "Respiration" -> Enchantment.OXYGEN;
+            case "Riptide" -> Enchantment.RIPTIDE;
+            case "Sharpness" -> Enchantment.DAMAGE_ALL;
+            case "SilkTouch" -> Enchantment.SILK_TOUCH;
+            case "Smite" -> Enchantment.DAMAGE_UNDEAD;
+            case "SoulSpeed" -> Enchantment.SOUL_SPEED;
+            case "SweepingEdge" -> Enchantment.SWEEPING_EDGE;
+            case "SwiftSneak" -> Enchantment.SWIFT_SNEAK;
+            case "Thorns" -> Enchantment.THORNS;
+            case "Unbreaking" -> Enchantment.DURABILITY;
+            case "VanishingCurse" -> Enchantment.VANISHING_CURSE;
+            default -> null;
+        };
     }
 }

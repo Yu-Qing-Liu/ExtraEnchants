@@ -15,7 +15,7 @@ public class LuckOfTheSea extends VanillaEnchantment {
             Enchantment.LUCK,
             Component.text("Luck of the Sea", nameColor),
             Enchantment.LUCK.getMaxLevel(),
-            Component.text(Enchantment.LUCK.getKey().getKey(), nameColor),
+            Component.text("Increases rate of fishing rare loot.", nameColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

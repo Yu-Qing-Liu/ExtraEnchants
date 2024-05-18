@@ -15,7 +15,7 @@ public class Infinity extends VanillaEnchantment {
             Enchantment.ARROW_INFINITE,
             Component.text("Infinity", nameColor),
             Enchantment.ARROW_INFINITE.getMaxLevel(),
-            Component.text(Enchantment.ARROW_INFINITE.getKey().getKey(), nameColor),
+            Component.text("Shooting with projectiles does not consume arrows.", nameColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

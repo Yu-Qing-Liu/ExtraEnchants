@@ -15,7 +15,7 @@ public class BlastProtection extends VanillaEnchantment {
             Enchantment.PROTECTION_EXPLOSIONS,
             Component.text("Blast Protection", nameColor),
             Enchantment.PROTECTION_EXPLOSIONS.getMaxLevel(),
-            Component.text(Enchantment.PROTECTION_EXPLOSIONS.getKey().getKey(), nameColor),
+            Component.text("Reduces explosion damage and knockback.", nameColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

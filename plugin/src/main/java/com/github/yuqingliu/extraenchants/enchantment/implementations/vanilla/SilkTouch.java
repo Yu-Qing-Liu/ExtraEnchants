@@ -15,7 +15,7 @@ public class SilkTouch extends VanillaEnchantment {
             Enchantment.SILK_TOUCH,
             Component.text("Silk Touch", nameColor),
             Enchantment.SILK_TOUCH.getMaxLevel(),
-            Component.text(Enchantment.SILK_TOUCH.getKey().getKey(), nameColor),
+            Component.text("Mined blocks will drop as blocks instead of breaking into other items/blocks.", nameColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

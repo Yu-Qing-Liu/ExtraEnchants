@@ -15,7 +15,7 @@ public class VanishingCurse extends VanillaEnchantment {
             Enchantment.VANISHING_CURSE,
             Component.text("Curse of Vanishing", nameColor),
             Enchantment.VANISHING_CURSE.getMaxLevel(),
-            Component.text(Enchantment.VANISHING_CURSE.getKey().getKey(), nameColor),
+            Component.text("Item destroyed upon death.", nameColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

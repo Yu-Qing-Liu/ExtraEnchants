@@ -15,7 +15,7 @@ public class FireAspect extends VanillaEnchantment {
             Enchantment.FIRE_ASPECT,
             Component.text("Fire Aspect", nameColor),
             Enchantment.FIRE_ASPECT.getMaxLevel(),
-            Component.text(Enchantment.FIRE_ASPECT.getKey().getKey(), nameColor),
+            Component.text("Sets target on fire.", nameColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

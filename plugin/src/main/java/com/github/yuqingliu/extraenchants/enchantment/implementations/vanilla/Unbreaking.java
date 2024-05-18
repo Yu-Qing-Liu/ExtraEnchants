@@ -15,7 +15,7 @@ public class Unbreaking extends VanillaEnchantment {
             Enchantment.DURABILITY,
             Component.text("Unbreaking", nameColor),
             Enchantment.DURABILITY.getMaxLevel(),
-            Component.text(Enchantment.DURABILITY.getKey().getKey(), nameColor),
+            Component.text("Increases item durability.", nameColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

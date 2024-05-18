@@ -15,7 +15,7 @@ public class BindingCurse extends VanillaEnchantment {
             Enchantment.BINDING_CURSE,
             Component.text("Curse of Binding", nameColor),
             Enchantment.BINDING_CURSE.getMaxLevel(),
-            Component.text(Enchantment.BINDING_CURSE.getKey().getKey(), nameColor),
+            Component.text("Items cannot be removed from armor slots unless the cause is death or breaking.", nameColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

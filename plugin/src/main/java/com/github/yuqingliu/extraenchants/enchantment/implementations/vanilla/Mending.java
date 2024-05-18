@@ -15,7 +15,7 @@ public class Mending extends VanillaEnchantment {
             Enchantment.MENDING,
             Component.text("Mending", nameColor),
             Enchantment.MENDING.getMaxLevel(),
-            Component.text(Enchantment.MENDING.getKey().getKey(), nameColor),
+            Component.text("Repairs the item when gaining XP orbs.", nameColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

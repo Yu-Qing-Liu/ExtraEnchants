@@ -15,7 +15,7 @@ public class SoulSpeed extends VanillaEnchantment {
             Enchantment.SOUL_SPEED,
             Component.text("Soul Speed", nameColor),
             Enchantment.SOUL_SPEED.getMaxLevel(),
-            Component.text(Enchantment.SOUL_SPEED.getKey().getKey(), nameColor),
+            Component.text("Increases walking speed on soul sand and soul soil.", nameColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

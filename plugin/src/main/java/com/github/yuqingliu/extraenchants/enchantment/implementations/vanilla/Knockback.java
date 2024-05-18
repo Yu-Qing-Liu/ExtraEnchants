@@ -15,7 +15,7 @@ public class Knockback extends VanillaEnchantment {
             Enchantment.KNOCKBACK,
             Component.text("Knockback", nameColor),
             Enchantment.KNOCKBACK.getMaxLevel(),
-            Component.text(Enchantment.KNOCKBACK.getKey().getKey(), nameColor),
+            Component.text("Knocks back mobs away from you when hit.", nameColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

@@ -15,7 +15,7 @@ public class Impaling extends VanillaEnchantment {
             Enchantment.IMPALING,
             Component.text("Impaling", nameColor),
             Enchantment.IMPALING.getMaxLevel(),
-            Component.text(Enchantment.IMPALING.getKey().getKey(), nameColor),
+            Component.text("Trident deals additional damage to mobs that spawn naturally in the ocean.", nameColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

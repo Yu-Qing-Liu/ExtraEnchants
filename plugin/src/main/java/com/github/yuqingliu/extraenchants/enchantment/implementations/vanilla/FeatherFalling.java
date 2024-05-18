@@ -15,7 +15,7 @@ public class FeatherFalling extends VanillaEnchantment {
             Enchantment.PROTECTION_FALL,
             Component.text("Feather Falling", nameColor),
             Enchantment.PROTECTION_FALL.getMaxLevel(),
-            Component.text(Enchantment.PROTECTION_FALL.getKey().getKey(), nameColor),
+            Component.text("Reduces fall damage.", nameColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

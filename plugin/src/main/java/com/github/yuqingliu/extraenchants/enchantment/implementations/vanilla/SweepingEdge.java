@@ -15,7 +15,7 @@ public class SweepingEdge extends VanillaEnchantment {
             Enchantment.SWEEPING_EDGE,
             Component.text("Sweeping Edge", nameColor),
             Enchantment.SWEEPING_EDGE.getMaxLevel(),
-            Component.text(Enchantment.SWEEPING_EDGE.getKey().getKey(), nameColor),
+            Component.text("Increases sweeping attack damage.", nameColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

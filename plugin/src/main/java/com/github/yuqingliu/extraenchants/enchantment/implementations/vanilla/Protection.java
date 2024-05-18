@@ -15,7 +15,7 @@ public class Protection extends VanillaEnchantment {
             Enchantment.PROTECTION_ENVIRONMENTAL,
             Component.text("Protection", nameColor),
             Enchantment.PROTECTION_ENVIRONMENTAL.getMaxLevel(),
-            Component.text(Enchantment.PROTECTION_ENVIRONMENTAL.getKey().getKey(), nameColor),
+            Component.text("Reduces most types of damage by 4% per level.", nameColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

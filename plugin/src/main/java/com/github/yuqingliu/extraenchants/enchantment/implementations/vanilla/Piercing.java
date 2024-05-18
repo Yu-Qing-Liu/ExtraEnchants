@@ -15,7 +15,7 @@ public class Piercing extends VanillaEnchantment {
             Enchantment.PIERCING,
             Component.text("Piercing", nameColor),
             Enchantment.PIERCING.getMaxLevel(),
-            Component.text(Enchantment.PIERCING.getKey().getKey(), nameColor),
+            Component.text("Arrows pass through multiple entities.", nameColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

@@ -15,7 +15,7 @@ public class Multishot extends VanillaEnchantment {
             Enchantment.MULTISHOT,
             Component.text("Multishot", nameColor),
             Enchantment.MULTISHOT.getMaxLevel(),
-            Component.text(Enchantment.MULTISHOT.getKey().getKey(), nameColor),
+            Component.text("Shoot 3 arrows at the cost of one; only one arrow can be recovered.", nameColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

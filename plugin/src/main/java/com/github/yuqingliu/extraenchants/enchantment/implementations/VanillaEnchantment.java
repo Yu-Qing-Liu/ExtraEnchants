@@ -20,16 +20,6 @@ public class VanillaEnchantment extends AbstractEnchantment {
     }
 
     @Override
-    public Component getDescription() {
-        return description.append(Component.text("-vanilla", description.color()));
-    }
-
-    @Override
-    public Component getLeveledDescription(int level) {
-        return Component.empty();
-    }
-    
-    @Override
     public int getEnchantmentLevel(ItemStack item) {
         return item.getEnchantmentLevel(enchantment);
     }
