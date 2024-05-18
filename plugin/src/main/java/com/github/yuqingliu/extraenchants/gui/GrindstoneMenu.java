@@ -131,7 +131,7 @@ public class GrindstoneMenu {
             PlaceholderMeta.displayName(Component.text("Unavailable", NamedTextColor.DARK_PURPLE));
             Placeholder.setItemMeta(PlaceholderMeta);
         }
-        while(slotptr < FINAL_SLOT) {
+        while(slotptr <= FINAL_SLOT) {
             if(inv.getItem(slotptr) == null || inv.getItem(slotptr).getType() != Material.ENCHANTED_BOOK) {
                 inv.setItem(slotptr, Placeholder);
             }
