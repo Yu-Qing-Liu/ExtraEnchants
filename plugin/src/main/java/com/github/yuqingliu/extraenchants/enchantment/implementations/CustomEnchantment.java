@@ -58,10 +58,7 @@ public class CustomEnchantment extends AbstractEnchantment {
             ItemMeta meta = item.getItemMeta();
             if (meta != null) {
                 Component eLevel = Component.text(" " + TextUtils.toRoman(level), name.color());
-                List<Component> existingLore = meta.lore() != null ? meta.lore() : new ArrayList<>();
-                existingLore = addOrUpdateEnchantmentFromSection(existingLore, name, eLevel);
-                meta.lore(existingLore);
-                item.setItemMeta(meta);
+                item = addOrUpdateEnchantmentLore(item, name, eLevel);
             }
         }
         return item;
@@ -76,10 +73,7 @@ public class CustomEnchantment extends AbstractEnchantment {
         item = nbtItem.getItem();
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
-            List<Component> existingLore = meta.lore() != null ? meta.lore() : new ArrayList<>();
-            existingLore = removeEnchantmentFromSection(existingLore, name);
-            meta.lore(existingLore);
-            item.setItemMeta(meta);
+            item = removeEnchantmentLore(item, name);
         }
         return item;
     }

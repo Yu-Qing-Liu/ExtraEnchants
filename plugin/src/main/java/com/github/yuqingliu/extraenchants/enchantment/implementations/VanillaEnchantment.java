@@ -48,13 +48,11 @@ public class VanillaEnchantment extends AbstractEnchantment {
             NBTItem nbtItem = new NBTItem(item);
             nbtItem.setInteger("extra-enchants." + name, level);
             item = nbtItem.getItem();
+            Component eLevel = Component.text(" " + TextUtils.toRoman(level), name.color());
+            item = addOrUpdateEnchantmentLore(item, name, eLevel);
             if(item.getItemMeta() instanceof EnchantmentStorageMeta) {
                 EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();
                 meta.addStoredEnchant(enchantment, level, true);
-                Component eLevel = Component.text(" " + TextUtils.toRoman(level), name.color());
-                List<Component> existingLore = meta.lore() != null ? meta.lore() : new ArrayList<>();
-                existingLore = addOrUpdateEnchantmentFromSection(existingLore, name, eLevel);
-                meta.lore(existingLore);
                 meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                 item.setItemMeta(meta);
                 return item;
@@ -62,10 +60,6 @@ public class VanillaEnchantment extends AbstractEnchantment {
             item.addUnsafeEnchantment(enchantment, level);
             ItemMeta meta = item.getItemMeta();
             if (meta != null) {
-                Component eLevel = Component.text(" " + TextUtils.toRoman(level), name.color());
-                List<Component> existingLore = meta.lore() != null ? meta.lore() : new ArrayList<>();
-                existingLore = addOrUpdateEnchantmentFromSection(existingLore, name, eLevel);
-                meta.lore(existingLore);
                 meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                 item.setItemMeta(meta);
             }
@@ -80,12 +74,10 @@ public class VanillaEnchantment extends AbstractEnchantment {
             nbtItem.removeKey("extra-enchants." + name);
         }
         item = nbtItem.getItem();
+        item = removeEnchantmentLore(item, name);
         if(item.getItemMeta() instanceof EnchantmentStorageMeta) {
             EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();
             meta.removeEnchant(enchantment);
-            List<Component> existingLore = meta.lore() != null ? meta.lore() : new ArrayList<>();
-            existingLore = removeEnchantmentFromSection(existingLore, name);
-            meta.lore(existingLore);
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             item.setItemMeta(meta);
             return item;
@@ -93,9 +85,6 @@ public class VanillaEnchantment extends AbstractEnchantment {
         ItemMeta meta = item.getItemMeta();
         item.removeEnchantment(enchantment);
         if (meta != null) {
-            List<Component> existingLore = meta.lore() != null ? meta.lore() : new ArrayList<>();
-            existingLore = removeEnchantmentFromSection(existingLore, name);
-            meta.lore(existingLore);
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             item.setItemMeta(meta);
         }

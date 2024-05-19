@@ -2,6 +2,7 @@ package com.github.yuqingliu.extraenchants.enchantment;
 
 import com.github.yuqingliu.extraenchants.enchantment.implementations.custom.*;
 import com.github.yuqingliu.extraenchants.enchantment.implementations.vanilla.*;
+import com.github.yuqingliu.extraenchants.enchantment.implementations.ability.*;
 import com.github.yuqingliu.extraenchants.item.ApplicableItemsRegistry;
 import com.github.yuqingliu.extraenchants.ExtraEnchants;
 import com.github.yuqingliu.extraenchants.enchantment.implementations.*;
@@ -25,8 +26,8 @@ public class EnchantmentManager {
     protected JavaPlugin plugin;
     protected FileConfiguration config;
     protected ApplicableItemsRegistry applicable;
-    private NamedTextColor vanilla = NamedTextColor.GRAY;
-    private NamedTextColor custom = NamedTextColor.BLUE;
+    private NamedTextColor vanilla = NamedTextColor.BLUE;
+    private NamedTextColor custom = NamedTextColor.DARK_PURPLE;
     private NamedTextColor descriptionColor = NamedTextColor.DARK_GRAY;
     private final Map<String, Enchantment> enchantmentRegistry = new HashMap<>();
 
@@ -77,20 +78,21 @@ public class EnchantmentManager {
         // Custom enchants
         enchantmentRegistry.put(AutoLooting.class.getSimpleName(), new Enchantment(new AutoLooting(custom, descriptionColor, applicable)));
         enchantmentRegistry.put(Delicate.class.getSimpleName(), new Enchantment(new Delicate(custom, descriptionColor, applicable)));
-        enchantmentRegistry.put(Focus.class.getSimpleName(), new Enchantment(new Focus(custom, descriptionColor, applicable)));
         enchantmentRegistry.put(Growth.class.getSimpleName(), new Enchantment(new Growth(custom, descriptionColor, applicable)));
         enchantmentRegistry.put(Homing.class.getSimpleName(), new Enchantment(new Homing(custom, descriptionColor, applicable)));
         enchantmentRegistry.put(LifeSteal.class.getSimpleName(), new Enchantment(new LifeSteal(custom, descriptionColor, applicable)));
         enchantmentRegistry.put(Mitigation.class.getSimpleName(), new Enchantment(new Mitigation(custom, descriptionColor, applicable)));
         enchantmentRegistry.put(PowerStrike.class.getSimpleName(), new Enchantment(new PowerStrike(custom, descriptionColor, applicable)));
-        enchantmentRegistry.put(RapidFire.class.getSimpleName(), new Enchantment(new RapidFire(custom, descriptionColor, applicable)));
         enchantmentRegistry.put(Replant.class.getSimpleName(), new Enchantment(new Replant(custom, descriptionColor, applicable)));
         enchantmentRegistry.put(Smelting.class.getSimpleName(), new Enchantment(new Smelting(custom, descriptionColor, applicable)));
         enchantmentRegistry.put(Snipe.class.getSimpleName(), new Enchantment(new Snipe(custom, descriptionColor, applicable)));
-        enchantmentRegistry.put(SonicBoom.class.getSimpleName(), new Enchantment(new SonicBoom(custom, descriptionColor, applicable)));
         enchantmentRegistry.put(Venom.class.getSimpleName(), new Enchantment(new Venom(custom, descriptionColor, applicable)));
         enchantmentRegistry.put(Warped.class.getSimpleName(), new Enchantment(new Warped(custom, descriptionColor, applicable)));
         enchantmentRegistry.put(Wither.class.getSimpleName(), new Enchantment(new Wither(custom, descriptionColor, applicable)));
+        // Ability enchants
+        enchantmentRegistry.put(SonicBoom.class.getSimpleName(), new Enchantment(new SonicBoom(custom, descriptionColor, applicable)));
+        enchantmentRegistry.put(Focus.class.getSimpleName(), new Enchantment(new Focus(custom, descriptionColor, applicable)));
+        enchantmentRegistry.put(RapidFire.class.getSimpleName(), new Enchantment(new RapidFire(custom, descriptionColor, applicable)));
     }
 
     public Map<String, Enchantment> getEnchantments() {

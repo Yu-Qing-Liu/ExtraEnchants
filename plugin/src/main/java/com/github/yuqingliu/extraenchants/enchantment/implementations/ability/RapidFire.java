@@ -1,4 +1,4 @@
-package com.github.yuqingliu.extraenchants.enchantment.implementations.custom;
+package com.github.yuqingliu.extraenchants.enchantment.implementations.ability;
 
 import java.util.ArrayList;
 
