@@ -20,6 +20,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 import com.github.yuqingliu.extraenchants.enchantment.Enchantment;
 import com.github.yuqingliu.extraenchants.enchantment.EnchantmentOffer;
+import com.github.yuqingliu.extraenchants.item.ItemUtils;
 import com.github.yuqingliu.extraenchants.utils.MathUtils;
 import com.github.yuqingliu.extraenchants.utils.TextUtils;
 
@@ -36,10 +37,12 @@ public class EnchantmentTableMenu {
     private int MAX_PAGES = 25;
     private HashMap<Integer, HashMap<Integer, EnchantmentOffer>> pageData= new HashMap<>();
     private Map<String, Enchantment> enchantmentRegistry;
+    private ItemUtils itemUtils;
     private EnchantmentOffer selectedOffer = null;
 
-    public EnchantmentTableMenu(Map<String, Enchantment> registry) {
+    public EnchantmentTableMenu(Map<String, Enchantment> registry, ItemUtils itemUtils) {
         this.enchantmentRegistry = registry;
+        this.itemUtils = itemUtils;
     }
     
     private void initializePages() {
@@ -151,7 +154,7 @@ public class EnchantmentTableMenu {
         String costFormula = enchantment.getCostFormula();
         int levelRequired = MathUtils.evaluateExpression(levelFormula, level);
         int cost = MathUtils.evaluateExpression(costFormula, level);
-        return new EnchantmentOffer(enchantment, level, levelRequired, cost);
+        return new EnchantmentOffer(itemUtils, enchantment, level, levelRequired, cost);
     }
 
     private void displayItemFrame(Inventory inv) {
@@ -219,7 +222,7 @@ public class EnchantmentTableMenu {
                 int maxLevel = enchantment.getMaxLevel();
                 int itemEnchantLevel = enchantment.getEnchantmentLevel(item);
                 if(maxLevel > 0 && itemEnchantLevel < maxLevel) {
-                    EnchantmentOffer offer = new EnchantmentOffer(enchantment, maxLevel, 0, 0);
+                    EnchantmentOffer offer = new EnchantmentOffer(itemUtils, enchantment, maxLevel, 0, 0);
                     applicableEnchants.add(offer);
                 }
             }

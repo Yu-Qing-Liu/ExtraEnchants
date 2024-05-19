@@ -43,7 +43,7 @@ public class PlayerInteractsWithEnchantmentTable implements Listener {
     public PlayerInteractsWithEnchantmentTable(ExtraEnchants plugin) {
         this.plugin = plugin;
         this.globalConstants = (GlobalConstants) plugin.getConfigurationManager().getConstants().get("GlobalConstants");
-        this.enchantmentTableMenu = new EnchantmentTableMenu(plugin.getEnchantmentManager().getEnchantments());
+        this.enchantmentTableMenu = new EnchantmentTableMenu(plugin.getEnchantmentManager().getEnchantments(), plugin.getItemUtils());
     }
 
     @EventHandler

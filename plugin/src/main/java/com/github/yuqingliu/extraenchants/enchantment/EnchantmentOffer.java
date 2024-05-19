@@ -1,5 +1,8 @@
 package com.github.yuqingliu.extraenchants.enchantment;
 
+import com.github.yuqingliu.extraenchants.item.ItemUtils;
+
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -8,12 +11,14 @@ import lombok.Getter;
 
 @Getter
 public class EnchantmentOffer {
+    private ItemUtils itemUtils;
     private final Enchantment enchantment;
     private int level;
     private int requiredLevel;
     private int cost;
 
-    public EnchantmentOffer(Enchantment enchantment, int level, int requiredLevel, int cost) {
+    public EnchantmentOffer(ItemUtils itemUtils, Enchantment enchantment, int level, int requiredLevel, int cost) {
+        this.itemUtils = itemUtils;
         this.enchantment = enchantment;
         this.level = level;
         this.requiredLevel = requiredLevel;
@@ -34,6 +39,14 @@ public class EnchantmentOffer {
         }
         player.setLevel(player.getLevel() - cost);
         player.playSound(player.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0f, 1.0f);
-        return enchantment.applyEnchantment(item, finalLevel);
+        ItemStack finalItem = enchantment.applyEnchantment(item, finalLevel);
+        if(itemUtils.getEnchantments(finalItem).isEmpty()) {
+            if(finalItem.getType() == Material.ENCHANTED_BOOK) {
+                return new ItemStack(Material.BOOK);
+            } else {
+                return new ItemStack(finalItem.getType());
+            }
+        }
+        return finalItem;
     }
 }

@@ -9,7 +9,6 @@ import com.github.yuqingliu.extraenchants.utils.TextUtils;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Material;
-import org.bukkit.Registry;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -27,9 +25,9 @@ public class EnchantmentManager {
     protected JavaPlugin plugin;
     protected FileConfiguration config;
     protected ApplicableItemsRegistry applicable;
-    private NamedTextColor vanilla = NamedTextColor.AQUA;
+    private NamedTextColor vanilla = NamedTextColor.GRAY;
     private NamedTextColor custom = NamedTextColor.BLUE;
-    private NamedTextColor descriptionColor = NamedTextColor.GRAY;
+    private NamedTextColor descriptionColor = NamedTextColor.DARK_GRAY;
     private final Map<String, Enchantment> enchantmentRegistry = new HashMap<>();
 
     public EnchantmentManager(ExtraEnchants plugin) {
