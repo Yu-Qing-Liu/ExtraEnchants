@@ -27,6 +27,9 @@ public class VanillaEnchantment extends AbstractEnchantment {
 
     @Override
     public int getEnchantmentLevel(ItemStack item) {
+        if(item == null || item.getType() == Material.AIR) {
+            return 0;
+        }
         if(item.getItemMeta() instanceof EnchantmentStorageMeta) {
             EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();
             return meta.getStoredEnchantLevel(enchantment);
@@ -36,6 +39,9 @@ public class VanillaEnchantment extends AbstractEnchantment {
     
     @Override
     public boolean canEnchant(ItemStack item) {
+        if(item == null || item.getType() == Material.AIR) {
+            return false;
+        }
         if(item.getType() == Material.BOOK || item.getType() == Material.ENCHANTED_BOOK) {
             return true;
         } 

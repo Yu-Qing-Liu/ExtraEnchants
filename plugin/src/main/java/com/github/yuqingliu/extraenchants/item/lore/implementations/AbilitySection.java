@@ -28,18 +28,22 @@ public class AbilitySection extends AbstractLoreSection {
 
     public void removeAbilityFromSection(Component enchant) {
         List<Component> newLore = new ArrayList<>();
-        for (int i = 0; i < lore.size(); i++) {
+        for (int i = 1; i < lore.size(); i++) {
             Component line = lore.get(i);
+            boolean found = false;
             for(Component child : line.children()) {
                 if(child.equals(enchant)) {
-                    i++; // Skip enchantment and description
-                } else {
-                    newLore.add(line);
-                }
+                    found = true;
+                } 
+            }
+            if(found) {
+                i++; // Skip description
+            } else {
+                newLore.add(line);
             }
         }
-        if(lore.size() <= 1) {
-            lore = new ArrayList<>();
+        if(!newLore.isEmpty()) {
+            newLore.add(0, sectionTitle);
         }
         lore = newLore;
     }

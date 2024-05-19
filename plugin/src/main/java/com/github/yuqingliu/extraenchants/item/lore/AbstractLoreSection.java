@@ -36,6 +36,7 @@ public abstract class AbstractLoreSection {
                 if(found) {
                     found = false;
                     lore.remove(lore.size() - 1);
+                    return;
                 }
                 if(pos == position) {
                     found = true;

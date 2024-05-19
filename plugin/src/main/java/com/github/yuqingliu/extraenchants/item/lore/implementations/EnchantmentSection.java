@@ -9,7 +9,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class EnchantmentSection extends AbstractLoreSection {
-    private Component comma = Component.text(", ", NamedTextColor.DARK_BLUE);
+    private Component comma = Component.text(", ", NamedTextColor.BLUE);
     private int maxComponents = 3;
     
     public EnchantmentSection(double position, List<Component> itemLore) {

@@ -4,15 +4,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.Material;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextReplacementConfig;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 import java.util.List;
-import java.util.Queue;
-import java.util.regex.Pattern;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
 
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -29,6 +22,9 @@ public class CustomEnchantment extends AbstractEnchantment {
     
     @Override
     public int getEnchantmentLevel(ItemStack item) {
+        if(item == null || item.getType() == Material.AIR) {
+            return 0;
+        }
         NBTItem nbtItem = new NBTItem(item);
         int level = 0;
         if(nbtItem != null && nbtItem.hasTag("extra-enchants." + name)) {
@@ -39,6 +35,9 @@ public class CustomEnchantment extends AbstractEnchantment {
     
     @Override
     public boolean canEnchant(ItemStack item) {
+        if(item == null || item.getType() == Material.AIR) {
+            return false;
+        }
         Component displayName = item.displayName();
         if(item.getType() == Material.BOOK || item.getType() == Material.ENCHANTED_BOOK) {
             return true;

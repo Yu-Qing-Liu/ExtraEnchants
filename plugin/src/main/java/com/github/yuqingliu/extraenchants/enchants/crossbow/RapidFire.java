@@ -29,6 +29,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class RapidFire implements Listener {
     private final Enchantment enchant;
+    private final int cooldown;
     private HashMap<UUID, Long> cooldowns = new HashMap<>();
 
     @EventHandler
@@ -56,7 +57,7 @@ public class RapidFire implements Listener {
     private long getRemainingCooldownTime(Player player) {
         long lastUsed = cooldowns.getOrDefault(player.getUniqueId(), 0L);
         long elapsed = System.currentTimeMillis() - lastUsed;
-        long cooldownDuration = 5000;
+        long cooldownDuration = cooldown * 1000;
         return cooldownDuration - elapsed;
     }
 

@@ -28,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SonicBoom implements Listener {
     private final Enchantment enchant;
+    private final int cooldown;
     private HashMap<UUID, Long> cooldowns = new HashMap<>();
 
     @EventHandler
@@ -72,7 +73,7 @@ public class SonicBoom implements Listener {
                 Entity hitEntity = rayTraceResult.getHitEntity();
                 Location hitEntityLocation = hitEntity.getLocation();
                 delayedTeleportPlayer(player, hitEntityLocation, teleportDelay);
-                delayedDamage(hitEntity, player, teleportDelay);
+                delayedDamage(hitEntity, player, damageDelay);
                 break;
             } else if (step.getBlock().getType().isSolid()) {
                 Location hitLocation = step.getBlock().getLocation();
@@ -116,7 +117,7 @@ public class SonicBoom implements Listener {
     private long getRemainingCooldownTime(Player player) {
         long lastUsed = cooldowns.getOrDefault(player.getUniqueId(), 0L);
         long elapsed = System.currentTimeMillis() - lastUsed;
-        long cooldownDuration = 5000;
+        long cooldownDuration = cooldown * 1000;
         return cooldownDuration - elapsed;
     }
 }

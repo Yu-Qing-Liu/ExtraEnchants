@@ -40,6 +40,9 @@ public class AbilityEnchantment extends AbstractEnchantment {
     
     @Override
     public int getEnchantmentLevel(ItemStack item) {
+        if(item == null || item.getType() == Material.AIR) {
+            return 0;
+        }
         NBTItem nbtItem = new NBTItem(item);
         int level = 0;
         if(nbtItem != null && nbtItem.hasTag("extra-enchants." + name)) {
@@ -50,6 +53,9 @@ public class AbilityEnchantment extends AbstractEnchantment {
     
     @Override
     public boolean canEnchant(ItemStack item) {
+        if(item == null || item.getType() == Material.AIR) {
+            return false;
+        }
         Component displayName = item.displayName();
         if(item.getType() == Material.BOOK || item.getType() == Material.ENCHANTED_BOOK) {
             return true;
