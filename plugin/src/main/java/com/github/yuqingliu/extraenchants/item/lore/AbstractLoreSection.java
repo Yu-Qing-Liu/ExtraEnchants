@@ -1,16 +1,20 @@
 package com.github.yuqingliu.extraenchants.item.lore;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.kyori.adventure.text.Component;
 
 public abstract class AbstractLoreSection {
-    protected List<Component> lore;
+    protected final double position;
+    protected List<Component> lore = new ArrayList<>();
     protected List<Component> itemLore;
+    protected Component seperator = Component.empty();
 
-    public AbstractLoreSection(List<Component> itemLore) {
+    public AbstractLoreSection(double position, List<Component> itemLore) {
+        this.position = position;
         this.itemLore = itemLore;
-        this.lore = fetchSection();
+        fetchSection();
     }
 
     protected int getComponentSize(Component component) {
@@ -21,5 +25,23 @@ public abstract class AbstractLoreSection {
         return this.lore;
     }
 
-    public abstract List<Component> fetchSection();
+    protected void fetchSection() {
+        double pos = 0;
+        boolean found = false;
+        for(Component component : itemLore) {
+            if(found) {
+                lore.add(component);
+            }
+            if(component.equals(seperator)) {
+                if(found) {
+                    found = false;
+                    lore.remove(lore.size() - 1);
+                }
+                if(pos == position) {
+                    found = true;
+                }
+                pos += 0.5;
+            }
+        }
+    }
 }

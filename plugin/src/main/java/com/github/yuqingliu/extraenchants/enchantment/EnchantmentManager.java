@@ -28,6 +28,7 @@ public class EnchantmentManager {
     protected ApplicableItemsRegistry applicable;
     private NamedTextColor vanilla = NamedTextColor.BLUE;
     private NamedTextColor custom = NamedTextColor.DARK_PURPLE;
+    private NamedTextColor ability = NamedTextColor.GOLD;
     private NamedTextColor descriptionColor = NamedTextColor.DARK_GRAY;
     private final Map<String, Enchantment> enchantmentRegistry = new HashMap<>();
 
@@ -90,9 +91,9 @@ public class EnchantmentManager {
         enchantmentRegistry.put(Warped.class.getSimpleName(), new Enchantment(new Warped(custom, descriptionColor, applicable)));
         enchantmentRegistry.put(Wither.class.getSimpleName(), new Enchantment(new Wither(custom, descriptionColor, applicable)));
         // Ability enchants
-        enchantmentRegistry.put(SonicBoom.class.getSimpleName(), new Enchantment(new SonicBoom(custom, descriptionColor, applicable)));
-        enchantmentRegistry.put(Focus.class.getSimpleName(), new Enchantment(new Focus(custom, descriptionColor, applicable)));
-        enchantmentRegistry.put(RapidFire.class.getSimpleName(), new Enchantment(new RapidFire(custom, descriptionColor, applicable)));
+        enchantmentRegistry.put(SonicBoom.class.getSimpleName(), new Enchantment(new SonicBoom(ability, descriptionColor, applicable)));
+        enchantmentRegistry.put(Focus.class.getSimpleName(), new Enchantment(new Focus(ability, descriptionColor, applicable)));
+        enchantmentRegistry.put(RapidFire.class.getSimpleName(), new Enchantment(new RapidFire(ability, descriptionColor, applicable)));
     }
 
     public Map<String, Enchantment> getEnchantments() {
@@ -167,6 +168,9 @@ public class EnchantmentManager {
             List<?> applicableDisplayNames = (List<?>) info.get(6);
             List<Material> applicableItems = parseMaterialList(applicableMaterials);
             List<Component> applicableNames = parseNamesList(applicableDisplayNames);
+            if(TextUtils.isAbilityEnchantment(key)) {
+                return null;
+            }
             org.bukkit.enchantments.Enchantment enchantment = TextUtils.getVanillaEnchantment(key);
             if(enchantment != null) {
                 return new Enchantment(
@@ -182,6 +186,7 @@ public class EnchantmentManager {
                     )
                 );
             }
+
             return new Enchantment(
                 new CustomEnchantment(
                     name,

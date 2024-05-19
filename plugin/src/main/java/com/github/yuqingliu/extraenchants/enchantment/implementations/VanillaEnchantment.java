@@ -27,6 +27,10 @@ public class VanillaEnchantment extends AbstractEnchantment {
 
     @Override
     public int getEnchantmentLevel(ItemStack item) {
+        if(item.getItemMeta() instanceof EnchantmentStorageMeta) {
+            EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();
+            return meta.getStoredEnchantLevel(enchantment);
+        }
         return item.getEnchantmentLevel(enchantment);
     }
     
@@ -45,15 +49,15 @@ public class VanillaEnchantment extends AbstractEnchantment {
             if(item.getType() == Material.BOOK) {
                 item = new ItemStack(Material.ENCHANTED_BOOK);
             }
+            Component eLevel = Component.text(" " + TextUtils.toRoman(level), name.color());
+            item = addOrUpdateEnchantmentLore(item, name, eLevel);
             NBTItem nbtItem = new NBTItem(item);
             nbtItem.setInteger("extra-enchants." + name, level);
             item = nbtItem.getItem();
-            Component eLevel = Component.text(" " + TextUtils.toRoman(level), name.color());
-            item = addOrUpdateEnchantmentLore(item, name, eLevel);
             if(item.getItemMeta() instanceof EnchantmentStorageMeta) {
                 EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();
                 meta.addStoredEnchant(enchantment, level, true);
-                meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                meta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS);
                 item.setItemMeta(meta);
                 return item;
             }
@@ -78,14 +82,12 @@ public class VanillaEnchantment extends AbstractEnchantment {
         if(item.getItemMeta() instanceof EnchantmentStorageMeta) {
             EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();
             meta.removeEnchant(enchantment);
-            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             item.setItemMeta(meta);
             return item;
         }
-        ItemMeta meta = item.getItemMeta();
         item.removeEnchantment(enchantment);
+        ItemMeta meta = item.getItemMeta();
         if (meta != null) {
-            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             item.setItemMeta(meta);
         }
         return item;

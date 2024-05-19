@@ -10,70 +10,67 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class EnchantmentSection extends AbstractLoreSection {
     private Component comma = Component.text(", ", NamedTextColor.DARK_BLUE);
+    private int maxComponents = 3;
     
-    public EnchantmentSection(List<Component> itemLore) {
-        super(itemLore);
+    public EnchantmentSection(double position, List<Component> itemLore) {
+        super(position, itemLore);
     }
     
-    @Override
-    public List<Component> fetchSection() {
-        //TODO
-        return itemLore;
-    }
-
     public void addOrUpdateEnchantmentFromSection(Component enchant, Component eLevel) {
-        int maxComponents = 7;
-        boolean enchantmentFound = false;
-
-        if (lore.isEmpty()) {
-            Component currentLine = Component.empty().append(enchant).append(eLevel);
-            lore.add(currentLine);
-            return;
-        } else {
-            // Scan components to find if the enchantment exists; if it exists, update its level
-            for (int i = 0; i < lore.size(); i++) {
-                Component line = lore.get(i);
-                List<Component> newChildren = new ArrayList<>();
-                boolean found = false;
-
-                for (Component child : line.children()) {
-                    if (child.equals(enchant)) {
-                        found = true;
-                        newChildren.add(enchant);
-                        newChildren.add(eLevel);
-                    } else if (!found) {
-                        newChildren.add(child);
-                    }
-                }
-
-                if (found) {
-                    Component newLine = Component.empty();
-                    for (Component child : newChildren) {
-                        newLine = newLine.append(child);
-                    }
-                    lore.set(i, newLine);
-                    enchantmentFound = true;
-                    break; // Exit the loop once the enchantment is found and updated
-                }
-            }
-
-            if (!enchantmentFound) {
-                // Last line has space, append the component at the end of it
-                Component currentLine = lore.get(lore.size() - 1);
-                if (getComponentSize(currentLine) < maxComponents) {
-                    Component newLine = currentLine.append(Component.text(", ")).append(enchant).append(eLevel);
-                    lore.set(lore.size() - 1, newLine);
-                } else {
-                    // Did not find component and last line is full, add a new line with the enchantment as its first element
-                    Component newLine = Component.empty().append(enchant).append(eLevel);
-                    lore.add(newLine);
+        List<Component> newLore = new ArrayList<>();
+        List<Component> filteredComponents = new ArrayList<>();
+        
+        // Flatten and filter the lore components in one go, removing all commas
+        for (Component line : lore) {
+            List<Component> children = line.children();
+            for (int i = 0; i < children.size(); i++) {
+                Component child = children.get(i);
+                if (child.equals(enchant)) {
+                    i++;
+                } else if (!child.equals(comma) && !child.equals(Component.empty())) {
+                    filteredComponents.add(child);
                 }
             }
         }
+        
+        filteredComponents.add(enchant);
+        filteredComponents.add(eLevel);
+        // Buffer
+        filteredComponents.add(Component.empty());
+        filteredComponents.add(Component.empty());
+        filteredComponents.add(Component.empty());
+
+        // Reconstruct the final lore from filtered components, ensuring max 8 components per line
+        Component line = Component.empty();
+        int componentCount = 0;
+        for (int i = 0; i < filteredComponents.size(); i+=2) {
+            Component component = filteredComponents.get(i);
+            Component level = filteredComponents.get(i + 1);
+            if(component.equals(Component.empty()) || level.equals(Component.empty())) {
+                break;
+            }
+
+            if (componentCount < maxComponents) {
+                if(componentCount != 0) {
+                    line = line.append(comma);
+                } 
+                line = line.append(component);
+                line = line.append(level);
+                componentCount++;
+            } else {
+                newLore.add(line);
+                line = Component.empty().append(component);
+                line = line.append(level);
+                componentCount = 1;
+            }
+        }
+        if (!line.equals(Component.empty())) {
+            newLore.add(line);
+        }
+        this.lore = newLore;
     }
 
     public void removeEnchantmentFromSection(Component enchant) {
-        int maxComponents = 3;
         List<Component> newLore = new ArrayList<>();
         List<Component> filteredComponents = new ArrayList<>();
 
@@ -89,18 +86,26 @@ public class EnchantmentSection extends AbstractLoreSection {
                 }
             }
         }
+        
+        // Buffer
+        filteredComponents.add(Component.empty());
+        filteredComponents.add(Component.empty());
+        filteredComponents.add(Component.empty());
 
         // Reconstruct the final lore from filtered components, ensuring max 8 components per line
         Component line = Component.empty();
         int componentCount = 0;
-        for (int i = 1; i < filteredComponents.size(); i+=2) {
-            Component component = filteredComponents.get(i - 1);
-            Component level = filteredComponents.get(i);
+        for (int i = 0; i < filteredComponents.size(); i+=2) {
+            Component component = filteredComponents.get(i);
+            Component level = filteredComponents.get(i + 1);
+            if(component.equals(Component.empty()) || level.equals(Component.empty())) {
+                break;
+            }
 
             if (componentCount < maxComponents) {
-                if (componentCount > 0) {
-                    line = line.append(comma); // Append comma between components
-                }
+                if(componentCount != 0) {
+                    line = line.append(comma);
+                } 
                 line = line.append(component);
                 line = line.append(level);
                 componentCount++;

@@ -137,4 +137,13 @@ public class TextUtils {
             default -> null;
         };
     }
+
+    public static boolean isAbilityEnchantment(String key) {
+        return switch(key) {
+            case "Focus" -> true;
+            case "RapidFire" -> true;
+            case "SonicBoom" -> true;
+            default -> false;
+        };
+    }
 }

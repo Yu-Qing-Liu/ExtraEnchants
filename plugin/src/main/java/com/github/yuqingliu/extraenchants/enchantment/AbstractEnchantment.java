@@ -10,9 +10,7 @@ import net.kyori.adventure.text.format.TextColor;
 
 import java.util.List;
 import java.util.regex.Pattern;
-import java.util.ArrayList;
 
-import com.github.yuqingliu.extraenchants.enchantment.AbstractEnchantment;
 import com.github.yuqingliu.extraenchants.item.lore.Lore;
 import com.github.yuqingliu.extraenchants.item.lore.implementations.EnchantmentSection;
 

@@ -19,11 +19,13 @@ public class Lore {
     private List<Component> lore = new ArrayList<>();
     private List<Component> itemLore;
     private final Map<String, LoreSection> loreMap = new HashMap<>();
+    private final Component seperator = Component.empty();
     
     public Lore(ItemStack item) {
         this.item = item;
         this.itemLore = item.lore() != null ? item.lore() : new ArrayList<>();
-        loreMap.put(EnchantmentSection.class.getSimpleName(), new LoreSection(new EnchantmentSection(itemLore)));
+        loreMap.put(EnchantmentSection.class.getSimpleName(), new LoreSection(new EnchantmentSection(0.0, itemLore)));
+        loreMap.put(AbilitySection.class.getSimpleName(), new LoreSection(new AbilitySection(1.0, itemLore)));
     }
 
     public LoreSection getLoreSection(String sectionName) {
@@ -33,7 +35,14 @@ public class Lore {
     public List<Component> getLore() {
         for(LoreSection section : loreMap.values()) {
             List<Component> sectionLore = section.getLore();
-            lore.addAll(sectionLore);
+            if(!sectionLore.isEmpty()) {
+                lore.add(seperator);
+                lore.addAll(sectionLore);
+                lore.add(seperator);
+            } else {
+                lore.add(seperator);
+                lore.add(seperator);
+            } 
         }
         return lore;
     }
