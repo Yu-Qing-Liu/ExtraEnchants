@@ -15,21 +15,23 @@ import com.github.yuqingliu.extraenchants.item.lore.Lore;
 import com.github.yuqingliu.extraenchants.item.lore.implementations.EnchantmentSection;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.util.Objects;
 
 @RequiredArgsConstructor
 @Getter
 public abstract class AbstractEnchantment {
-    private Component comma = Component.text(", ", NamedTextColor.DARK_BLUE);
-    protected final Component name;
-    protected final int maxLevel;
-    protected final Component description;
-    protected final List<Material> applicable;
-    protected final List<Component> applicableDisplayNames;
-    protected final String requiredLevelFormula;
-    protected final String costFormula;
+    Component comma = Component.text(", ", NamedTextColor.DARK_BLUE);
+    @NonNull protected Component name;
+    @Setter protected int maxLevel;
+    @NonNull protected Component description;
+    @NonNull protected List<Material> applicable;
+    @NonNull protected List<Component> applicableDisplayNames;
+    @NonNull protected String requiredLevelFormula;
+    @NonNull protected String costFormula;
 
     public Component getDescription() {
         Pattern replace = Pattern.compile("(\\d+%?)");

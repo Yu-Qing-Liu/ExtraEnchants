@@ -61,6 +61,10 @@ public class Enchantment {
         return definition.getEnchantmentLevel(item);
     }
 
+    public void setMaxLevel(int level) {
+        definition.setMaxLevel(level);
+    }
+
     public boolean canEnchant(ItemStack item) {
         return definition.canEnchant(item);
     }

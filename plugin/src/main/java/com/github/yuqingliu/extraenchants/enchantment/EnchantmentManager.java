@@ -169,6 +169,9 @@ public class EnchantmentManager {
             List<Material> applicableItems = parseMaterialList(applicableMaterials);
             List<Component> applicableNames = parseNamesList(applicableDisplayNames);
             if(TextUtils.isAbilityEnchantment(key)) {
+                if(maxLevel == 0) {
+                    enchantmentRegistry.get(key).setMaxLevel(0);
+                }
                 return null;
             }
             org.bukkit.enchantments.Enchantment enchantment = TextUtils.getVanillaEnchantment(key);
