@@ -6,43 +6,45 @@ import java.util.List;
 import net.kyori.adventure.text.Component;
 
 public abstract class AbstractLoreSection {
-    protected final double position;
+    protected final int position;
     protected List<Component> lore = new ArrayList<>();
-    protected List<Component> itemLore;
+    private List<Component> itemLore;
+    private int[] sectionSizes;
     protected Component seperator = Component.empty();
 
-    public AbstractLoreSection(double position, List<Component> itemLore) {
+    public AbstractLoreSection(int position, int[] sectionSizes, List<Component> itemLore) {
         this.position = position;
         this.itemLore = itemLore;
+        this.sectionSizes = sectionSizes;
         fetchSection();
     }
 
-    protected int getComponentSize(Component component) {
-        return component.children().size();
+    public int getSize() {
+        return lore.size();
     }
 
     public List<Component> getLore() {
         return this.lore;
     }
 
-    protected void fetchSection() {
-        double pos = 0;
-        boolean found = false;
-        for(Component component : itemLore) {
-            if(found) {
-                lore.add(component);
-            }
-            if(component.equals(seperator)) {
-                if(found) {
-                    found = false;
-                    lore.remove(lore.size() - 1);
-                    return;
-                }
-                if(pos == position) {
-                    found = true;
-                }
-                pos += 0.5;
-            }
+    private void fetchSection() {
+        int start = 0;
+        int sectionSize = 0;
+        if (sectionSizes == null || position >= sectionSizes.length) {
+            return;
+        }
+        for (int i = 0; i < position; i++) {
+            start += sectionSizes[i];
+        }
+        sectionSize = sectionSizes[position];
+        collectLore(start, sectionSize);
+    }
+
+    private void collectLore(int start, int sectionSize) {
+        int end = start + sectionSize;
+        for (int i = start; i < end && i < itemLore.size(); i++) {
+            Component line = itemLore.get(i);
+            lore.add(line);
         }
     }
 }

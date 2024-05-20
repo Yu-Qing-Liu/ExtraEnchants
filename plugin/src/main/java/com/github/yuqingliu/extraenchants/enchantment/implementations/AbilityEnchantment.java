@@ -2,22 +2,25 @@ package com.github.yuqingliu.extraenchants.enchantment.implementations;
 
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 
 import net.kyori.adventure.text.Component;
 
 import java.util.List;
 
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
+import com.github.yuqingliu.extraenchants.Keys;
 import com.github.yuqingliu.extraenchants.enchantment.AbstractEnchantment;
 import com.github.yuqingliu.extraenchants.item.lore.Lore;
 import com.github.yuqingliu.extraenchants.item.lore.implementations.AbilitySection;
 import com.github.yuqingliu.extraenchants.utils.TextUtils;
 
-import de.tr7zw.changeme.nbtapi.NBTItem;
-
 public class AbilityEnchantment extends AbstractEnchantment {
     private Component action;
+    private NamespacedKey key = Keys.itemEnchant(TextUtils.componentToString(name));
 
     public AbilityEnchantment(Component action, Component name, int maxLevel, Component description, List<Material> applicable, List<Component> applicableDisplayNames, String levelFormula, String costFormula) {
         super(name, maxLevel, description, applicable, applicableDisplayNames, levelFormula, costFormula);
@@ -37,18 +40,18 @@ public class AbilityEnchantment extends AbstractEnchantment {
         abilitySection.removeAbilityFromSection(enchant);
         return lore.applyLore();
     }
-    
+
     @Override
     public int getEnchantmentLevel(ItemStack item) {
         if(item == null || item.getType() == Material.AIR) {
             return 0;
         }
-        NBTItem nbtItem = new NBTItem(item);
-        int level = 0;
-        if(nbtItem != null && nbtItem.hasTag("extra-enchants." + name)) {
-            level = nbtItem.getInteger("extra-enchants." + name);
+        ItemMeta meta = item.getItemMeta();
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+        if (container.has(key, PersistentDataType.INTEGER)) {
+            return container.get(key, PersistentDataType.INTEGER);
         }
-        return level;
+        return 0;
     }
     
     @Override
@@ -69,10 +72,11 @@ public class AbilityEnchantment extends AbstractEnchantment {
             if (item.getType() == Material.BOOK) {
                 item = new ItemStack(Material.ENCHANTED_BOOK);
             }
-            NBTItem nbtItem = new NBTItem(item);
-            nbtItem.setInteger("extra-enchants." + name, level);
-            item = nbtItem.getItem();
             ItemMeta meta = item.getItemMeta();
+            PersistentDataContainer container = meta.getPersistentDataContainer();
+            container.set(key, PersistentDataType.INTEGER, level);
+            item.setItemMeta(meta);
+            meta = item.getItemMeta();
             if (meta != null) {
                 Component eLevel = Component.text(" " + TextUtils.toRoman(level), name.color());
                 item = addOrUpdateAbilityLore(item, name, eLevel);
@@ -83,12 +87,13 @@ public class AbilityEnchantment extends AbstractEnchantment {
     
     @Override
     public ItemStack removeEnchantment(ItemStack item) {
-        NBTItem nbtItem = new NBTItem(item);
-        if (nbtItem.hasTag("extra-enchants." + name)) {
-            nbtItem.removeKey("extra-enchants." + name);
-        }
-        item = nbtItem.getItem();
         ItemMeta meta = item.getItemMeta();
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+        if(container.has(key, PersistentDataType.INTEGER)) {
+            container.remove(key);
+        }
+        item.setItemMeta(meta);
+        meta = item.getItemMeta();
         if (meta != null) {
             item = removeAbilityLore(item, name);
         }

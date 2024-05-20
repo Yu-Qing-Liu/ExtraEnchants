@@ -5,6 +5,8 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Set;
 import java.util.HashSet;
@@ -12,9 +14,8 @@ import java.util.HashSet;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
+import com.github.yuqingliu.extraenchants.Keys;
 import com.github.yuqingliu.extraenchants.persistence.blocks.threads.*;
-
-import de.tr7zw.changeme.nbtapi.NBTItem;
 
 public class CustomBlockUtils extends CustomBlockDatabase {
     // Add a custom block to the database
@@ -52,9 +53,10 @@ public class CustomBlockUtils extends CustomBlockDatabase {
         }
         
         // Add custom data to the ItemStack
-        NBTItem nbtItem = new NBTItem(customAnvil);
-        nbtItem.setBoolean("extra-enchants-custom-anvil", true);
-        customAnvil = nbtItem.getItem();
+        meta = customAnvil.getItemMeta();
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+        container.set(Keys.getCustomUIBlock(), PersistentDataType.BOOLEAN, true);
+        customAnvil.setItemMeta(meta);
 
         // Give the custom item to the player
         player.getInventory().addItem(customAnvil);
@@ -72,9 +74,10 @@ public class CustomBlockUtils extends CustomBlockDatabase {
         }
         
         // Add custom data to the ItemStack
-        NBTItem nbtItem = new NBTItem(customEtable);
-        nbtItem.setBoolean("extra-enchants-custom-etable", true);
-        customEtable = nbtItem.getItem();
+        meta = customEtable.getItemMeta();
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+        container.set(Keys.getCustomUIBlock(), PersistentDataType.BOOLEAN, true);
+        customEtable.setItemMeta(meta);
 
         // Give the custom item to the player
         player.getInventory().addItem(customEtable);
@@ -92,9 +95,10 @@ public class CustomBlockUtils extends CustomBlockDatabase {
         }
         
         // Add custom data to the ItemStack
-        NBTItem nbtItem = new NBTItem(customGrindstone);
-        nbtItem.setBoolean("extra-enchants-custom-grindstone", true);
-        customGrindstone = nbtItem.getItem();
+        meta = customGrindstone.getItemMeta();
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+        container.set(Keys.getCustomUIBlock(), PersistentDataType.BOOLEAN, true);
+        customGrindstone.setItemMeta(meta);
 
         // Give the custom item to the player
         player.getInventory().addItem(customGrindstone);

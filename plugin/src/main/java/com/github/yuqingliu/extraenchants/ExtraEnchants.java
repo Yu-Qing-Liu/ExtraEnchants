@@ -31,6 +31,7 @@ public class ExtraEnchants extends JavaPlugin {
     @Override
     public void onLoad() {
         Scheduler.setPlugin(this);
+        Keys.load(this);
     }
 
     @Override

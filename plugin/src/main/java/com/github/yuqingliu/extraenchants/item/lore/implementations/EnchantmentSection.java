@@ -12,8 +12,8 @@ public class EnchantmentSection extends AbstractLoreSection {
     private Component comma = Component.text(", ", NamedTextColor.BLUE);
     private int maxComponents = 3;
     
-    public EnchantmentSection(double position, List<Component> itemLore) {
-        super(position, itemLore);
+    public EnchantmentSection(int position, int[] sectionSizes, List<Component> itemLore) {
+        super(position, sectionSizes, itemLore);
     }
     
     public void addOrUpdateEnchantmentFromSection(Component enchant, Component eLevel) {

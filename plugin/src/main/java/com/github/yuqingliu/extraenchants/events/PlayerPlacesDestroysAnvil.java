@@ -6,12 +6,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
+import com.github.yuqingliu.extraenchants.Keys;
 import com.github.yuqingliu.extraenchants.persistence.blocks.*;
-
-import de.tr7zw.changeme.nbtapi.NBTItem;
 
 public class PlayerPlacesDestroysAnvil implements Listener {
     @EventHandler
@@ -44,7 +46,8 @@ public class PlayerPlacesDestroysAnvil implements Listener {
             return false;
         }
         // Check if the ItemStack has the custom anvil NBT tag key
-        NBTItem nbtItem = new NBTItem(itemStack);
-        return nbtItem.hasTag("extra-enchants-custom-anvil");
+        ItemMeta meta = itemStack.getItemMeta();
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+        return container.has(Keys.getCustomUIBlock(), PersistentDataType.BOOLEAN);
     }
 }

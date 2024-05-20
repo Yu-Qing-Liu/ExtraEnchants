@@ -12,6 +12,10 @@ public class LoreSection {
         this.definition = loreSection;
     }
 
+    public int getSize() {
+        return definition.getSize();
+    }
+
     public List<Component> getLore() {
         return definition.getLore();
     }

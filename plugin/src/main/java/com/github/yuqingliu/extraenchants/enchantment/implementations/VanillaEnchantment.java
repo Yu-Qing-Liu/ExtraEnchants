@@ -4,21 +4,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 import net.kyori.adventure.text.Component;
 
+import com.github.yuqingliu.extraenchants.Keys;
 import com.github.yuqingliu.extraenchants.enchantment.AbstractEnchantment;
 import com.github.yuqingliu.extraenchants.utils.TextUtils;
 
-import de.tr7zw.changeme.nbtapi.NBTItem;
-
 public class VanillaEnchantment extends AbstractEnchantment {
     private Enchantment enchantment;  
+    private NamespacedKey key = Keys.itemEnchant(TextUtils.componentToString(name));
     
     public VanillaEnchantment(Enchantment enchantment, Component name, int maxLevel, Component description, List<Material> applicable, List<Component> applicableDisplayNames, String levelFormula, String costFormula) {
         super(name, maxLevel, description, applicable, applicableDisplayNames, levelFormula, costFormula);
@@ -57,18 +60,19 @@ public class VanillaEnchantment extends AbstractEnchantment {
             }
             Component eLevel = Component.text(" " + TextUtils.toRoman(level), name.color());
             item = addOrUpdateEnchantmentLore(item, name, eLevel);
-            NBTItem nbtItem = new NBTItem(item);
-            nbtItem.setInteger("extra-enchants." + name, level);
-            item = nbtItem.getItem();
+            ItemMeta meta = item.getItemMeta();
+            PersistentDataContainer container = meta.getPersistentDataContainer();
+            container.set(key, PersistentDataType.INTEGER, level);
+            item.setItemMeta(meta);
             if(item.getItemMeta() instanceof EnchantmentStorageMeta) {
-                EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();
-                meta.addStoredEnchant(enchantment, level, true);
-                meta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS);
-                item.setItemMeta(meta);
+                EnchantmentStorageMeta smeta = (EnchantmentStorageMeta) item.getItemMeta();
+                smeta.addStoredEnchant(enchantment, level, true);
+                smeta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS);
+                item.setItemMeta(smeta);
                 return item;
             }
             item.addUnsafeEnchantment(enchantment, level);
-            ItemMeta meta = item.getItemMeta();
+            meta = item.getItemMeta();
             if (meta != null) {
                 meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                 item.setItemMeta(meta);
@@ -79,23 +83,20 @@ public class VanillaEnchantment extends AbstractEnchantment {
     
     @Override
     public ItemStack removeEnchantment(ItemStack item) {
-        NBTItem nbtItem = new NBTItem(item);
-        if(nbtItem.hasTag("extra-enchants." + name)) {
-            nbtItem.removeKey("extra-enchants." + name);
+        ItemMeta meta = item.getItemMeta();
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+        if(container.has(key, PersistentDataType.INTEGER)) {
+            container.remove(key);
         }
-        item = nbtItem.getItem();
+        item.setItemMeta(meta);
         item = removeEnchantmentLore(item, name);
         if(item.getItemMeta() instanceof EnchantmentStorageMeta) {
-            EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();
-            meta.removeEnchant(enchantment);
-            item.setItemMeta(meta);
+            EnchantmentStorageMeta smeta = (EnchantmentStorageMeta) item.getItemMeta();
+            smeta.removeEnchant(enchantment);
+            item.setItemMeta(smeta);
             return item;
         }
         item.removeEnchantment(enchantment);
-        ItemMeta meta = item.getItemMeta();
-        if (meta != null) {
-            item.setItemMeta(meta);
-        }
         return item;
     }
 }
