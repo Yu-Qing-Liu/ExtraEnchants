@@ -68,7 +68,7 @@ goto fail
 :execute
 @rem Setup the command line
 
-set CLASSPATH=%APP_HOME%\lib\plugin-1.0-SNAPSHOT.jar;%APP_HOME%\lib\exp4j-0.4.8.jar;%APP_HOME%\lib\item-nbt-api-2.12.2.jar
+set CLASSPATH=%APP_HOME%\lib\plugin-1.0-SNAPSHOT.jar;%APP_HOME%\lib\exp4j-0.4.8.jar;%APP_HOME%\lib\item-nbt-api-2.12.4.jar
 
 
 @rem Execute plugin

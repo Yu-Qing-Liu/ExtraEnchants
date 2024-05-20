@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'application'
-    id 'com.github.johnrengelman.shadow' version '7.1.2' // This plugin is the Gradle equivalent of Maven Shade Plugin
+    id 'com.github.johnrengelman.shadow' version '8.1.1' // This plugin is the Gradle equivalent of Maven Shade Plugin
 }
 
 group = 'com.github.yuqingliu.extraenchants'
@@ -20,7 +20,7 @@ repositories {
 
 dependencies {
     implementation 'net.objecthunter:exp4j:0.4.8'
-    implementation 'de.tr7zw:item-nbt-api:2.12.2'
+    implementation 'de.tr7zw:item-nbt-api:2.12.4'
 
     compileOnly("org.projectlombok:lombok:1.18.30")
     annotationProcessor("org.projectlombok:lombok:1.18.30")
