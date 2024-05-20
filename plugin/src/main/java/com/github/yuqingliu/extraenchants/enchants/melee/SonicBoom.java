@@ -4,12 +4,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.event.Listener;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.util.Vector;
 import org.bukkit.Sound;
+
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.UUID;
 import org.bukkit.event.block.Action;
@@ -18,17 +19,17 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 
-import com.github.yuqingliu.extraenchants.enchants.utils.UtilityMethods;
-import com.github.yuqingliu.extraenchants.enchants.Constants;
-import com.github.yuqingliu.extraenchants.enchants.weapons.Weapon;
+import com.github.yuqingliu.extraenchants.Scheduler;
+import com.github.yuqingliu.extraenchants.enchantment.Enchantment;
+import com.github.yuqingliu.extraenchants.item.weapon.implementations.MeleeWeapon;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public class SonicBoom implements Listener {
-    private final JavaPlugin plugin;
-    private final HashMap<UUID, Long> cooldowns = new HashMap<>();
-
-    public SonicBoom(JavaPlugin plugin) {
-        this.plugin = plugin;
-    }
+    private final Enchantment enchant;
+    private final int cooldown;
+    private HashMap<UUID, Long> cooldowns = new HashMap<>();
 
     @EventHandler
     public void onPlayerUse(PlayerInteractEvent event) {
@@ -37,7 +38,7 @@ public class SonicBoom implements Listener {
 
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
             if(item != null) {
-                int SonicBoomLevel = UtilityMethods.getEnchantmentLevel(item, "SonicBoom");
+                int SonicBoomLevel = enchant.getEnchantmentLevel(item);
                 if(SonicBoomLevel > 0) {
                     long remainingTime = getRemainingCooldownTime(player);
                     if (remainingTime <= 0) {
@@ -58,7 +59,8 @@ public class SonicBoom implements Listener {
         Vector direction = eye.getDirection(); // Direction player is looking
 
         int distance = 30; // How far the sonic boom goes
-        int teleportDelay = 5;
+        int teleportDelay = 500;
+        int damageDelay = 250;
 
         for (int i = 0; i < distance; i++) {
             Location step = eye.add(direction);
@@ -71,7 +73,7 @@ public class SonicBoom implements Listener {
                 Entity hitEntity = rayTraceResult.getHitEntity();
                 Location hitEntityLocation = hitEntity.getLocation();
                 delayedTeleportPlayer(player, hitEntityLocation, teleportDelay);
-                delayedDamage(hitEntity, player, teleportDelay);
+                delayedDamage(hitEntity, player, damageDelay);
                 break;
             } else if (step.getBlock().getType().isSolid()) {
                 Location hitLocation = step.getBlock().getLocation();
@@ -94,37 +96,28 @@ public class SonicBoom implements Listener {
             Location teleportLocation = location.clone();
             teleportLocation.setYaw(currentYaw);
             teleportLocation.setPitch(currentPitch);
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    player.teleport(teleportLocation.add(0, 1, 0)); // Teleport to one block above
-                    player.getWorld().createExplosion(teleportLocation, 4.0F, false, false, player);
-                    player.getWorld().spawnParticle(Particle.EXPLOSION_HUGE, teleportLocation, 1);
-                }
-            }.runTaskLater(plugin, delay); // "plugin" should be your instance of JavaPlugin
+            Scheduler.runLater(() -> {
+                player.teleport(teleportLocation.add(0, 1, 0)); // Teleport to one block above
+                player.getWorld().createExplosion(teleportLocation, 4.0F, false, false, player);
+                player.getWorld().spawnParticle(Particle.EXPLOSION_HUGE, teleportLocation, 1);
+            }, Duration.ofMillis(delay));
         }
     }
 
     private void delayedDamage(Entity entity, Player player, int delay) {
         // Get the item in the main hand, which is considered for the hit.
         ItemStack weapon = player.getInventory().getItemInMainHand();
-
-        // Damage the entity after some time
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (entity instanceof LivingEntity && !entity.isDead()) {
-                    LivingEntity livingEntity = (LivingEntity) entity;
-                    Weapon.applyHit(player, livingEntity, weapon, null, true);
-                }
-            }
-        }.runTaskLater(plugin, delay);  // "plugin" should be your instance of JavaPlugin
+        MeleeWeapon item = new MeleeWeapon(weapon);
+        Scheduler.runLater(() -> {
+            LivingEntity livingEntity = (LivingEntity) entity;
+            item.applyHit(player, livingEntity);
+        }, Duration.ofMillis(delay));
     }
 
     private long getRemainingCooldownTime(Player player) {
         long lastUsed = cooldowns.getOrDefault(player.getUniqueId(), 0L);
         long elapsed = System.currentTimeMillis() - lastUsed;
-        long cooldownDuration = (int) Constants.getCustomEnchantments().get("SonicBoom").get(2) * 1000;
+        long cooldownDuration = cooldown * 1000;
         return cooldownDuration - elapsed;
     }
 }

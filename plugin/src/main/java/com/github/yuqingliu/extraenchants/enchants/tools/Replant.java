@@ -9,39 +9,34 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.entity.Player;
-import org.bukkit.enchantments.Enchantment;
 
 import java.util.Collection;
 import java.util.HashMap;
 
-import com.github.yuqingliu.extraenchants.enchants.utils.UtilityMethods;
-import com.github.yuqingliu.extraenchants.enchants.ApplicableItemsRegistry;
+import com.github.yuqingliu.extraenchants.enchantment.Enchantment;
 import com.github.yuqingliu.extraenchants.enchants.universal.AutoLooting;
 
-public class Replant implements Listener {
-    private final JavaPlugin plugin;
+import lombok.RequiredArgsConstructor;
 
-    public Replant(JavaPlugin plugin) {
-        this.plugin = plugin;
-    }
+@RequiredArgsConstructor
+public class Replant implements Listener {
+    private final Enchantment replant;
+    private final Enchantment autoLooting;
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
         ItemStack tool = player.getInventory().getItemInMainHand();
-        Material toolType = tool.getType();
 
-        if (ApplicableItemsRegistry.hoe_applicable.contains(toolType) && 
-            UtilityMethods.getEnchantmentLevel(tool, "Replant") > 0 && 
-            !UtilityMethods.hasVanillaEnchantment(tool, Enchantment.SILK_TOUCH)) {
+        if (replant.getEnchantmentLevel(tool) > 0 && 
+            tool.getEnchantmentLevel(org.bukkit.enchantments.Enchantment.SILK_TOUCH) == 0) {
             Block block = event.getBlock();
             plant(event, player, tool, block);
         }
     }
 
-    public static void plant(BlockBreakEvent event, Player player, ItemStack tool, Block block) {
+    public void plant(BlockBreakEvent event, Player player, ItemStack tool, Block block) {
         if (block.getBlockData() instanceof Ageable) {
             Ageable age = (Ageable) block.getBlockData();
             if (age.getAge() == age.getMaximumAge()) {
@@ -53,7 +48,7 @@ public class Replant implements Listener {
                 
                 // Manually drop each crop and replant seed
                 if (totalCropCount > 0) {
-                    if(UtilityMethods.getEnchantmentLevel(tool, "AutoLooting") == 0) {
+                    if(autoLooting.getEnchantmentLevel(tool) == 0) {
                         for(ItemStack drop : drops) {
                             block.getWorld().dropItemNaturally(block.getLocation(), drop);
                         }
@@ -86,7 +81,7 @@ public class Replant implements Listener {
                 }
             }
         } else {
-            if(UtilityMethods.getEnchantmentLevel(tool, "AutoLooting") > 0) {
+            if(autoLooting.getEnchantmentLevel(tool) > 0) {
                 AutoLooting.autoloot(event, player, block, tool);
             }
             // Noraml behavior

@@ -1,9 +1,7 @@
 package com.github.yuqingliu.extraenchants.commands;
 
-import com.github.yuqingliu.extraenchants.enchants.utils.UtilityMethods;
-import com.github.yuqingliu.extraenchants.enchants.Database;
-import com.github.yuqingliu.extraenchants.enchants.utils.CustomEnchantment;
 import com.github.yuqingliu.extraenchants.ExtraEnchants;
+import com.github.yuqingliu.extraenchants.enchantment.Enchantment;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -13,8 +11,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.List;
 
 public class EECommand implements CommandExecutor {
     private final ExtraEnchants plugin;
@@ -57,16 +53,12 @@ public class EECommand implements CommandExecutor {
 
             // Attempt to add the enchantment
             try {
-                List<CustomEnchantment> Registry = Database.getCustomEnchantmentRegistry();
-                CustomEnchantment enchantment = null;
-                for(CustomEnchantment enchant : Registry) {
-                    if(enchantmentName.equals(enchant.getName())) enchantment = enchant;
+                Enchantment enchant = plugin.getEnchantmentManager().getEnchantment(enchantmentName);
+                if(enchant == null) {
+                    player.sendMessage(Component.text("Failed to apply enchantment. Check enchantment name and level limits.", NamedTextColor.RED));
+                    return true;
                 }
-                ItemStack finalItem = null;
-                if(enchantment != null && enchantment.getAddCmd() == null || enchantment.getAddCmd().isEmpty()) {
-                    finalItem = UtilityMethods.addEnchantment(item, enchantmentName, level, enchantment.getColor(), true);
-                }
-
+                ItemStack finalItem = enchant.applyEnchantment(item, level);
                 if (finalItem != null) {
                     player.getInventory().setItemInMainHand(finalItem);
                     player.sendMessage(Component.text("Enchantment applied successfully!", NamedTextColor.GREEN));

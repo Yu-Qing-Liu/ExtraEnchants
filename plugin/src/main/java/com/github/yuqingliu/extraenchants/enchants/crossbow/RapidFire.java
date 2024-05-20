@@ -1,41 +1,36 @@
 package com.github.yuqingliu.extraenchants.enchants.crossbow;
 
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.Location;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import org.bukkit.Sound;
 
-import com.github.yuqingliu.extraenchants.enchants.utils.UtilityMethods;
-import com.github.yuqingliu.extraenchants.enchants.Constants;
-import com.github.yuqingliu.extraenchants.enchants.weapons.Weapon;
+import com.github.yuqingliu.extraenchants.Scheduler;
+import com.github.yuqingliu.extraenchants.enchantment.Enchantment;
+import com.github.yuqingliu.extraenchants.item.weapon.implementations.RangedWeapon;
 
+import lombok.RequiredArgsConstructor;
+
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.UUID;
 
+@RequiredArgsConstructor
 public class RapidFire implements Listener {
-    private final JavaPlugin plugin;
-    private final HashMap<UUID, Long> cooldowns = new HashMap<>();
-    private final double speedPerTick = 63 / 20.0;
-    private final Vector terminalVelocity = new Vector(0, -speedPerTick, 0);
-
-    public RapidFire(JavaPlugin plugin) {
-        this.plugin = plugin;
-    }
+    private final Enchantment enchant;
+    private final int cooldown;
+    private HashMap<UUID, Long> cooldowns = new HashMap<>();
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
@@ -45,7 +40,7 @@ public class RapidFire implements Listener {
         // Check for left-click block or air with a crossbow in hand
         if ((action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) && player.getInventory().getItemInMainHand().getType() == Material.CROSSBOW) {
             ItemStack crossbow = player.getInventory().getItemInMainHand();
-            if (UtilityMethods.getEnchantmentLevel(crossbow, "RapidFire") > 0) {
+            if (enchant.getEnchantmentLevel(crossbow) > 0) {
                 long remainingTime = getRemainingCooldownTime(player);
                 if (remainingTime <= 0) {
                     fireProjectiles(player, crossbow);
@@ -55,7 +50,6 @@ public class RapidFire implements Listener {
                     int secondsLeft = (int) (remainingTime / 1000);
                     player.sendMessage("Rapid Fire is on cooldown. Please wait " + secondsLeft + " more seconds.");
                 }
-                event.setCancelled(true); // Optional: cancel the default crossbow action
             }
         }
     }
@@ -63,24 +57,18 @@ public class RapidFire implements Listener {
     private long getRemainingCooldownTime(Player player) {
         long lastUsed = cooldowns.getOrDefault(player.getUniqueId(), 0L);
         long elapsed = System.currentTimeMillis() - lastUsed;
-        long cooldownDuration = (int) Constants.getCustomEnchantments().get("RapidFire").get(2) * 1000;
+        long cooldownDuration = cooldown * 1000;
         return cooldownDuration - elapsed;
     }
 
     private void fireProjectiles(Player player, ItemStack weapon) {
-        new BukkitRunnable() {
-            private int count = 0;
-            @Override
-            public void run() {
-                if (count < 5) { // Check if less than 5 projectiles have been fired
-                    fireParticleBeam(player, weapon);
-                    player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ARROW_SHOOT, 1.0f, 1.0f);
-                    count++; // Increment the count after each projectile
-                } else {
-                    this.cancel(); // Cancel the task after firing 5 projectiles
-                }
-            }
-        }.runTaskTimer(plugin, 0, 2);
+        BukkitTask task = Scheduler.runTimer(() -> {
+            fireParticleBeam(player, weapon);
+            player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ARROW_SHOOT, 1.0f, 1.0f);
+        }, Duration.ofMillis(100), Duration.ofSeconds(0));
+        Scheduler.runLater(() -> {
+            task.cancel();
+        }, Duration.ofMillis(500));
     }
 
     public static Location getRightSide(Location location, double distance) {
@@ -113,13 +101,14 @@ public class RapidFire implements Listener {
         Vector finalDirection = finalLocation.toVector().subtract(startLocation.toVector()).normalize();
         for (double i = 0; i <= finalLocation.distance(startLocation); i += 0.1) {
             Location point = startLocation.clone().add(finalDirection.clone().multiply(i));
-            player.getWorld().spawnParticle(Particle.CRIT_MAGIC, point, 1, 0.01, 0.01, 0.01, 0.01);
+            player.getWorld().spawnParticle(Particle.CRIT, point, 1, 0.01, 0.01, 0.01, 0.01);
         }
 
         // Apply damage if the ray trace hits an entity
         if (result != null && result.getHitEntity() != null) {
             LivingEntity target = (LivingEntity) result.getHitEntity();
-            Weapon.applyHit(player, target, weapon, terminalVelocity, true);
+            RangedWeapon crossbow = new RangedWeapon(weapon);
+            crossbow.applyHit(player, target);
             target.setNoDamageTicks(0);
         }
     }

@@ -18,8 +18,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.inventory.PlayerInventory;
 
-import com.github.yuqingliu.extraenchants.enchants.Constants;
-import com.github.yuqingliu.extraenchants.blocks.CustomBlockUtils;
+import com.github.yuqingliu.extraenchants.persistence.blocks.CustomBlockUtils;
+import com.github.yuqingliu.extraenchants.ExtraEnchants;
+import com.github.yuqingliu.extraenchants.configuration.implementations.GlobalConstants;
 import com.github.yuqingliu.extraenchants.gui.EnchantmentTableMenu;
 
 import java.util.List;
@@ -31,15 +32,18 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class PlayerInteractsWithEnchantmentTable implements Listener {
     private JavaPlugin plugin;
+    private EnchantmentTableMenu enchantmentTableMenu;
+    private GlobalConstants globalConstants;
     private static final int ITEM_SLOT = 25;
     private static final int PREVIOUS_PAGE = 6;
     private static final int NEXT_PAGE = 51;
-    private static int BOOKSHELVES = 1;
     List<Integer> frame = Arrays.asList(7,8,15,16,17,24,26,33,34,35,42,43,44,52,53);
     List<Integer> options = Arrays.asList(0,1,2,3,4,5,9,10,11,12,13,14,18,19,20,21,22,23,27,28,29,30,31,32,36,37,38,39,40,41,45,46,47,48,49,50);
 
-    public PlayerInteractsWithEnchantmentTable(JavaPlugin plugin) {
+    public PlayerInteractsWithEnchantmentTable(ExtraEnchants plugin) {
         this.plugin = plugin;
+        this.globalConstants = (GlobalConstants) plugin.getConfigurationManager().getConstants().get("GlobalConstants");
+        this.enchantmentTableMenu = new EnchantmentTableMenu(plugin.getEnchantmentManager().getEnchantments());
     }
 
     @EventHandler
@@ -49,12 +53,12 @@ public class PlayerInteractsWithEnchantmentTable implements Listener {
         
         // Check if the event is a right-click on a block
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK && block != null && block.getType() == Material.ENCHANTING_TABLE) {
-            if(!Constants.applyVanillaEnchantingTableBehavior()) {
+            if(!globalConstants.getApplyVanillaEnchantingTableBehavior()) {
                 event.setCancelled(true); // Prevent the default enchantment table GUI from opening
-                EnchantmentTableMenu.openEnchantmentTableMenu(player);
+                enchantmentTableMenu.openEnchantmentTableMenu(player);
             } else if (CustomBlockUtils.isCustomEtable(block)) {
                 event.setCancelled(true); // Prevent the default enchantment table GUI from opening
-                EnchantmentTableMenu.openEnchantmentTableMenu(player);
+                enchantmentTableMenu.openEnchantmentTableMenu(player);
             }
             // Normal behavior
         }
@@ -90,10 +94,10 @@ public class PlayerInteractsWithEnchantmentTable implements Listener {
                 actionInventory.setItem(ITEM_SLOT, currentItem.clone());
                 clickedInventory.clear(event.getSlot()); // Clear the slot from where the item was moved
                 event.setCancelled(true); // Prevent default behavior
-                EnchantmentTableMenu.displayEnchantmentOptions(actionInventory, currentItem);
+                enchantmentTableMenu.displayEnchantmentOptions(actionInventory, currentItem);
             } else {
-                EnchantmentTableMenu.clearOptions(actionInventory);
-                EnchantmentTableMenu.optionsFill(actionInventory);
+                enchantmentTableMenu.clearOptions(actionInventory);
+                enchantmentTableMenu.optionsFill(actionInventory);
                 wait(actionInventory);
             }
             return;
@@ -108,8 +112,8 @@ public class PlayerInteractsWithEnchantmentTable implements Listener {
                 return;
             }
             if(slot == ITEM_SLOT) {
-                EnchantmentTableMenu.clearOptions(clickedInventory);
-                EnchantmentTableMenu.optionsFill(clickedInventory);
+                enchantmentTableMenu.clearOptions(clickedInventory);
+                enchantmentTableMenu.optionsFill(clickedInventory);
                 wait(clickedInventory);
                 return;
             } else if(slot == NEXT_PAGE) {
@@ -117,10 +121,10 @@ public class PlayerInteractsWithEnchantmentTable implements Listener {
                 ItemMeta ptrMeta = ptr.getItemMeta();
                 if(ptrMeta != null) {
                     if(ptrMeta.displayName().equals(Component.text("Next Page", NamedTextColor.AQUA))) {
-                        EnchantmentTableMenu.displayNextEnchantmentOptionsPage(clickedInventory, item);
+                        enchantmentTableMenu.displayNextEnchantmentOptionsPage(clickedInventory, item);
                     }
                     else if(ptrMeta.displayName().equals(Component.text("Next Page", NamedTextColor.GREEN))) {
-                        EnchantmentTableMenu.displayNextSelectedEnchantmentOptions(plugin, player, item, clickedInventory, slot);
+                        enchantmentTableMenu.displayNextSelectedEnchantmentOptions(plugin, player, item, clickedInventory, slot);
                     }
                 }
                 event.setCancelled(true);
@@ -129,16 +133,16 @@ public class PlayerInteractsWithEnchantmentTable implements Listener {
                 ItemMeta ptrMeta = ptr.getItemMeta();
                 if(ptrMeta != null) {
                     if(ptrMeta.displayName().equals(Component.text("Previous Page", NamedTextColor.AQUA))) {
-                        EnchantmentTableMenu.displayPreviousEnchantmentOptionsPage(clickedInventory, item);
+                        enchantmentTableMenu.displayPreviousEnchantmentOptionsPage(clickedInventory, item);
                     }
                     else if(ptrMeta.displayName().equals(Component.text("Previous Page", NamedTextColor.GREEN))) {
-                        EnchantmentTableMenu.displayPreviousSelectedEnchantmentOptions(plugin, player, item, clickedInventory, slot);
+                        enchantmentTableMenu.displayPreviousSelectedEnchantmentOptions(plugin, player, item, clickedInventory, slot);
                     }
                 }
                 event.setCancelled(true);
             } else if(options.contains(slot)) {
                 if(itemClicked != null && itemClicked.getType() != Material.GLASS_PANE) {
-                    EnchantmentTableMenu.displaySelectedEnchantmentOptions(plugin, player, item, clickedInventory, slot);
+                    enchantmentTableMenu.displaySelectedEnchantmentOptions(plugin, player, item, clickedInventory, slot);
                 }
                 event.setCancelled(true);
             } else {
@@ -187,7 +191,7 @@ public class PlayerInteractsWithEnchantmentTable implements Listener {
                     ItemStack itemInTargetSlot = inv.getItem(ITEM_SLOT);
                     if (itemInTargetSlot != null && itemInTargetSlot.getType() != Material.AIR) {
                         // Item detected in the target slot, update the UI accordingly
-                        EnchantmentTableMenu.displayEnchantmentOptions(inv, itemInTargetSlot);
+                        enchantmentTableMenu.displayEnchantmentOptions(inv, itemInTargetSlot);
                         cancel(); // Stop this task from running again
                     }
                 }

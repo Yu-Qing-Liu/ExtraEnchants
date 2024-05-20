@@ -16,14 +16,14 @@ import org.bukkit.entity.Arrow;
 
 import java.util.List;
 
-import com.github.yuqingliu.extraenchants.enchants.utils.UtilityMethods;
+import com.github.yuqingliu.extraenchants.enchantment.Enchantment;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public class Wither implements Listener {
     private final JavaPlugin plugin;
-
-    public Wither(JavaPlugin plugin) {
-        this.plugin = plugin;
-    }
+    private final Enchantment enchant;
 
     @EventHandler
     public void onEntityDamage(EntityDamageByEntityEvent event) {
@@ -35,7 +35,7 @@ public class Wither implements Listener {
         ItemStack item = player.getInventory().getItemInMainHand();
 
         // Retrieve the level of the Wither enchantment
-        int witherLevel = UtilityMethods.getEnchantmentLevel(item, "Wither");
+        int witherLevel = enchant.getEnchantmentLevel(item);
         if (witherLevel > 0) {
             if (event.getEntity() instanceof LivingEntity) {
                 LivingEntity target = (LivingEntity) event.getEntity();
@@ -53,12 +53,11 @@ public class Wither implements Listener {
     public void onBowShoot(EntityShootBowEvent event) {
         if (!(event.getEntity() instanceof Player)) return;
 
-        Player player = (Player) event.getEntity();
         ItemStack bow = event.getBow();
 
         if (bow == null) return;
 
-        int witherLevel = UtilityMethods.getEnchantmentLevel(bow, "Wither");
+        int witherLevel = enchant.getEnchantmentLevel(bow);
         if (witherLevel > 0) {
             // Tag the arrow with the "Wither" enchantment level
             if (event.getProjectile() instanceof Arrow) {
@@ -89,4 +88,3 @@ public class Wither implements Listener {
         }
     }
 }
-

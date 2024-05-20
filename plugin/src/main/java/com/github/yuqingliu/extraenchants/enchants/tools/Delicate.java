@@ -5,28 +5,25 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
+
+import com.github.yuqingliu.extraenchants.enchantment.Enchantment;
+
 import org.bukkit.entity.Player;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Ageable;
 
-import com.github.yuqingliu.extraenchants.enchants.utils.UtilityMethods;
-import com.github.yuqingliu.extraenchants.enchants.ApplicableItemsRegistry;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class Delicate implements Listener {
-    private final JavaPlugin plugin;
-
-    public Delicate (JavaPlugin plugin) {
-        this.plugin = plugin;
-    }
+    private final Enchantment enchant;
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
         ItemStack tool = player.getInventory().getItemInMainHand();
 
-        if (ApplicableItemsRegistry.hoe_applicable.contains(tool.getType()) &&
-            UtilityMethods.getEnchantmentLevel(tool, "Delicate") > 0) {
+        if (enchant.getEnchantmentLevel(tool) > 0) {
             Block block = event.getBlock();
             BlockData data = block.getBlockData();
 

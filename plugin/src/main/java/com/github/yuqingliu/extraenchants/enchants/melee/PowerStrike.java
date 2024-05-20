@@ -7,21 +7,19 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
+
+import com.github.yuqingliu.extraenchants.enchantment.Enchantment;
+
+import lombok.RequiredArgsConstructor;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
 
-import com.github.yuqingliu.extraenchants.enchants.utils.UtilityMethods;
-
+@RequiredArgsConstructor
 public class PowerStrike implements Listener {
-    private final JavaPlugin plugin;
-    private HashMap<UUID, HashSet<UUID>> playerEntityHits;
-
-    public PowerStrike(JavaPlugin plugin) {
-        this.plugin = plugin;
-        this.playerEntityHits = new HashMap<>();
-    }
+    private final Enchantment enchant;
+    private HashMap<UUID, HashSet<UUID>> playerEntityHits = new HashMap<>();
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
@@ -30,7 +28,7 @@ public class PowerStrike implements Listener {
             Entity target = event.getEntity();
             ItemStack weapon = player.getInventory().getItemInMainHand();
             
-            int level = UtilityMethods.getEnchantmentLevel(weapon, "PowerStrike");
+            int level = enchant.getEnchantmentLevel(weapon);
             if (level > 0) {
                 UUID playerId = player.getUniqueId();
                 UUID targetId = target.getUniqueId();

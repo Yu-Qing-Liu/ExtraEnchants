@@ -17,11 +17,11 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.persistence.PersistentDataType;
 
-import com.github.yuqingliu.extraenchants.enchants.Constants;
 import com.github.yuqingliu.extraenchants.gui.GrindstoneMenu;
-import com.github.yuqingliu.extraenchants.blocks.CustomBlockUtils;
+import com.github.yuqingliu.extraenchants.persistence.blocks.CustomBlockUtils;
+import com.github.yuqingliu.extraenchants.ExtraEnchants;
+import com.github.yuqingliu.extraenchants.configuration.implementations.GlobalConstants;
 
 import java.util.List;
 import java.util.Arrays;
@@ -32,14 +32,18 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class PlayerInteractsWithGrindstone implements Listener {
     private JavaPlugin plugin;
+    private GlobalConstants globalConstants;
+    private GrindstoneMenu grindstoneMenu;
     private static final int ITEM_SLOT = 25;
     private static final int PREVIOUS_PAGE = 6;
     private static final int NEXT_PAGE = 51;
     List<Integer> frame = Arrays.asList(7,8,15,16,17,24,26,33,34,35,42,43,44,52,53);
     List<Integer> options = Arrays.asList(0,1,2,3,4,5,9,10,11,12,13,14,18,19,20,21,22,23,27,28,29,30,31,32,36,37,38,39,40,41,45,46,47,48,49,50);
 
-    public PlayerInteractsWithGrindstone(JavaPlugin plugin) {
+    public PlayerInteractsWithGrindstone(ExtraEnchants plugin) {
         this.plugin = plugin;
+        this.globalConstants = (GlobalConstants) plugin.getConfigurationManager().getConstants().get("GlobalConstants");
+        this.grindstoneMenu = new GrindstoneMenu(plugin.getItemUtils());
     }
 
     @EventHandler
@@ -49,12 +53,12 @@ public class PlayerInteractsWithGrindstone implements Listener {
         
         // Check if the event is a right-click on a block
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK && block != null && block.getType() == Material.GRINDSTONE) {
-            if(!Constants.applyVanillaGrindstoneBehavior()) {
+            if(!globalConstants.getApplyVanillaGrindstoneBehavior()) {
                 event.setCancelled(true); // Prevent the default enchantment table GUI from opening
-                GrindstoneMenu.openGrindstoneMenu(player);
+                grindstoneMenu.openGrindstoneMenu(player);
             } else if(CustomBlockUtils.isCustomGrindstone(block)) {
                 event.setCancelled(true); // Prevent the default enchantment table GUI from opening
-                GrindstoneMenu.openGrindstoneMenu(player);
+                grindstoneMenu.openGrindstoneMenu(player);
             }
             // Normal behavior
         }
@@ -90,10 +94,10 @@ public class PlayerInteractsWithGrindstone implements Listener {
                 actionInventory.setItem(ITEM_SLOT, currentItem.clone());
                 clickedInventory.clear(event.getSlot()); // Clear the slot from where the item was moved
                 event.setCancelled(true); // Prevent default behavior
-                GrindstoneMenu.displayOptions(actionInventory, currentItem);
+                grindstoneMenu.displayOptions(actionInventory, currentItem);
             } else {
-                GrindstoneMenu.clearOptions(actionInventory);
-                GrindstoneMenu.optionsFill(actionInventory);
+                grindstoneMenu.clearOptions(actionInventory);
+                grindstoneMenu.optionsFill(actionInventory);
                 wait(actionInventory);
             }
             return;
@@ -108,27 +112,27 @@ public class PlayerInteractsWithGrindstone implements Listener {
                 return;
             }
             if(slot == ITEM_SLOT) {
-                GrindstoneMenu.clearOptions(actionInventory);
-                GrindstoneMenu.optionsFill(actionInventory);
+                grindstoneMenu.clearOptions(actionInventory);
+                grindstoneMenu.optionsFill(actionInventory);
                 wait(clickedInventory);
                 return;
             } else if(slot == NEXT_PAGE) {
                 ItemStack ptr = clickedInventory.getItem(slot);
                 ItemMeta ptrMeta = ptr.getItemMeta();
                 if(ptrMeta != null) {
-                    GrindstoneMenu.displayNextOptionsPage(clickedInventory, item);
+                    grindstoneMenu.displayNextOptionsPage(clickedInventory, item);
                 }
                 event.setCancelled(true);
             } else if(slot == PREVIOUS_PAGE) {
                 ItemStack ptr = clickedInventory.getItem(slot);
                 ItemMeta ptrMeta = ptr.getItemMeta();
                 if(ptrMeta != null) {
-                    GrindstoneMenu.displayPreviousOptionsPage(clickedInventory, item);
+                    grindstoneMenu.displayPreviousOptionsPage(clickedInventory, item);
                 }
                 event.setCancelled(true);
             } else if(options.contains(slot)) {
                 if(itemClicked != null && itemClicked.getType() != Material.GLASS_PANE) {
-                    GrindstoneMenu.applyOption(plugin, player, clickedInventory, slot, item);
+                    grindstoneMenu.applyOption(plugin, player, clickedInventory, slot, item);
                 }
                 event.setCancelled(true);
             } else {
@@ -177,7 +181,7 @@ public class PlayerInteractsWithGrindstone implements Listener {
                     ItemStack itemInTargetSlot = inv.getItem(ITEM_SLOT);
                     if (itemInTargetSlot != null && itemInTargetSlot.getType() != Material.AIR) {
                         // Item detected in the target slot, update the UI accordingly
-                        GrindstoneMenu.displayOptions(inv, itemInTargetSlot);
+                        grindstoneMenu.displayOptions(inv, itemInTargetSlot);
                         cancel(); // Stop this task from running again
                     }
                 }

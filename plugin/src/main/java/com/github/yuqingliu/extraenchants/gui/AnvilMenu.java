@@ -6,11 +6,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.entity.Player;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.Sound;
-import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
@@ -18,42 +15,54 @@ import java.util.Set;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.HashMap;
 import java.util.Map;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-import com.github.yuqingliu.extraenchants.enchants.*;
-import com.github.yuqingliu.extraenchants.enchants.utils.*;
+import com.github.yuqingliu.extraenchants.anvil.AnvilManager;
+import com.github.yuqingliu.extraenchants.configuration.implementations.AnvilConstants;
+import com.github.yuqingliu.extraenchants.enchantment.Enchantment;
+import com.github.yuqingliu.extraenchants.item.ItemUtils;
 
 public class AnvilMenu {
-    private static final double REPAIR_COST_PER_RESOURCE = Constants.getRepairAnvilCostPerResource();
-    private static final int ANVIL_COST_PER_LEVEL = Constants.getAnvilCostPerLevel();
-    private static int COST = 0;
-    private static final int RESULT_SLOT = 15;
-    private static final int RESULT_PLACEHOLDER = 24;
-    private static final List<Integer> SLOTS = Arrays.asList(11, 13, 15, 20, 22, 24);
-    private static final List<Integer> PLACEHOLDER_SLOTS = Arrays.asList(20, 22);
-    private static final HashMap<NamespacedKey, List<Object>> EnchantmentsRegistry = Constants.getEnchantments();
-    private static final HashMap<String, List<Object>> CustomEnchantmentsRegistry = Constants.getCustomEnchantments();
+    private ItemUtils itemUtils;
+    private AnvilManager anvilManager;
+    private double REPAIR_COST_PER_RESOURCE = 1.5;
+    private double ANVIL_COST_PER_LEVEL = 2;
+    private int COST = 0;
+    private final int RESULT_SLOT = 15;
+    private final int RESULT_PLACEHOLDER = 24;
+    private final List<Integer> SLOTS = Arrays.asList(11, 13, 15, 20, 22, 24);
+    private final List<Integer> PLACEHOLDER_SLOTS = Arrays.asList(20, 22);
 
-    public static void openAnvilMenu(Player player) {
+    public AnvilMenu(ItemUtils itemUtils, AnvilManager anvilManager, AnvilConstants anvilConstants) {
+        this.itemUtils = itemUtils;
+        this.anvilManager = anvilManager;
+        this.REPAIR_COST_PER_RESOURCE = anvilConstants.getAnvilRepairCostPerResource();
+        this.ANVIL_COST_PER_LEVEL = anvilConstants.getAnvilCostPerLevel();
+    }
+
+    public void openAnvilMenu(Player player) {
         Inventory inv = Bukkit.createInventory(null, 36, Component.text("Anvil", NamedTextColor.DARK_GRAY));
         displayItemFrame(inv);
-        COST = 0;
+        this.COST = 0;
         player.openInventory(inv);
     }
 
-    public static void displayItemFrame(Inventory inv) {
+    public void displayItemFrame(Inventory inv) {
         List<Integer> frame = new ArrayList<>();
-        for (int i = 0; i < 36; i++) {if(!SLOTS.contains(i)) frame.add(i);}
+        for (int i = 0; i < 36; i++) {
+            if(!SLOTS.contains(i)) {
+                frame.add(i);
+            }
+        }
         for (int slot : frame) {
             ItemStack frameTiles = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
             ItemMeta frameMeta = frameTiles.getItemMeta();
-            if (frameMeta != null) { // Check for null to prevent potential NullPointerException
+            if (frameMeta != null) { 
                 frameMeta.displayName(Component.text("Unavailable", NamedTextColor.DARK_PURPLE));
-                frameTiles.setItemMeta(frameMeta); // Set the modified meta back on the ItemStack
+                frameTiles.setItemMeta(frameMeta);
             }
             inv.setItem(slot, frameTiles);
         }
@@ -85,37 +94,42 @@ public class AnvilMenu {
         inv.setItem(RESULT_SLOT, resultPlaceholder);
     }
 
-    private static boolean canRepair(ItemStack repairable, ItemStack repaired) {
+    private boolean canRepair(ItemStack repairable, ItemStack repaired) {
         // Enable string to repair ranged weapons
-        if(repairable.getType() == Material.STRING && (repaired.getType() == Material.BOW || repaired.getType() == Material.CROSSBOW)) return true;
-
+        if(repairable.getType() == Material.STRING && (repaired.getType() == Material.BOW || repaired.getType() == Material.CROSSBOW)) {
+            return true;
+        } 
         return repairable.canRepair(repaired);
     }
 
-    public static void updateResult(JavaPlugin plugin, Player player, Inventory inv, ItemStack leftItem, ItemStack rightItem, boolean recursion) {
+    public void updateResult(JavaPlugin plugin, Player player, Inventory inv, ItemStack leftItem, ItemStack rightItem, boolean recursion) {
         ItemStack Result = leftItem.clone();
-        COST = 0;
+        this.COST = 0;
         
         if(canRepair(leftItem, rightItem)) {
-            COST += repairItem(Result, leftItem.getAmount());
-            if(player.getLevel() >= COST) inv.setItem(RESULT_SLOT, Result);
+            this.COST += repairItem(Result, leftItem.getAmount());
+            if(player.getLevel() >= COST) {
+                inv.setItem(RESULT_SLOT, Result);
+            } 
         } else if(canRepair(rightItem, leftItem)) {
-            COST += repairItem(Result, rightItem.getAmount());
-            if(player.getLevel() >= COST) inv.setItem(RESULT_SLOT, Result);
+            this.COST += repairItem(Result, rightItem.getAmount());
+            if(player.getLevel() >= COST) {
+                inv.setItem(RESULT_SLOT, Result);
+            } 
         }
 
-        if(!isCompatible(leftItem, rightItem)) return;
-        Result = applyVanillaEnchants(Result, leftItem, rightItem);
-        Result = applyCustomEnchants(plugin, inv, player, Result, UtilityMethods.getEnchantments(leftItem), UtilityMethods.getEnchantments(rightItem));
+        if(!isCompatible(leftItem, rightItem)) {
+            return;
+        } 
+        Result = applyEnchants(Result, itemUtils.getEnchantments(leftItem), itemUtils.getEnchantments(rightItem));
     
-        if(COST == 0 && !recursion) {
+        if(this.COST == 0 && !recursion) {
             updateResult(plugin, player, inv, rightItem, leftItem, true);
         } 
 
         repairIdenticalItem(Result, rightItem);
-        COST = COST * ANVIL_COST_PER_LEVEL;
 
-        if(player.getLevel() >= COST) {
+        if(player.getLevel() >= this.COST) {
             placeHolder(inv, RESULT_PLACEHOLDER);
             inv.setItem(RESULT_SLOT, Result);
         } else {
@@ -123,7 +137,7 @@ public class AnvilMenu {
         }
     }
 
-    private static void placeHolderWarning(Inventory inv, int slot) {
+    private void placeHolderWarning(Inventory inv, int slot) {
         ItemStack anvilPlaceholder = new ItemStack(Material.ANVIL);
         ItemMeta anvilPlaceholderMeta = anvilPlaceholder.getItemMeta();
         if (anvilPlaceholderMeta != null) {
@@ -133,7 +147,7 @@ public class AnvilMenu {
         inv.setItem(slot, anvilPlaceholder);
     }
 
-    private static void placeHolder(Inventory inv, int slot) {
+    private void placeHolder(Inventory inv, int slot) {
         ItemStack anvilPlaceholder = new ItemStack(Material.ANVIL);
         ItemMeta anvilPlaceholderMeta = anvilPlaceholder.getItemMeta();
         if (anvilPlaceholderMeta != null) {
@@ -143,17 +157,17 @@ public class AnvilMenu {
         inv.setItem(slot, anvilPlaceholder);
     }
 
-    private static boolean isCompatible(ItemStack item1, ItemStack item2) {
+    private boolean isCompatible(ItemStack item1, ItemStack item2) {
         Material M1 = item1.getType();
         Material M2 = item2.getType();
 
-        HashMap<Material, List<Material>> anvilRegister = Constants.getAnvilData();
+        Map<Material, List<Material>> anvilRegistry = anvilManager.getCombinations();
         
         // Books are allowed to interact with any
         if(M1 == Material.ENCHANTED_BOOK || M2 == Material.ENCHANTED_BOOK) return true;
         
         // Check anvil register for custom combos
-        List<Material> applicable = anvilRegister.get(M1);
+        List<Material> applicable = anvilRegistry.get(M1);
         if(applicable != null && applicable.size() > 0) {
             if(applicable.contains(M2)) {
                 return true;
@@ -169,7 +183,7 @@ public class AnvilMenu {
         return false;
     }
 
-    private static int repairItem(ItemStack item, int numResources) {
+    private int repairItem(ItemStack item, int numResources) {
         int maxDurability = item.getType().getMaxDurability();
         int repairAmount = (int) ((double) maxDurability / 4.0) * numResources;
 
@@ -191,7 +205,7 @@ public class AnvilMenu {
         return (int) (numResources * REPAIR_COST_PER_RESOURCE);
     }
 
-    private static void repairIdenticalItem(ItemStack item1, ItemStack item2) {
+    private void repairIdenticalItem(ItemStack item1, ItemStack item2) {
         int maxDurability = item1.getType().getMaxDurability();
 
         if (item1.hasItemMeta() && item2.hasItemMeta()) {
@@ -223,10 +237,10 @@ public class AnvilMenu {
         }
     }
 
-    public static boolean applyCost(Player player) {
+    public boolean applyCost(Player player) {
         int playerLevel = player.getLevel();
-        if(playerLevel >= COST) {
-            player.setLevel(playerLevel - COST);
+        if(playerLevel >= this.COST) {
+            player.setLevel(playerLevel - this.COST);
             // Play anvil sound
             player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_USE, 1.0f, 1.0f);
             return true;
@@ -234,85 +248,32 @@ public class AnvilMenu {
         return false;
     }
 
-    private static ItemStack applyVanillaEnchants(ItemStack result, ItemStack leftItem, ItemStack rightItem) {
-        Map <Enchantment, Integer> ItemVanillaEnchants = new HashMap<>();
-        Map <Enchantment, Integer> SacrificeVanillaEnchants = new HashMap<>();
-
-        if (leftItem.hasItemMeta() && leftItem.getItemMeta() instanceof EnchantmentStorageMeta) {
-            // For enchanted books
-            EnchantmentStorageMeta meta = (EnchantmentStorageMeta) leftItem.getItemMeta();
-            ItemVanillaEnchants = meta.getStoredEnchants();
-        } else {
-            ItemVanillaEnchants = leftItem.getEnchantments();
-        }
-
-        if (rightItem.hasItemMeta() && rightItem.getItemMeta() instanceof EnchantmentStorageMeta) {
-            // For enchanted books
-            EnchantmentStorageMeta meta = (EnchantmentStorageMeta) rightItem.getItemMeta();
-            SacrificeVanillaEnchants = meta.getStoredEnchants();
-        } else {
-            SacrificeVanillaEnchants = rightItem.getEnchantments();
-        }
-
-        Set<Enchantment> keys = new HashSet<>(ItemVanillaEnchants.keySet());
-        keys.addAll(SacrificeVanillaEnchants.keySet());
+    private ItemStack applyEnchants(ItemStack result, Map<Enchantment, Integer> itemEnchants, Map<Enchantment, Integer> sacrificeEnchants) {
+        int levels = 0;
+        Set<Enchantment> keys = new HashSet<>(itemEnchants.keySet());
+        keys.addAll(sacrificeEnchants.keySet());
         ItemStack finalItem = result.clone();
-
         for(Enchantment enchant : keys) {
-            int maxEnchantmentLevel = (int) EnchantmentsRegistry.get(enchant.getKey()).get(0);
-            int itemVanillaEnchantLevel = 0;
-            int sacrificeVanillaEnchantLevel = 0;
-            if(ItemVanillaEnchants.get(enchant) != null) itemVanillaEnchantLevel = ItemVanillaEnchants.get(enchant);
-            if(SacrificeVanillaEnchants.get(enchant) != null) sacrificeVanillaEnchantLevel = SacrificeVanillaEnchants.get(enchant);
-
-            if(sacrificeVanillaEnchantLevel > itemVanillaEnchantLevel && EnchantmentTableMenu.isEnchantable(finalItem, enchant)) {
-                finalItem.removeEnchantment(enchant);
-                finalItem = UtilityMethods.addVanillaEnchant(finalItem, enchant, sacrificeVanillaEnchantLevel);
-                COST += sacrificeVanillaEnchantLevel - itemVanillaEnchantLevel;
-            } else if (sacrificeVanillaEnchantLevel == itemVanillaEnchantLevel && sacrificeVanillaEnchantLevel + 1 <= maxEnchantmentLevel && EnchantmentTableMenu.isEnchantable(finalItem, enchant)) {
-                finalItem.removeEnchantment(enchant);
-                finalItem = UtilityMethods.addVanillaEnchant(finalItem, enchant, ++sacrificeVanillaEnchantLevel);
-                COST += 1;
+            int maxEnchantmentLevel = enchant.getMaxLevel();
+            int itemEnchantLevel = 0;
+            int sacrificeEnchantLevel = 0;
+            if(itemEnchants.containsKey(enchant)) {
+                itemEnchantLevel = itemEnchants.get(enchant);
+            } 
+            if(sacrificeEnchants.containsKey(enchant)) {
+                sacrificeEnchantLevel = sacrificeEnchants.get(enchant);
+            } 
+            if(sacrificeEnchantLevel > itemEnchantLevel && enchant.canEnchant(finalItem)) {
+                finalItem = enchant.removeEnchantment(finalItem);
+                finalItem = enchant.applyEnchantment(finalItem, sacrificeEnchantLevel);
+                levels += sacrificeEnchantLevel - itemEnchantLevel;
+            } else if (sacrificeEnchantLevel == itemEnchantLevel && sacrificeEnchantLevel + 1 <= maxEnchantmentLevel && enchant.canEnchant(finalItem)) {
+                finalItem = enchant.removeEnchantment(finalItem);
+                finalItem = enchant.applyEnchantment(finalItem, sacrificeEnchantLevel + 1);
+                levels += 1;
             }
         }
-        if(finalItem == null) {
-            return result;
-        }
-        return finalItem;
-    }
-
-    private static ItemStack applyCustomEnchants(JavaPlugin plugin, Inventory inv, Player player, ItemStack result, Map<CustomEnchantment, Integer> ItemCustomEnchants, Map<CustomEnchantment, Integer> SacrificeCustomEnchants) {
-        Set<CustomEnchantment> keys = new HashSet<>(ItemCustomEnchants.keySet());
-        keys.addAll(SacrificeCustomEnchants.keySet());
-        ItemStack finalItem = result.clone();
-        for(CustomEnchantment enchant : keys) {
-            int maxEnchantmentLevel = (int) CustomEnchantmentsRegistry.get(enchant.getName()).get(0);
-            int itemVanillaEnchantLevel = 0;
-            int sacrificeVanillaEnchantLevel = 0;
-            if(ItemCustomEnchants.get(enchant) != null) itemVanillaEnchantLevel = ItemCustomEnchants.get(enchant);
-            if(SacrificeCustomEnchants.get(enchant) != null) sacrificeVanillaEnchantLevel = SacrificeCustomEnchants.get(enchant);
-
-            if(sacrificeVanillaEnchantLevel > itemVanillaEnchantLevel && EnchantmentTableMenu.isCustomEnchantable(finalItem, enchant)) {
-                if(enchant.getAddCmd() != null && !enchant.getAddCmd().isEmpty()) {
-                    finalItem = UtilityMethods.removeExtraEnchant(plugin, inv, RESULT_SLOT, player, finalItem, enchant);
-                    finalItem = UtilityMethods.addExtraEnchant(plugin, inv, RESULT_SLOT, player, enchant, sacrificeVanillaEnchantLevel, finalItem, enchant.getColor());
-                } else {
-                    finalItem = UtilityMethods.removeEnchantment(finalItem, enchant.getName(), true);
-                    finalItem = UtilityMethods.addEnchantment(finalItem, enchant.getName(), sacrificeVanillaEnchantLevel, enchant.getColor(), true);
-                }
-                COST += sacrificeVanillaEnchantLevel - itemVanillaEnchantLevel;
-            } else if (sacrificeVanillaEnchantLevel == itemVanillaEnchantLevel && sacrificeVanillaEnchantLevel + 1 <= maxEnchantmentLevel && EnchantmentTableMenu.isCustomEnchantable(finalItem, enchant)) {
-                if(enchant.getAddCmd() != null && !enchant.getAddCmd().isEmpty()) {
-                    finalItem = UtilityMethods.removeExtraEnchant(plugin, inv, RESULT_SLOT, player, finalItem, enchant);
-                    finalItem = UtilityMethods.addExtraEnchant(plugin, inv, RESULT_SLOT, player, enchant, ++sacrificeVanillaEnchantLevel, finalItem, enchant.getColor());
-                } else {
-                    finalItem = UtilityMethods.removeEnchantment(finalItem, enchant.getName(), true);
-                    finalItem = UtilityMethods.addEnchantment(finalItem, enchant.getName(), ++sacrificeVanillaEnchantLevel, enchant.getColor(), true);
-                }
-                COST += 1;
-            }
-        }
-
+        this.COST += (int) (levels * ANVIL_COST_PER_LEVEL);
         if(finalItem == null) {
             return result;
         }

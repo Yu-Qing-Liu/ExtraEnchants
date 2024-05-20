@@ -6,39 +6,35 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.entity.Player;
-import org.bukkit.enchantments.Enchantment;
 
 import java.util.HashMap;
 import java.util.Collection;
 
-import com.github.yuqingliu.extraenchants.enchants.utils.UtilityMethods;
-import com.github.yuqingliu.extraenchants.enchants.ApplicableItemsRegistry;
+import lombok.RequiredArgsConstructor;
+
+import com.github.yuqingliu.extraenchants.enchantment.Enchantment;
 import com.github.yuqingliu.extraenchants.enchants.universal.AutoLooting;
 
+@RequiredArgsConstructor
 public class Smelting implements Listener {
-    private final JavaPlugin plugin;
-
-    public Smelting(JavaPlugin plugin) {
-        this.plugin = plugin;
-    }
+    private final Enchantment smelting;
+    private final Enchantment autoLooting;
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
         ItemStack tool = player.getInventory().getItemInMainHand();
 
-        if (ApplicableItemsRegistry.pickaxe_applicable.contains(tool.getType()) &&
-            UtilityMethods.getEnchantmentLevel(tool, "Smelting") > 0 &&
-            !UtilityMethods.hasVanillaEnchantment(tool, Enchantment.SILK_TOUCH)) {
+        if (smelting.getEnchantmentLevel(tool) > 0 &&
+            tool.getEnchantmentLevel(org.bukkit.enchantments.Enchantment.SILK_TOUCH) == 0) {
             Block block = event.getBlock();
             Material blockType = block.getType();
             smelt(event, player, tool, block, blockType);
         }
     }
 
-    public static void smelt(BlockBreakEvent event, Player player, ItemStack tool, Block block, Material blockType) {
+    public void smelt(BlockBreakEvent event, Player player, ItemStack tool, Block block, Material blockType) {
         // Get the smelted item equivalent for the block type
         ItemStack smeltedItem = getSmeltedItem(blockType);
         if (smeltedItem != null) {
@@ -48,7 +44,7 @@ public class Smelting implements Listener {
             int smeltedItemCount = drops.stream().mapToInt(ItemStack::getAmount).sum();
             if(smeltedItemCount > 0) {
                 smeltedItem.setAmount(smeltedItemCount); // Set the total count for the smelted item
-                if(UtilityMethods.getEnchantmentLevel(tool, "AutoLooting") > 0) {
+                if(autoLooting.getEnchantmentLevel(tool) > 0) {
                     // If AutoLooting is applied, try to add the item directly to the player's inventory.
                     HashMap<Integer, ItemStack> unadded = player.getInventory().addItem(smeltedItem);
 
@@ -64,7 +60,7 @@ public class Smelting implements Listener {
                 }
             }
         } else {
-            if(UtilityMethods.getEnchantmentLevel(tool, "AutoLooting") > 0) {
+            if(autoLooting.getEnchantmentLevel(tool) > 0) {
                 AutoLooting.autoloot(event, player, block, tool);
             }
             // Noraml behavior

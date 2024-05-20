@@ -9,21 +9,18 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.block.Block;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.block.data.BlockData;
-import org.bukkit.block.BlockState;
 
-import com.github.yuqingliu.extraenchants.enchants.Constants;
 import com.github.yuqingliu.extraenchants.gui.AnvilMenu;
-import com.github.yuqingliu.extraenchants.blocks.CustomBlockUtils;
-
-import de.tr7zw.changeme.nbtapi.NBTBlock;
+import com.github.yuqingliu.extraenchants.persistence.blocks.CustomBlockUtils;
+import com.github.yuqingliu.extraenchants.ExtraEnchants;
+import com.github.yuqingliu.extraenchants.configuration.implementations.AnvilConstants;
+import com.github.yuqingliu.extraenchants.configuration.implementations.GlobalConstants;
 
 import java.util.List;
 import java.util.Arrays;
@@ -33,7 +30,9 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class PlayerInteractsWithAnvil implements Listener {
-    private JavaPlugin plugin;
+    private ExtraEnchants plugin;
+    private GlobalConstants globalConstants;
+    private AnvilMenu anvilMenu;
     private static final int LEFT_SLOT = 11;
     private static final int RIGHT_SLOT = 13;
     private static final int RESULT_SLOT = 15;
@@ -41,8 +40,11 @@ public class PlayerInteractsWithAnvil implements Listener {
     private static final List<Integer> frame = Arrays.asList(0,1,2,3,4,5,6,7,8,9,10,12,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35);
     private static boolean hasResult = false;
 
-    public PlayerInteractsWithAnvil(JavaPlugin plugin) {
+    public PlayerInteractsWithAnvil(ExtraEnchants plugin) {
         this.plugin = plugin;
+        this.globalConstants = (GlobalConstants) plugin.getConfigurationManager().getConstants().get("GlobalConstants");
+        AnvilConstants anvilConstants = (AnvilConstants) plugin.getConfigurationManager().getConstants().get("AnvilConstants");
+        this.anvilMenu = new AnvilMenu(plugin.getItemUtils(), plugin.getAnvilManager(), anvilConstants);
     }
 
     @EventHandler
@@ -52,12 +54,12 @@ public class PlayerInteractsWithAnvil implements Listener {
 
         // Player interacts with an anvil
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK && block != null && block.getType() == Material.ANVIL) {
-            if(!Constants.applyVanillaAnvilBehavior()) {
+            if(!globalConstants.getApplyVanillaAnvilBehavior()) {
                 event.setCancelled(true);
-                AnvilMenu.openAnvilMenu(player);
+                anvilMenu.openAnvilMenu(player);
             } else if(CustomBlockUtils.isCustomAnvil(block)) {
                 event.setCancelled(true);
-                AnvilMenu.openAnvilMenu(player);
+                anvilMenu.openAnvilMenu(player);
             }
             // Normal behavior
         }
@@ -110,7 +112,7 @@ public class PlayerInteractsWithAnvil implements Listener {
                 if (event.getSlot() == RESULT_SLOT) {
                     // The slot clicked is the result slot, and it was a shift-click
                     if (validResult(clickedInventory.getItem(RESULT_SLOT))) {
-                        if (AnvilMenu.applyCost(player)) {
+                        if (anvilMenu.applyCost(player)) {
                             clickedInventory.setItem(LEFT_SLOT, new ItemStack(Material.AIR));
                             clickedInventory.setItem(RIGHT_SLOT, new ItemStack(Material.AIR));
                         } else {
@@ -145,7 +147,7 @@ public class PlayerInteractsWithAnvil implements Listener {
                     setBarrier(clickedInventory);
                     wait(clickedInventory, player);
                 } else if(slot == RESULT_SLOT && validResult(clickedInventory.getItem(slot))) {
-                    if(AnvilMenu.applyCost(player)) {
+                    if(anvilMenu.applyCost(player)) {
                         clickedInventory.setItem(LEFT_SLOT, new ItemStack(Material.AIR));
                         clickedInventory.setItem(RIGHT_SLOT, new ItemStack(Material.AIR));
                     } else {
@@ -228,7 +230,7 @@ public class PlayerInteractsWithAnvil implements Listener {
                 ItemStack rightItem = inv.getItem(RIGHT_SLOT);
                 if (leftItem != null && rightItem != null && leftItem.getType() != Material.AIR && rightItem.getType() != Material.AIR) {
                     // Item detected in both left and right slots, update the result
-                    AnvilMenu.updateResult(plugin, player, inv, leftItem, rightItem, false);
+                    anvilMenu.updateResult(plugin, player, inv, leftItem, rightItem, false);
                     hasResult = true;
                     cancel(); // Stop this task from running again
                 }
