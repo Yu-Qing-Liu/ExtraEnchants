@@ -39,8 +39,10 @@ public class Lore {
     }
 
     private void initializeSections() {
-        loreMap.put(EnchantmentSection.class.getSimpleName(), new LoreSection(new EnchantmentSection(0, sectionSizes, itemLore)));
-        loreMap.put(AbilitySection.class.getSimpleName(), new LoreSection(new AbilitySection(1, sectionSizes, itemLore)));
+        loreMap.put(DescriptionSection.class.getSimpleName(), new LoreSection(new DescriptionSection(0, sectionSizes, itemLore)));
+        loreMap.put(EnchantmentSection.class.getSimpleName(), new LoreSection(new EnchantmentSection(1, sectionSizes, itemLore)));
+        loreMap.put(AbilitySection.class.getSimpleName(), new LoreSection(new AbilitySection(2, sectionSizes, itemLore)));
+        loreMap.put(RaritySection.class.getSimpleName(), new LoreSection(new RaritySection(3, sectionSizes, itemLore)));
     }
 
     private List<Component> getLore() {

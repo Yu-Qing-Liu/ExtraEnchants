@@ -93,6 +93,20 @@ public class TextUtils {
         return GsonComponentSerializer.gson().deserialize(json);
     }
 
+    public static String formatName(String name) {
+        String result = name.replace("_", " ").toLowerCase();
+        String[] words = result.split(" ");
+        StringBuilder formattedName = new StringBuilder();
+        for (String word : words) {
+            if (word.length() > 0) {
+                formattedName.append(Character.toUpperCase(word.charAt(0)))
+                             .append(word.substring(1))
+                             .append(" ");
+            }
+        }
+        return formattedName.toString().trim();
+    }
+
     public static Enchantment getVanillaEnchantment(String key) {
         return switch(key) {
             case "AquaInfinity" -> Enchantment.WATER_WORKER;

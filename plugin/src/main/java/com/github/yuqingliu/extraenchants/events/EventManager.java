@@ -19,6 +19,7 @@ public class EventManager {
         listeners.add(new PlayerPlacesDestroysAnvil());
         listeners.add(new PlayerPlacesDestroysEtable());
         listeners.add(new PlayerPlacesDestroysGrindstone());
+        listeners.add(new PlayerReceivesItem(plugin));
     }
 
     public void registerListeners() {

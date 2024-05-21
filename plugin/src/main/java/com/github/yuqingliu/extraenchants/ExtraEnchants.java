@@ -5,6 +5,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.yuqingliu.extraenchants.item.ApplicableItemsRegistry;
 import com.github.yuqingliu.extraenchants.item.ItemUtils;
+import com.github.yuqingliu.extraenchants.item.items.ItemManager;
 import com.github.yuqingliu.extraenchants.anvil.AnvilManager;
 import com.github.yuqingliu.extraenchants.configuration.ConfigurationManager;
 import com.github.yuqingliu.extraenchants.enchantment.EnchantmentManager;
@@ -27,6 +28,7 @@ public class ExtraEnchants extends JavaPlugin {
     private EnchantsManager enchantsManager;
     private ItemUtils itemUtils;
     private ApplicableItemsRegistry applicableItemsRegistry;
+    private ItemManager itemManager;
     
     @Override
     public void onLoad() {
@@ -52,13 +54,15 @@ public class ExtraEnchants extends JavaPlugin {
         /*Constants*/
         configurationManager = new ConfigurationManager(this);
         configurationManager.registerConstants();
-        
+
         /*Enchantments*/
         enchantmentManager = new EnchantmentManager(this);
         enchantmentManager.registerEnchants();
         
-        /*Utils*/
+        /*Items*/
         itemUtils = new ItemUtils(this);
+        itemManager = new ItemManager(this);
+        itemManager.registerItems();
 
         /*Anvil*/
         anvilManager = new AnvilManager(this);

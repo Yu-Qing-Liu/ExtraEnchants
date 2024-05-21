@@ -10,6 +10,9 @@ import com.github.yuqingliu.extraenchants.ExtraEnchants;
 import com.github.yuqingliu.extraenchants.enchantment.Enchantment;
 import com.github.yuqingliu.extraenchants.enchantment.EnchantmentManager;
 
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.NamedTextColor;
+
 public class ItemUtils {
     private EnchantmentManager enchantmentManager;
 
@@ -28,5 +31,23 @@ public class ItemUtils {
             }
         }
         return itemEnchants;
+    }
+
+    public enum Rarity {
+        COMMON, UNCOMMON, RARE, EPIC, LEGENDARY,
+        MYTHIC, DIVINE, SPECIAL;
+        
+        public TextColor getColor() {
+            return switch (this) {
+                case COMMON -> NamedTextColor.WHITE;
+                case UNCOMMON -> NamedTextColor.GREEN;
+                case RARE -> NamedTextColor.BLUE;
+                case EPIC -> NamedTextColor.DARK_PURPLE;
+                case LEGENDARY -> NamedTextColor.GOLD;
+                case MYTHIC -> NamedTextColor.LIGHT_PURPLE;
+                case DIVINE -> NamedTextColor.AQUA;
+                case SPECIAL -> NamedTextColor.RED;
+            };
+        }
     }
 }
