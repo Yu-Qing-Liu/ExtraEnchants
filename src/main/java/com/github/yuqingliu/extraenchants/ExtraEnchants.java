@@ -66,6 +66,7 @@ public class ExtraEnchants extends JavaPlugin {
 
         /*Anvil*/
         anvilManager = new AnvilManager(this);
+        anvilManager.registerCombinations();
         
         /*Events*/
         eventManager = new EventManager(this);

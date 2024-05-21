@@ -1,33 +1,59 @@
 package com.github.yuqingliu.extraenchants.anvil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Material;
+import org.bukkit.Registry;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import lombok.Getter;
 
 public class AnvilManager {
     protected JavaPlugin plugin;
     protected FileConfiguration config; 
-    private Map<Material, List<Material>> anvilRegistry = new HashMap<>();
+    private File file;
+    @Getter private Map<Material, List<Material>> anvilRegistry = new HashMap<>();
 
     public AnvilManager(JavaPlugin plugin) {
         this.plugin = plugin;
-        this.config = plugin.getConfig();
-    }
-
-    public Map<Material, List<Material>> getCombinations() {
-        return this.anvilRegistry;  
+        File dir = plugin.getDataFolder();
+        File file = new File(dir, "anvil.yml");
+        if (!dir.exists()) {
+            dir.mkdir();
+        } 
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (Exception e) {
+                plugin.getLogger().warning("Could not create anvil.yml configuration file.");
+            }
+        } 
+        this.file = file;
+        this.config = YamlConfiguration.loadConfiguration(file);
+        initializeCombinations();
     }
 
     public void registerCombinations() {
         insertCombinations();
-        plugin.saveConfig();
+        try {
+            config.save(file);
+        } catch (Exception e) {
+            plugin.getLogger().warning("Could not save anvil.yml configuration file.");
+        }
         updateCombinations();
+    }
+
+    public void initializeCombinations() {
+        for(Material material : Registry.MATERIAL) {
+            anvilRegistry.put(material, new ArrayList<>());
+        }
     }
 
     private void insertCombinations() {
@@ -35,11 +61,11 @@ public class AnvilManager {
             Material key = entry.getKey();
             List<Material> value = entry.getValue();
             String path = "ExtraAnvilCombinations." + key.name();
-            List<String> options = new ArrayList<>();
-            for(Material m : value) {
-                options.add(m.name());
-            }
             if(!config.isSet(path)) {
+                List<Object> options = new ArrayList<>();
+                for(Material m : value) {
+                    options.add(m.name());
+                }
                 config.set(path, options);
             }
         }

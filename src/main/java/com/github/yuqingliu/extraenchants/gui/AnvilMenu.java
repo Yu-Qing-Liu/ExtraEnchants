@@ -161,7 +161,7 @@ public class AnvilMenu {
         Material M1 = item1.getType();
         Material M2 = item2.getType();
 
-        Map<Material, List<Material>> anvilRegistry = anvilManager.getCombinations();
+        Map<Material, List<Material>> anvilRegistry = anvilManager.getAnvilRegistry();
         
         // Books are allowed to interact with any
         if(M1 == Material.ENCHANTED_BOOK || M2 == Material.ENCHANTED_BOOK) return true;
