@@ -1,4 +1,4 @@
 #!/bin/bash
 
-./gradlew clean shadowJar
+./gradlew clean uberJar
 cp ./build/libs/* ../../MinecraftTestServer/plugins/ExtraEnchants.jar

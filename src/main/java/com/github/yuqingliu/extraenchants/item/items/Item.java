@@ -18,14 +18,19 @@ import net.kyori.adventure.text.Component;
 @AllArgsConstructor
 @Getter
 public class Item {
-    private final Material material;
+    private ItemStack item;
     @Setter Rarity rarity;
     @Setter private Component displayName;
     @Setter private Component description;
+
+    public Item(Material material, Rarity rarity, Component displayName, Component description) {
+        this.item = new ItemStack(material);
+        this.rarity = rarity;
+        this.displayName = displayName;
+        this.description = description;
+    }
     
     public ItemStack getItem() {
-        ItemStack item = new ItemStack(material);
-
         ItemMeta meta = item.getItemMeta();
         meta.displayName(displayName);
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
@@ -34,7 +39,7 @@ public class Item {
         meta.addItemFlags(ItemFlag.HIDE_DESTROYS);
         meta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
         meta.addItemFlags(ItemFlag.HIDE_DYE);
-        meta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS);
+        meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         item.setItemMeta(meta);
 
         Lore lore = new Lore(item);

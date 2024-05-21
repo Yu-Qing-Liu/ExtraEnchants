@@ -67,7 +67,7 @@ public class VanillaEnchantment extends AbstractEnchantment {
             if(item.getItemMeta() instanceof EnchantmentStorageMeta) {
                 EnchantmentStorageMeta smeta = (EnchantmentStorageMeta) item.getItemMeta();
                 smeta.addStoredEnchant(enchantment, level, true);
-                smeta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS);
+                smeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
                 item.setItemMeta(smeta);
                 return item;
             }

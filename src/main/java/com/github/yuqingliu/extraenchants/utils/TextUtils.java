@@ -82,6 +82,9 @@ public class TextUtils {
     }
 
     public static String componentToString(Component component) {
+        if(component == null) {
+            return "";
+        }
         return PlainTextComponentSerializer.plainText().serialize(component);
     }
 

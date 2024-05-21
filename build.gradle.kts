@@ -4,8 +4,6 @@ import java.io.ByteArrayOutputStream
 
 plugins {
     id("java")
-    id("jacoco")
-    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 group = "com.github.yuqingliu.extraenchants"
@@ -27,7 +25,7 @@ dependencies {
     testCompileOnly("org.projectlombok:lombok:1.18.30")
     testAnnotationProcessor("org.projectlombok:lombok:1.18.30")
 
-    implementation("org.springframework:spring-expression:6.1.7")
+    implementation("net.objecthunter:exp4j:0.4.8")
 
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
@@ -84,37 +82,20 @@ tasks.processResources {
     println("Finished injecting version: $fullVersion")
 }
 
-tasks.shadowJar {
-    with(this) {
-        configurations = listOf(project.configurations.shadow.get())
-    }
-    relocate("org.springframework.expression", "com.github.yuqingliu.extraenchants.org.springframework.expression")
-    archiveFileName.set("${project.name}-${versionString()}.jar")
-}
-
 tasks.test {
     useJUnitPlatform()
-    finalizedBy(tasks.jacocoTestReport) // Generate report after tests have been run
 }
 
-tasks.jacocoTestReport {
-    dependsOn(tasks.test) // tests are required to run before generating the report
+tasks.register<Jar>("uberJar") {
+    archiveClassifier = "uber"
 
-    reports {
-        xml.required = false
-        csv.required = false
-        html.outputLocation = layout.buildDirectory.dir("jacocoHtml")
-    }
-}
+    from(sourceSets.main.get().output)
 
-tasks.jacocoTestCoverageVerification {
-    violationRules {
-        rule {
-            limit {
-                minimum = "0.2".toBigDecimal() // Code coverage requirement expressed in decimal
-            }
-        }
-    }
+    dependsOn(configurations.runtimeClasspath)
+    from({
+        configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
+    })
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 java {
