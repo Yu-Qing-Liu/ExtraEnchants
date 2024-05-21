@@ -27,7 +27,7 @@ dependencies {
     testCompileOnly("org.projectlombok:lombok:1.18.30")
     testAnnotationProcessor("org.projectlombok:lombok:1.18.30")
 
-    implementation("net.objecthunter:exp4j:0.4.8")
+    implementation("org.springframework:spring-expression:6.1.7")
 
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
@@ -88,7 +88,7 @@ tasks.shadowJar {
     with(this) {
         configurations = listOf(project.configurations.shadow.get())
     }
-
+    relocate("org.springframework.expression", "com.github.yuqingliu.extraenchants.org.springframework.expression")
     archiveFileName.set("${project.name}-${versionString()}.jar")
 }
 
@@ -121,4 +121,3 @@ java {
     sourceCompatibility = JavaVersion.VERSION_21
     targetCompatibility = JavaVersion.VERSION_21
 }
-

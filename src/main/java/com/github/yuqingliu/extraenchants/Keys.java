@@ -18,7 +18,7 @@ public final class Keys {
      * Used by the Main on load.
      * @param plugin the namespace to use for the namespaced-keys.
      */
-    static void load(Plugin plugin) {
+    public static void load(Plugin plugin) {
         Keys.plugin = plugin;
         itemLore = new NamespacedKey(plugin, "item-lore");
         customUIBlock = new NamespacedKey(plugin, "custom-ui-block");
