@@ -29,7 +29,7 @@ public class PlayerReceivesItem implements Listener {
         if (result != null && result.getType() != Material.AIR) {
             if(isNewItem(result)) {
                 Item item = registry.get(result.getType().name());
-                event.getInventory().setResult(item.getItem());
+                event.getInventory().setResult(item.getItem(result.getAmount()));
             }
         }
     }
@@ -39,7 +39,7 @@ public class PlayerReceivesItem implements Listener {
         ItemStack result = event.getItem().getItemStack();
         if(isNewItem(result)) {
             Item item = registry.get(result.getType().name());
-            event.getItem().setItemStack(item.getItem());
+            event.getItem().setItemStack(item.getItem(1));
         }
     }
 
@@ -49,7 +49,7 @@ public class PlayerReceivesItem implements Listener {
             ItemStack result = event.getCurrentItem();
             if(isNewItem(result)) {
                 Item item = registry.get(result.getType().name());
-                event.setCurrentItem(item.getItem());
+                event.setCurrentItem(item.getItem(1));
             }
         }
     }
@@ -60,7 +60,7 @@ public class PlayerReceivesItem implements Listener {
             ItemStack result = event.getCursor();
             if(isNewItem(result)) {
                 Item item = registry.get(result.getType().name());
-                event.setCursor(item.getItem());
+                event.setCursor(item.getItem(1));
             }
         }
     }

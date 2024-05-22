@@ -7,3 +7,4 @@
  */
 
 rootProject.name = "ExtraEnchants"
+include("api")

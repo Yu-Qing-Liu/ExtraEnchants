@@ -17,13 +17,13 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.20.6-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:${project.property("paper_version")}")
 
-    compileOnly("org.projectlombok:lombok:1.18.30")
-    annotationProcessor("org.projectlombok:lombok:1.18.30")
+    compileOnly("org.projectlombok:lombok:${project.property("lombok_version")}")
+    annotationProcessor("org.projectlombok:lombok:${project.property("lombok_version")}")
 
-    testCompileOnly("org.projectlombok:lombok:1.18.30")
-    testAnnotationProcessor("org.projectlombok:lombok:1.18.30")
+    testCompileOnly("org.projectlombok:lombok:${project.property("lombok_version")}")
+    testAnnotationProcessor("org.projectlombok:lombok:${project.property("lombok_version")}")
 
     implementation("net.objecthunter:exp4j:0.4.8")
 
@@ -96,6 +96,18 @@ tasks.register<Jar>("uberJar") {
         configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
     })
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+tasks.jar {
+    enabled = false
+}
+
+tasks.assemble {
+    dependsOn(tasks.named("uberJar"))
+}
+
+tasks.build {
+    dependsOn(tasks.assemble)
 }
 
 java {

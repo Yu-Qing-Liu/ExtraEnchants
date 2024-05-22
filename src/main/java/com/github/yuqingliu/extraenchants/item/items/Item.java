@@ -10,27 +10,26 @@ import com.github.yuqingliu.extraenchants.item.lore.Lore;
 import com.github.yuqingliu.extraenchants.item.lore.implementations.DescriptionSection;
 import com.github.yuqingliu.extraenchants.item.lore.implementations.RaritySection;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
 
-@AllArgsConstructor
 @Getter
 public class Item {
-    private ItemStack item;
+    private Material material;
     @Setter Rarity rarity;
     @Setter private Component displayName;
     @Setter private Component description;
 
     public Item(Material material, Rarity rarity, Component displayName, Component description) {
-        this.item = new ItemStack(material);
+        this.material = material;
         this.rarity = rarity;
         this.displayName = displayName;
         this.description = description;
     }
     
-    public ItemStack getItem() {
+    public ItemStack getItem(int amount) {
+        ItemStack item = new ItemStack(this.material, amount);
         ItemMeta meta = item.getItemMeta();
         meta.displayName(displayName);
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
