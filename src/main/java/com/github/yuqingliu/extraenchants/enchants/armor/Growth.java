@@ -7,8 +7,9 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 
-import com.github.yuqingliu.extraenchants.ExtraEnchantsScheduler;
-import com.github.yuqingliu.extraenchants.enchantment.Enchantment;
+import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
+
+import com.github.yuqingliu.extraenchants.api.Scheduler;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,7 +24,7 @@ public class Growth implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         if (event.getWhoClicked() instanceof Player) {
-            ExtraEnchantsScheduler.runLater(() -> updatePlayerHealth((Player) event.getWhoClicked()), Duration.ofMillis(50));
+            Scheduler.runLater(() -> updatePlayerHealth((Player) event.getWhoClicked()), Duration.ofMillis(50));
         }
     }
 

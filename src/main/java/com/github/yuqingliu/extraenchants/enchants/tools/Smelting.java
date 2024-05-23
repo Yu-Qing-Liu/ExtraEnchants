@@ -13,7 +13,8 @@ import java.util.Collection;
 
 import lombok.RequiredArgsConstructor;
 
-import com.github.yuqingliu.extraenchants.enchantment.Enchantment;
+import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
+
 import com.github.yuqingliu.extraenchants.enchants.universal.AutoLooting;
 
 @RequiredArgsConstructor

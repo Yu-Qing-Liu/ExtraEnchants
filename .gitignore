@@ -52,7 +52,10 @@ Thumbs.db
 *.wmv
 
 # 
+bin/
 build/
+api/build/
+api/bin/
 .gradle
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/

@@ -14,7 +14,7 @@ import java.util.HashSet;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-import com.github.yuqingliu.extraenchants.Keys;
+import com.github.yuqingliu.extraenchants.api.Keys;
 import com.github.yuqingliu.extraenchants.persistence.blocks.threads.*;
 
 public class CustomBlockUtils extends CustomBlockDatabase {

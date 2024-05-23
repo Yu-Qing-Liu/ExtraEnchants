@@ -15,12 +15,12 @@ import java.util.HashMap;
 import java.util.UUID;
 import org.bukkit.event.block.Action;
 import org.bukkit.util.RayTraceResult;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 
-import com.github.yuqingliu.extraenchants.ExtraEnchantsScheduler;
-import com.github.yuqingliu.extraenchants.enchantment.Enchantment;
+import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
+import com.github.yuqingliu.extraenchants.api.Scheduler;
+
 import com.github.yuqingliu.extraenchants.item.weapon.implementations.MeleeWeapon;
 
 import lombok.RequiredArgsConstructor;
@@ -96,7 +96,7 @@ public class SonicBoom implements Listener {
             Location teleportLocation = location.clone();
             teleportLocation.setYaw(currentYaw);
             teleportLocation.setPitch(currentPitch);
-            ExtraEnchantsScheduler.runLater(() -> {
+            Scheduler.runLater(() -> {
                 player.teleport(teleportLocation.add(0, 1, 0)); // Teleport to one block above
                 player.getWorld().createExplosion(teleportLocation, 4.0F, false, false, player);
                 player.getWorld().spawnParticle(Particle.EXPLOSION, teleportLocation, 1);
@@ -108,7 +108,7 @@ public class SonicBoom implements Listener {
         // Get the item in the main hand, which is considered for the hit.
         ItemStack weapon = player.getInventory().getItemInMainHand();
         MeleeWeapon item = new MeleeWeapon(weapon);
-        ExtraEnchantsScheduler.runLater(() -> {
+        Scheduler.runLater(() -> {
             LivingEntity livingEntity = (LivingEntity) entity;
             item.applyHit(player, livingEntity);
         }, Duration.ofMillis(delay));

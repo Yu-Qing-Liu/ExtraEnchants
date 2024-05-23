@@ -1,6 +1,5 @@
-package com.github.yuqingliu.extraenchants;
+package com.github.yuqingliu.extraenchants.api;
 
-import lombok.AccessLevel;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -13,10 +12,10 @@ import java.time.Duration;
  * <br/>
  * Is set up on load by the main.
  */
-public final class ExtraEnchantsScheduler {
-    private ExtraEnchantsScheduler() {}
+public final class Scheduler {
+    private Scheduler() {}
 
-    @Setter(AccessLevel.PACKAGE)
+    @Setter
     private static JavaPlugin plugin;
 
     // 1s == 1000 ms == 20 ticks
@@ -46,4 +45,3 @@ public final class ExtraEnchantsScheduler {
         return Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, runnable, toTicks(wait), toTicks(period));
     }
 }
-

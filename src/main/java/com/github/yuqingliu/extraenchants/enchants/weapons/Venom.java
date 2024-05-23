@@ -12,12 +12,11 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-
-import com.github.yuqingliu.extraenchants.enchantment.Enchantment;
-
 import org.bukkit.entity.Arrow;
 
 import java.util.List;
+
+import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
 
 import lombok.RequiredArgsConstructor;
 

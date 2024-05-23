@@ -15,17 +15,18 @@ import java.util.Map;
 
 import org.bukkit.event.Listener;
 
-import com.github.yuqingliu.extraenchants.ExtraEnchants;
+import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
+
+import com.github.yuqingliu.extraenchants.ExtraEnchantsImpl;
 import com.github.yuqingliu.extraenchants.configuration.implementations.CooldownConstants;
-import com.github.yuqingliu.extraenchants.enchantment.Enchantment;
 
 public class EnchantsManager {
-    private ExtraEnchants plugin;
+    private ExtraEnchantsImpl plugin;
     private Map<String, Enchantment> registry;
     private Map<String, Integer> cooldownRegistry;
     private List<Listener> listeners = new ArrayList<>();
 
-    public EnchantsManager(ExtraEnchants plugin) {
+    public EnchantsManager(ExtraEnchantsImpl plugin) {
         this.plugin = plugin;
         this.registry = plugin.getEnchantmentManager().getEnchantments();
         CooldownConstants cooldowns = (CooldownConstants) plugin.getConfigurationManager().getConstants().get("CooldownConstants");

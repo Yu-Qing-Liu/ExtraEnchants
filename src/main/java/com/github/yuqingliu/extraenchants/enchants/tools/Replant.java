@@ -14,7 +14,8 @@ import org.bukkit.entity.Player;
 import java.util.Collection;
 import java.util.HashMap;
 
-import com.github.yuqingliu.extraenchants.enchantment.Enchantment;
+import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
+
 import com.github.yuqingliu.extraenchants.enchants.universal.AutoLooting;
 
 import lombok.RequiredArgsConstructor;

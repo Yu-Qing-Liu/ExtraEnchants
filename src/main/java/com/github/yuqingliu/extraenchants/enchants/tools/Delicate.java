@@ -5,12 +5,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
-
-import com.github.yuqingliu.extraenchants.enchantment.Enchantment;
-
 import org.bukkit.entity.Player;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Ageable;
+
+import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
 
 import lombok.RequiredArgsConstructor;
 

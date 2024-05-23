@@ -1,4 +1,4 @@
-package com.github.yuqingliu.extraenchants;
+package com.github.yuqingliu.extraenchants.api;
 
 import lombok.Getter;
 import org.bukkit.NamespacedKey;

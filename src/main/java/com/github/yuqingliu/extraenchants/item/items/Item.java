@@ -5,14 +5,16 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.github.yuqingliu.extraenchants.item.ItemUtils.Rarity;
+import com.github.yuqingliu.extraenchants.api.item.ItemUtils.Rarity;
+
 import com.github.yuqingliu.extraenchants.item.lore.Lore;
 import com.github.yuqingliu.extraenchants.item.lore.implementations.DescriptionSection;
 import com.github.yuqingliu.extraenchants.item.lore.implementations.RaritySection;
 
+import net.kyori.adventure.text.Component;
+
 import lombok.Getter;
 import lombok.Setter;
-import net.kyori.adventure.text.Component;
 
 @Getter
 public class Item {

@@ -1,10 +1,9 @@
 package com.github.yuqingliu.extraenchants.enchantment.implementations.ability;
 
-import java.time.Duration;
 import java.util.ArrayList;
 
 import com.github.yuqingliu.extraenchants.enchantment.implementations.AbilityEnchantment;
-import com.github.yuqingliu.extraenchants.item.ApplicableItemsRegistry;
+import com.github.yuqingliu.extraenchants.api.item.ApplicableItemsRegistry;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;

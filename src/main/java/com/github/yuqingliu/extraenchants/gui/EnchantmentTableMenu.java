@@ -18,7 +18,8 @@ import java.util.Collections;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-import com.github.yuqingliu.extraenchants.enchantment.Enchantment;
+import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
+
 import com.github.yuqingliu.extraenchants.enchantment.EnchantmentOffer;
 import com.github.yuqingliu.extraenchants.utils.MathUtils;
 import com.github.yuqingliu.extraenchants.utils.TextUtils;

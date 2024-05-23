@@ -1,4 +1,4 @@
-package com.github.yuqingliu.extraenchants.item;
+package com.github.yuqingliu.extraenchants.api.item;
 
 import org.bukkit.Material;
 
@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Arrays;
 
 @Getter
-public class ApplicableItemsRegistry {
+public final class ApplicableItemsRegistry {
     // Ranged weapons
     private List<Material> rangedApplicable = Arrays.asList(Material.BOW, Material.CROSSBOW);
 

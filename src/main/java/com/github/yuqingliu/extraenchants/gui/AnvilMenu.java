@@ -22,8 +22,8 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 import com.github.yuqingliu.extraenchants.anvil.AnvilManager;
 import com.github.yuqingliu.extraenchants.configuration.implementations.AnvilConstants;
-import com.github.yuqingliu.extraenchants.enchantment.Enchantment;
-import com.github.yuqingliu.extraenchants.item.ItemUtils;
+import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
+import com.github.yuqingliu.extraenchants.api.item.ItemUtils;
 
 public class AnvilMenu {
     private ItemUtils itemUtils;

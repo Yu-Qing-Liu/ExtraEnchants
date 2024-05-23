@@ -5,14 +5,18 @@ import java.util.List;
 
 import org.bukkit.event.Listener;
 
-import com.github.yuqingliu.extraenchants.ExtraEnchants;
+import com.github.yuqingliu.extraenchants.ExtraEnchantsImpl;
 
 public class EventManager {
-    private ExtraEnchants plugin;
+    private ExtraEnchantsImpl plugin;
     private List<Listener> listeners = new ArrayList<>();
 
-    public EventManager(ExtraEnchants plugin) {
+    public EventManager(ExtraEnchantsImpl plugin) {
         this.plugin = plugin;
+        initializeListeners();
+    }
+
+    private void initializeListeners() {
         listeners.add(new PlayerInteractsWithAnvil(plugin));
         listeners.add(new PlayerInteractsWithEnchantmentTable(plugin));
         listeners.add(new PlayerInteractsWithGrindstone(plugin));

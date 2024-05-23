@@ -19,7 +19,7 @@ import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.inventory.PlayerInventory;
 
 import com.github.yuqingliu.extraenchants.persistence.blocks.CustomBlockUtils;
-import com.github.yuqingliu.extraenchants.ExtraEnchants;
+import com.github.yuqingliu.extraenchants.ExtraEnchantsImpl;
 import com.github.yuqingliu.extraenchants.configuration.implementations.GlobalConstants;
 import com.github.yuqingliu.extraenchants.gui.EnchantmentTableMenu;
 
@@ -40,7 +40,7 @@ public class PlayerInteractsWithEnchantmentTable implements Listener {
     List<Integer> frame = Arrays.asList(7,8,15,16,17,24,26,33,34,35,42,43,44,52,53);
     List<Integer> options = Arrays.asList(0,1,2,3,4,5,9,10,11,12,13,14,18,19,20,21,22,23,27,28,29,30,31,32,36,37,38,39,40,41,45,46,47,48,49,50);
 
-    public PlayerInteractsWithEnchantmentTable(ExtraEnchants plugin) {
+    public PlayerInteractsWithEnchantmentTable(ExtraEnchantsImpl plugin) {
         this.plugin = plugin;
         this.globalConstants = (GlobalConstants) plugin.getConfigurationManager().getConstants().get("GlobalConstants");
         this.enchantmentTableMenu = new EnchantmentTableMenu(plugin.getEnchantmentManager().getEnchantments());

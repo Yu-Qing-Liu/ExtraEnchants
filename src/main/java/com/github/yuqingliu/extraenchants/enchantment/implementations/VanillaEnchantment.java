@@ -15,7 +15,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import net.kyori.adventure.text.Component;
 
-import com.github.yuqingliu.extraenchants.Keys;
+import com.github.yuqingliu.extraenchants.api.Keys;
 import com.github.yuqingliu.extraenchants.enchantment.AbstractEnchantment;
 import com.github.yuqingliu.extraenchants.utils.TextUtils;
 

@@ -1,14 +1,15 @@
 package com.github.yuqingliu.extraenchants;
 
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.java.JavaPlugin;
 
-import com.github.yuqingliu.extraenchants.item.ApplicableItemsRegistry;
-import com.github.yuqingliu.extraenchants.item.ItemUtils;
+import com.github.yuqingliu.extraenchants.api.ExtraEnchants;
+import com.github.yuqingliu.extraenchants.api.item.ApplicableItemsRegistry;
+
+import com.github.yuqingliu.extraenchants.item.ItemUtilsImpl;
 import com.github.yuqingliu.extraenchants.item.items.ItemManager;
 import com.github.yuqingliu.extraenchants.anvil.AnvilManager;
 import com.github.yuqingliu.extraenchants.configuration.ConfigurationManager;
-import com.github.yuqingliu.extraenchants.enchantment.EnchantmentManager;
+import com.github.yuqingliu.extraenchants.enchantment.EnchantmentManagerImpl;
 import com.github.yuqingliu.extraenchants.enchants.EnchantsManager;
 import com.github.yuqingliu.extraenchants.events.EventManager;
 import com.github.yuqingliu.extraenchants.commands.*;
@@ -19,23 +20,17 @@ import lombok.Getter;
 import java.io.File;
 
 @Getter
-public class ExtraEnchants extends JavaPlugin {
-    private ConfigurationManager configurationManager;
-    private EnchantmentManager enchantmentManager;
+public final class ExtraEnchantsImpl extends ExtraEnchants {
     private PluginManager pluginManager;
+    private ConfigurationManager configurationManager;
+    private EnchantmentManagerImpl enchantmentManager;
     private EventManager eventManager;
     private AnvilManager anvilManager;
     private EnchantsManager enchantsManager;
-    private ItemUtils itemUtils;
+    private ItemUtilsImpl itemUtils;
     private ApplicableItemsRegistry applicableItemsRegistry;
     private ItemManager itemManager;
     
-    @Override
-    public void onLoad() {
-        ExtraEnchantsScheduler.setPlugin(this);
-        Keys.load(this);
-    }
-
     @Override
     public void onEnable() {
         /*Persistence*/
@@ -56,11 +51,11 @@ public class ExtraEnchants extends JavaPlugin {
         configurationManager.registerConstants();
 
         /*Enchantments*/
-        enchantmentManager = new EnchantmentManager(this);
+        enchantmentManager = new EnchantmentManagerImpl(this);
         enchantmentManager.registerEnchants();
         
         /*Items*/
-        itemUtils = new ItemUtils(this);
+        itemUtils = new ItemUtilsImpl(this);
         itemManager = new ItemManager(this);
         itemManager.registerItems();
 
@@ -79,7 +74,7 @@ public class ExtraEnchants extends JavaPlugin {
         /*Commands*/
         this.getCommand("ee").setExecutor(new EECommand(this));
         this.getCommand("eelist").setExecutor(new EEListCommand(this));
-        this.getCommand("eeget").setExecutor(new EEGetCommand(this));
+        this.getCommand("eeget").setExecutor(new EEGetCommand());
     }
 
     @Override

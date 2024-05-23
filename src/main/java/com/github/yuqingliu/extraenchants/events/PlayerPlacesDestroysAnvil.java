@@ -12,7 +12,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
-import com.github.yuqingliu.extraenchants.Keys;
+import com.github.yuqingliu.extraenchants.api.Keys;
 import com.github.yuqingliu.extraenchants.persistence.blocks.*;
 
 public class PlayerPlacesDestroysAnvil implements Listener {
