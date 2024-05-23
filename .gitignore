@@ -57,6 +57,8 @@ build/
 api/build/
 api/bin/
 .gradle
+.gradle/
+.settings/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
