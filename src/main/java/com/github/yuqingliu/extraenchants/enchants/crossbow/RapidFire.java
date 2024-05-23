@@ -15,8 +15,9 @@ import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import org.bukkit.Sound;
 
-import com.github.yuqingliu.extraenchants.ExtraEnchantsScheduler;
-import com.github.yuqingliu.extraenchants.enchantment.Enchantment;
+import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
+import com.github.yuqingliu.extraenchants.api.Scheduler;
+
 import com.github.yuqingliu.extraenchants.item.weapon.implementations.RangedWeapon;
 
 import lombok.RequiredArgsConstructor;
@@ -62,11 +63,11 @@ public class RapidFire implements Listener {
     }
 
     private void fireProjectiles(Player player, ItemStack weapon) {
-        BukkitTask task = ExtraEnchantsScheduler.runTimer(() -> {
+        BukkitTask task = Scheduler.runTimer(() -> {
             fireParticleBeam(player, weapon);
             player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ARROW_SHOOT, 1.0f, 1.0f);
         }, Duration.ofMillis(100), Duration.ofSeconds(0));
-        ExtraEnchantsScheduler.runLater(() -> {
+        Scheduler.runLater(() -> {
             task.cancel();
         }, Duration.ofMillis(500));
     }
@@ -125,4 +126,3 @@ public class RapidFire implements Listener {
         return originalDirection.add(new Vector(offsetX, offsetY, offsetZ)).normalize();
     }
 }
-

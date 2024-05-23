@@ -1,7 +1,8 @@
 package com.github.yuqingliu.extraenchants.commands;
 
-import com.github.yuqingliu.extraenchants.ExtraEnchants;
-import com.github.yuqingliu.extraenchants.enchantment.Enchantment;
+import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
+
+import com.github.yuqingliu.extraenchants.ExtraEnchantsImpl;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -13,9 +14,9 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public class EECommand implements CommandExecutor {
-    private final ExtraEnchants plugin;
+    private final ExtraEnchantsImpl plugin;
 
-    public EECommand(ExtraEnchants plugin) {
+    public EECommand(ExtraEnchantsImpl plugin) {
         this.plugin = plugin;
     }
 

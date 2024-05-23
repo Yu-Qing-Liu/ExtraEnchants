@@ -11,6 +11,8 @@ import net.kyori.adventure.text.format.TextColor;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import com.github.yuqingliu.extraenchants.api.enchantment.Enchant;
+
 import com.github.yuqingliu.extraenchants.item.lore.Lore;
 import com.github.yuqingliu.extraenchants.item.lore.implementations.EnchantmentSection;
 
@@ -20,8 +22,8 @@ import lombok.Setter;
 import java.util.Objects;
 
 @Getter
-public abstract class AbstractEnchantment {
-    Component comma = Component.text(", ", NamedTextColor.DARK_BLUE);
+public abstract class AbstractEnchantment implements Enchant {
+    protected Component comma = Component.text(", ", NamedTextColor.DARK_BLUE);
     protected Component name;
     @Setter protected int maxLevel;
     protected Component description;
@@ -83,14 +85,14 @@ public abstract class AbstractEnchantment {
         return finalComponent;
     }
 
-    protected ItemStack addOrUpdateEnchantmentLore(ItemStack item, Component enchant, Component eLevel) {
+    public ItemStack addOrUpdateEnchantmentLore(ItemStack item, Component enchant, Component eLevel) {
         Lore lore = new Lore(item);
         EnchantmentSection enchantmentSection = (EnchantmentSection) lore.getLoreSection("EnchantmentSection").getDefinition();
         enchantmentSection.addOrUpdateEnchantmentFromSection(enchant, eLevel);
         return lore.applyLore();
     }
 
-    protected ItemStack removeEnchantmentLore(ItemStack item, Component enchant) {
+    public ItemStack removeEnchantmentLore(ItemStack item, Component enchant) {
         Lore lore = new Lore(item);
         EnchantmentSection enchantmentSection = (EnchantmentSection) lore.getLoreSection("EnchantmentSection").getDefinition();
         enchantmentSection.removeEnchantmentFromSection(enchant);

@@ -12,14 +12,14 @@ import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.github.yuqingliu.extraenchants.ExtraEnchants;
+import com.github.yuqingliu.extraenchants.ExtraEnchantsImpl;
 import com.github.yuqingliu.extraenchants.item.items.Item;
 import com.github.yuqingliu.extraenchants.utils.TextUtils;
 
 public class PlayerReceivesItem implements Listener {
     private Map<String, Item> registry;
 
-    public PlayerReceivesItem(ExtraEnchants plugin) {
+    public PlayerReceivesItem(ExtraEnchantsImpl plugin) {
         this.registry = plugin.getItemManager().getItemRegistry();
     }
 

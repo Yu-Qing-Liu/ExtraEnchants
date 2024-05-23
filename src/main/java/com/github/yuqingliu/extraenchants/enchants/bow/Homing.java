@@ -16,8 +16,9 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import java.time.Duration;
 
-import com.github.yuqingliu.extraenchants.enchantment.Enchantment;
-import com.github.yuqingliu.extraenchants.ExtraEnchantsScheduler;
+import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
+import com.github.yuqingliu.extraenchants.api.Scheduler;
+
 import com.github.yuqingliu.extraenchants.item.weapon.implementations.RangedWeapon;
 
 import lombok.RequiredArgsConstructor;
@@ -61,7 +62,7 @@ public class Homing implements Listener {
 
     public void setHomingArrow(Player player, Arrow arrow) {
         arrow.setGravity(false);
-        BukkitTask task = ExtraEnchantsScheduler.runTimer(() -> {
+        BukkitTask task = Scheduler.runTimer(() -> {
             if (!arrow.isValid() || arrow.isOnGround()) {
                 return;
             }
@@ -91,7 +92,7 @@ public class Homing implements Listener {
             arrow.setVelocity(direction);
         }, Duration.ofMillis(50), Duration.ofSeconds(0));
         // Cancel the task after a certain duration
-        ExtraEnchantsScheduler.runLater(() -> {
+        Scheduler.runLater(() -> {
             task.cancel();
         }, Duration.ofSeconds(15));
     }

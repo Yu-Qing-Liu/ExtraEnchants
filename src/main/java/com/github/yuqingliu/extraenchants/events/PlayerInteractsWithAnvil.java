@@ -18,7 +18,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.github.yuqingliu.extraenchants.gui.AnvilMenu;
 import com.github.yuqingliu.extraenchants.persistence.blocks.CustomBlockUtils;
-import com.github.yuqingliu.extraenchants.ExtraEnchants;
+import com.github.yuqingliu.extraenchants.ExtraEnchantsImpl;
 import com.github.yuqingliu.extraenchants.configuration.implementations.AnvilConstants;
 import com.github.yuqingliu.extraenchants.configuration.implementations.GlobalConstants;
 
@@ -30,7 +30,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class PlayerInteractsWithAnvil implements Listener {
-    private ExtraEnchants plugin;
+    private ExtraEnchantsImpl plugin;
     private GlobalConstants globalConstants;
     private AnvilMenu anvilMenu;
     private static final int LEFT_SLOT = 11;
@@ -40,7 +40,7 @@ public class PlayerInteractsWithAnvil implements Listener {
     private static final List<Integer> frame = Arrays.asList(0,1,2,3,4,5,6,7,8,9,10,12,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35);
     private static boolean hasResult = false;
 
-    public PlayerInteractsWithAnvil(ExtraEnchants plugin) {
+    public PlayerInteractsWithAnvil(ExtraEnchantsImpl plugin) {
         this.plugin = plugin;
         this.globalConstants = (GlobalConstants) plugin.getConfigurationManager().getConstants().get("GlobalConstants");
         AnvilConstants anvilConstants = (AnvilConstants) plugin.getConfigurationManager().getConstants().get("AnvilConstants");

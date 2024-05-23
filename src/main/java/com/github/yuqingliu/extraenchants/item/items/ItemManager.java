@@ -13,7 +13,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.github.yuqingliu.extraenchants.item.ItemUtils.Rarity;
+import com.github.yuqingliu.extraenchants.api.item.ItemUtils.Rarity;
+
 import com.github.yuqingliu.extraenchants.utils.TextUtils;
 
 import lombok.Getter;

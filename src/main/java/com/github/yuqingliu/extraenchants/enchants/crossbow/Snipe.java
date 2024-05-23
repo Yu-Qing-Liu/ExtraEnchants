@@ -10,7 +10,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import org.bukkit.Material;
 
-import com.github.yuqingliu.extraenchants.enchantment.Enchantment;
+import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
+
 import com.github.yuqingliu.extraenchants.item.weapon.implementations.RangedWeapon;
 
 import lombok.RequiredArgsConstructor;

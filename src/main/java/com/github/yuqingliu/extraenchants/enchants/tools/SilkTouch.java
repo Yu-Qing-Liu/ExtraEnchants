@@ -14,7 +14,7 @@ import java.util.HashMap;
 
 import lombok.RequiredArgsConstructor;
 
-import com.github.yuqingliu.extraenchants.enchantment.Enchantment;
+import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
 
 @RequiredArgsConstructor
 public class SilkTouch implements Listener {

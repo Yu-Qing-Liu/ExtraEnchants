@@ -18,13 +18,13 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:${project.property("paper_version")}")
-
     compileOnly("org.projectlombok:lombok:${project.property("lombok_version")}")
-    annotationProcessor("org.projectlombok:lombok:${project.property("lombok_version")}")
 
+    annotationProcessor("org.projectlombok:lombok:${project.property("lombok_version")}")
     testCompileOnly("org.projectlombok:lombok:${project.property("lombok_version")}")
     testAnnotationProcessor("org.projectlombok:lombok:${project.property("lombok_version")}")
 
+    implementation(project(":api"))
     implementation("net.objecthunter:exp4j:0.4.8")
 
     testImplementation(platform("org.junit:junit-bom:5.9.1"))

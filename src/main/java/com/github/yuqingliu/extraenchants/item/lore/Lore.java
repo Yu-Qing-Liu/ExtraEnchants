@@ -15,7 +15,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.github.yuqingliu.extraenchants.Keys;
+import com.github.yuqingliu.extraenchants.api.Keys;
 import net.kyori.adventure.text.Component;
 
 import lombok.Getter;

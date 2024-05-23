@@ -1,10 +1,13 @@
 package com.github.yuqingliu.extraenchants.enchantment;
 
+import com.github.yuqingliu.extraenchants.api.enchantment.EnchantmentManager;
+import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
+import com.github.yuqingliu.extraenchants.api.item.ApplicableItemsRegistry;
+
 import com.github.yuqingliu.extraenchants.enchantment.implementations.custom.*;
 import com.github.yuqingliu.extraenchants.enchantment.implementations.vanilla.*;
 import com.github.yuqingliu.extraenchants.enchantment.implementations.ability.*;
-import com.github.yuqingliu.extraenchants.item.ApplicableItemsRegistry;
-import com.github.yuqingliu.extraenchants.ExtraEnchants;
+import com.github.yuqingliu.extraenchants.ExtraEnchantsImpl;
 import com.github.yuqingliu.extraenchants.enchantment.implementations.*;
 import com.github.yuqingliu.extraenchants.utils.TextUtils;
 
@@ -22,7 +25,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class EnchantmentManager {
+public class EnchantmentManagerImpl implements EnchantmentManager {
     protected JavaPlugin plugin;
     protected FileConfiguration config;
     protected ApplicableItemsRegistry applicable;
@@ -30,12 +33,30 @@ public class EnchantmentManager {
     private NamedTextColor custom = NamedTextColor.DARK_PURPLE;
     private NamedTextColor ability = NamedTextColor.GOLD;
     private NamedTextColor descriptionColor = NamedTextColor.DARK_GRAY;
-    private final Map<String, Enchantment> enchantmentRegistry = new HashMap<>();
+    private Map<String, Enchantment> enchantmentRegistry = new HashMap<>();
 
-    public EnchantmentManager(ExtraEnchants plugin) {
+    public EnchantmentManagerImpl(ExtraEnchantsImpl plugin) {
         this.plugin = plugin;
         this.config = plugin.getConfig();
         this.applicable = plugin.getApplicableItemsRegistry();
+        initializeEnchantments();
+    }
+
+    public Map<String, Enchantment> getEnchantments() {
+        return this.enchantmentRegistry;
+    }
+
+    public Enchantment getEnchantment(String className) {
+        return this.enchantmentRegistry.get(className);
+    }
+
+    public void registerEnchants() {
+        insertEnchants();
+        plugin.saveConfig();
+        updateEnchants();
+    }
+
+    private void initializeEnchantments() {
         // VanillaEnchantments
         enchantmentRegistry.put(AquaInfinity.class.getSimpleName(), new Enchantment(new AquaInfinity(vanilla, descriptionColor)));
         enchantmentRegistry.put(BaneOfArthropods.class.getSimpleName(), new Enchantment(new BaneOfArthropods(vanilla, descriptionColor)));
@@ -94,20 +115,6 @@ public class EnchantmentManager {
         enchantmentRegistry.put(SonicBoom.class.getSimpleName(), new Enchantment(new SonicBoom(ability, descriptionColor, applicable)));
         enchantmentRegistry.put(Focus.class.getSimpleName(), new Enchantment(new Focus(ability, descriptionColor, applicable)));
         enchantmentRegistry.put(RapidFire.class.getSimpleName(), new Enchantment(new RapidFire(ability, descriptionColor, applicable)));
-    }
-
-    public Map<String, Enchantment> getEnchantments() {
-        return this.enchantmentRegistry;
-    }
-
-    public Enchantment getEnchantment(String className) {
-        return this.enchantmentRegistry.get(className);
-    }
-
-    public void registerEnchants() {
-        insertEnchants();
-        plugin.saveConfig();
-        updateEnchants();
     }
 
     private void insertEnchants() {

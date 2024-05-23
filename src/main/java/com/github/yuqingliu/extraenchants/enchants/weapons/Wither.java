@@ -16,7 +16,7 @@ import org.bukkit.entity.Arrow;
 
 import java.util.List;
 
-import com.github.yuqingliu.extraenchants.enchantment.Enchantment;
+import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
 
 import lombok.RequiredArgsConstructor;
 

@@ -1,9 +1,10 @@
 package com.github.yuqingliu.extraenchants.enchantment;
 
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
 
 import lombok.Getter;
 

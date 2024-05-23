@@ -1,6 +1,5 @@
 package com.github.yuqingliu.extraenchants.commands;
 
-import com.github.yuqingliu.extraenchants.ExtraEnchants;
 import com.github.yuqingliu.extraenchants.persistence.blocks.CustomBlockUtils;
 
 import net.kyori.adventure.text.Component;
@@ -12,12 +11,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class EEGetCommand implements CommandExecutor {
-    private final ExtraEnchants plugin;
-
-    public EEGetCommand(ExtraEnchants plugin) {
-        this.plugin = plugin;
-    }
-
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (cmd.getName().equalsIgnoreCase("eeget") && sender instanceof Player) {

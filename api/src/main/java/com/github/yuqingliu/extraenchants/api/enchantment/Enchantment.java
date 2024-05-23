@@ -1,4 +1,4 @@
-package com.github.yuqingliu.extraenchants.enchantment;
+package com.github.yuqingliu.extraenchants.api.enchantment;
 
 import lombok.Getter;
 
@@ -10,10 +10,10 @@ import org.bukkit.inventory.ItemStack;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
-public class Enchantment {
-    @Getter private final AbstractEnchantment definition;
+public final class Enchantment {
+    @Getter private final Enchant definition;
 
-    public Enchantment(AbstractEnchantment enchantment) {
+    public Enchantment(Enchant enchantment) {
         this.definition = enchantment;
     }
 

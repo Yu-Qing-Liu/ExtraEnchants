@@ -5,14 +5,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
-
-import com.github.yuqingliu.extraenchants.enchantment.Enchantment;
-
-import lombok.RequiredArgsConstructor;
-
 import org.bukkit.entity.Player;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDeathEvent;
+
+import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
+
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class AutoLooting implements Listener {
