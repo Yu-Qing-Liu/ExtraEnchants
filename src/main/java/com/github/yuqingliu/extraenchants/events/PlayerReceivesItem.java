@@ -79,6 +79,9 @@ public class PlayerReceivesItem implements Listener {
         if(TextUtils.componentToString(meta.displayName()).contains("Slot")) {
             return false;
         }
+        if(item.getType() == Material.ENCHANTED_BOOK) {
+            return false;
+        }
         if (meta == null || !meta.hasLore()) {
             return true;
         }

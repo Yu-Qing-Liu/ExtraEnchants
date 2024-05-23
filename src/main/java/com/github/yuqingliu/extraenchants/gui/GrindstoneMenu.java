@@ -44,12 +44,14 @@ public class GrindstoneMenu {
         }
     }
 
-    private ItemStack enchantmentOption(Enchantment enchant) {
+    private ItemStack enchantmentOption(Enchantment enchant, ItemStack item) {
         ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
         ItemMeta metaOffer = enchantOption.getItemMeta();
         if (metaOffer != null) {
             Component enchantmentName = enchant.getName();
-            metaOffer.displayName(enchantmentName);
+            int level = enchant.getEnchantmentLevel(item);
+            Component levelComponent = Component.text(" " + level, enchant.getNameColor());
+            metaOffer.displayName(enchantmentName.append(levelComponent));
             enchantOption.setItemMeta(metaOffer);
         }
         return enchantOption;
@@ -156,7 +158,7 @@ public class GrindstoneMenu {
             if(slotptr > FINAL_SLOT) {
                 break;
             }
-            inv.setItem(slotptr, enchantmentOption(offer));
+            inv.setItem(slotptr, enchantmentOption(offer, item));
             pageData.get(PAGE_NUMBER).put(slotptr, offer);
             slotptr = incrementPtr(slotptr);
         }
@@ -182,7 +184,7 @@ public class GrindstoneMenu {
             if(offer == null) {
                 continue;
             } 
-            inv.setItem(slotptr, enchantmentOption(offer));
+            inv.setItem(slotptr, enchantmentOption(offer, item));
             slotptr = incrementPtr(slotptr);
         }
         // Fill options
@@ -217,7 +219,7 @@ public class GrindstoneMenu {
             if(exists) {
                 continue;
             } 
-            inv.setItem(slotptr, enchantmentOption(offer));
+            inv.setItem(slotptr, enchantmentOption(offer, item));
             pageData.get(PAGE_NUMBER).put(slotptr, offer);
             slotptr = incrementPtr(slotptr);
         }
@@ -241,7 +243,7 @@ public class GrindstoneMenu {
             if(offer == null) {
                 continue;
             } 
-            inv.setItem(slotptr, enchantmentOption(offer));
+            inv.setItem(slotptr, enchantmentOption(offer, item));
             slotptr = incrementPtr(slotptr);
         }
         // Fill options
