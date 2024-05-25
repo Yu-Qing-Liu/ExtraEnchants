@@ -1,14 +1,14 @@
 package com.github.yuqingliu.extraenchants.api;
 
 import lombok.Setter;
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.time.Duration;
+import java.util.function.Consumer;
 
 /**
- * The internal scheduler for the plugin.
+ * The internal scheduler for the Blessings plugin.
  * <br/>
  * Is set up on load by the main.
  */
@@ -18,30 +18,34 @@ public final class Scheduler {
     @Setter
     private static JavaPlugin plugin;
 
-    // 1s == 1000 ms == 20 ticks
-    //    -> 1 tick == 50 ms
-    private final static double MS_PER_TICKS = 50;
-    public static long toTicks(Duration duration) {
-        return (long) (duration.toMillis() / MS_PER_TICKS);
+    public static BukkitTask runLater(Consumer<Task> consumer, Duration duration) {
+        Task task = new Task(plugin, consumer);
+        task.runTaskLater(duration);
+        return task.getTask();
     }
 
-    public static BukkitTask runAsync(Runnable runnable) {
-        return Bukkit.getScheduler().runTaskAsynchronously(plugin, runnable);
+    public static BukkitTask runTimer(Consumer<Task> consumer, Duration period, Duration wait) {
+        Task task = new Task(plugin, consumer);
+        task.runTaskTimer(wait, period);
+        return task.getTask();
     }
 
-    public static BukkitTask runLater(Runnable runnable, Duration duration) {
-        return Bukkit.getScheduler().runTaskLater(plugin, runnable, toTicks(duration));
+    public static BukkitTask runAsync(Consumer<Task> consumer) {
+        Task task = new Task(plugin, consumer);
+        task.runAsyncTask();
+        return task.getTask();
     }
 
-    public static BukkitTask runLaterAsync(Runnable runnable, Duration duration) {
-        return Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, runnable, toTicks(duration));
+    public static BukkitTask runLaterAsync(Consumer<Task> consumer, Duration duration) {
+        Task task = new Task(plugin, consumer);
+        task.runAsyncTaskLater(duration);
+        return task.getTask();
     }
 
-    public static BukkitTask runTimer(Runnable runnable, Duration period, Duration wait) {
-        return Bukkit.getScheduler().runTaskTimer(plugin, runnable, toTicks(wait), toTicks(period));
-    }
-
-    public static BukkitTask runTimerAsync(Runnable runnable, Duration period, Duration wait) {
-        return Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, runnable, toTicks(wait), toTicks(period));
+    public static BukkitTask runTimerAsync(Consumer<Task> consumer, Duration period, Duration wait) {
+        Task task = new Task(plugin, consumer);
+        task.runAsyncTaskTimer(wait, period);
+        return task.getTask();
     }
 }
+
