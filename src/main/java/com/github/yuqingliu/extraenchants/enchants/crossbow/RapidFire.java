@@ -32,6 +32,7 @@ public class RapidFire implements Listener {
     private final Enchantment enchant;
     private final int cooldown;
     private HashMap<UUID, Long> cooldowns = new HashMap<>();
+    private int shots;
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
@@ -63,13 +64,15 @@ public class RapidFire implements Listener {
     }
 
     private void fireProjectiles(Player player, ItemStack weapon) {
-        BukkitTask task = Scheduler.runTimer(() -> {
+        Scheduler.runTimer(task -> {
             fireParticleBeam(player, weapon);
             player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ARROW_SHOOT, 1.0f, 1.0f);
+            shots++;
+            if(shots > 5) {
+                task.cancel();
+                shots = 0;
+            }
         }, Duration.ofMillis(100), Duration.ofSeconds(0));
-        Scheduler.runLater(() -> {
-            task.cancel();
-        }, Duration.ofMillis(500));
     }
 
     public static Location getRightSide(Location location, double distance) {

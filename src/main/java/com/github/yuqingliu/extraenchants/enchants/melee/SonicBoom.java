@@ -96,7 +96,7 @@ public class SonicBoom implements Listener {
             Location teleportLocation = location.clone();
             teleportLocation.setYaw(currentYaw);
             teleportLocation.setPitch(currentPitch);
-            Scheduler.runLater(() -> {
+            Scheduler.runLater(task -> {
                 player.teleport(teleportLocation.add(0, 1, 0)); // Teleport to one block above
                 player.getWorld().createExplosion(teleportLocation, 4.0F, false, false, player);
                 player.getWorld().spawnParticle(Particle.EXPLOSION, teleportLocation, 1);
@@ -108,7 +108,7 @@ public class SonicBoom implements Listener {
         // Get the item in the main hand, which is considered for the hit.
         ItemStack weapon = player.getInventory().getItemInMainHand();
         MeleeWeapon item = new MeleeWeapon(weapon);
-        Scheduler.runLater(() -> {
+        Scheduler.runLater(task -> {
             LivingEntity livingEntity = (LivingEntity) entity;
             item.applyHit(player, livingEntity);
         }, Duration.ofMillis(delay));

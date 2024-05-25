@@ -62,8 +62,9 @@ public class Homing implements Listener {
 
     public void setHomingArrow(Player player, Arrow arrow) {
         arrow.setGravity(false);
-        BukkitTask task = Scheduler.runTimer(() -> {
+        Scheduler.runTimer(task -> {
             if (!arrow.isValid() || arrow.isOnGround()) {
+                task.cancel();
                 return;
             }
 
@@ -91,9 +92,5 @@ public class Homing implements Listener {
             // Set the arrow's new velocity towards the target
             arrow.setVelocity(direction);
         }, Duration.ofMillis(50), Duration.ofSeconds(0));
-        // Cancel the task after a certain duration
-        Scheduler.runLater(() -> {
-            task.cancel();
-        }, Duration.ofSeconds(15));
     }
 }
