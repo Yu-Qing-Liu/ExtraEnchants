@@ -3,9 +3,11 @@ package com.github.yuqingliu.extraenchants.item.lore;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.yuqingliu.extraenchants.api.item.lore.LoreSection;
+
 import net.kyori.adventure.text.Component;
 
-public abstract class AbstractLoreSection {
+public abstract class AbstractLoreSection implements LoreSection {
     protected final int position;
     protected List<Component> lore = new ArrayList<>();
     private List<Component> itemLore;
@@ -18,11 +20,18 @@ public abstract class AbstractLoreSection {
         this.sectionSizes = sectionSizes;
         fetchSection();
     }
-
+    
+    @Override
+    public int getPosition() {
+        return this.position;
+    }
+    
+    @Override
     public int getSize() {
         return lore.size();
     }
-
+    
+    @Override
     public List<Component> getLore() {
         return this.lore;
     }
@@ -30,13 +39,13 @@ public abstract class AbstractLoreSection {
     private void fetchSection() {
         int start = 0;
         int sectionSize = 0;
-        if (sectionSizes == null || position >= sectionSizes.length) {
+        if (sectionSizes == null || getPosition() >= sectionSizes.length) {
             return;
         }
-        for (int i = 0; i < position; i++) {
+        for (int i = 0; i < getPosition(); i++) {
             start += sectionSizes[i];
         }
-        sectionSize = sectionSizes[position];
+        sectionSize = sectionSizes[getPosition()];
         collectLore(start, sectionSize);
     }
 

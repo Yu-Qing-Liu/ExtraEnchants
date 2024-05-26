@@ -16,12 +16,15 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.yuqingliu.extraenchants.api.Keys;
+import com.github.yuqingliu.extraenchants.api.item.lore.LoreManager;
+import com.github.yuqingliu.extraenchants.api.item.lore.LoreSection;
+
 import net.kyori.adventure.text.Component;
 
 import lombok.Getter;
 
 @Getter
-public class Lore {
+public class Lore implements LoreManager {
     private JavaPlugin plugin;
     private ItemStack item;
     private List<Component> lore = new ArrayList<>();
@@ -39,10 +42,15 @@ public class Lore {
     }
 
     private void initializeSections() {
-        loreMap.put(DescriptionSection.class.getSimpleName(), new LoreSection(new DescriptionSection(0, sectionSizes, itemLore)));
-        loreMap.put(EnchantmentSection.class.getSimpleName(), new LoreSection(new EnchantmentSection(1, sectionSizes, itemLore)));
-        loreMap.put(AbilitySection.class.getSimpleName(), new LoreSection(new AbilitySection(2, sectionSizes, itemLore)));
-        loreMap.put(RaritySection.class.getSimpleName(), new LoreSection(new RaritySection(3, sectionSizes, itemLore)));
+        loreMap.put(DescriptionSection.class.getSimpleName(), new DescriptionSection(0, sectionSizes, itemLore));
+        loreMap.put(EnchantmentSection.class.getSimpleName(), new EnchantmentSection(1, sectionSizes, itemLore));
+        loreMap.put(AbilitySection.class.getSimpleName(), new AbilitySection(2, sectionSizes, itemLore));
+        loreMap.put(RaritySection.class.getSimpleName(), new RaritySection(3, sectionSizes, itemLore));
+    }
+    
+    @Override
+    public void addSection(String sectionClassName, LoreSection section) {
+        loreMap.put(sectionClassName, section);
     }
 
     private List<Component> getLore() {
@@ -93,7 +101,8 @@ public class Lore {
     public LoreSection getLoreSection(String sectionName) {
         return loreMap.get(sectionName);
     }
-
+    
+    @Override
     public ItemStack applyLore() {
         serializeLore();
         ItemMeta meta = item.getItemMeta();
