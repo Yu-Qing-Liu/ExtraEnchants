@@ -24,7 +24,7 @@ public class Growth implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         if (event.getWhoClicked() instanceof Player) {
-            Scheduler.runLater(() -> updatePlayerHealth((Player) event.getWhoClicked()), Duration.ofMillis(50));
+            Scheduler.runLater(task -> updatePlayerHealth((Player) event.getWhoClicked()), Duration.ofMillis(50));
         }
     }
 
