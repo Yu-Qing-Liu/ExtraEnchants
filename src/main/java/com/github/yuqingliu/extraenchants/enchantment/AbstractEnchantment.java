@@ -87,14 +87,14 @@ public abstract class AbstractEnchantment implements Enchant {
 
     public ItemStack addOrUpdateEnchantmentLore(ItemStack item, Component enchant, Component eLevel) {
         Lore lore = new Lore(item);
-        EnchantmentSection enchantmentSection = (EnchantmentSection) lore.getLoreSection("EnchantmentSection").getDefinition();
+        EnchantmentSection enchantmentSection = (EnchantmentSection) lore.getLoreSection("EnchantmentSection");
         enchantmentSection.addOrUpdateEnchantmentFromSection(enchant, eLevel);
         return lore.applyLore();
     }
 
     public ItemStack removeEnchantmentLore(ItemStack item, Component enchant) {
         Lore lore = new Lore(item);
-        EnchantmentSection enchantmentSection = (EnchantmentSection) lore.getLoreSection("EnchantmentSection").getDefinition();
+        EnchantmentSection enchantmentSection = (EnchantmentSection) lore.getLoreSection("EnchantmentSection");
         enchantmentSection.removeEnchantmentFromSection(enchant);
         return lore.applyLore();
     }

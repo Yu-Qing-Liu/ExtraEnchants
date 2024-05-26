@@ -44,8 +44,8 @@ public class Item {
         item.setItemMeta(meta);
 
         Lore lore = new Lore(item);
-        DescriptionSection descriptionSection = (DescriptionSection) lore.getLoreMap().get("DescriptionSection").getDefinition();
-        RaritySection raritySection = (RaritySection) lore.getLoreMap().get("RaritySection").getDefinition();
+        DescriptionSection descriptionSection = (DescriptionSection) lore.getLoreMap().get("DescriptionSection");
+        RaritySection raritySection = (RaritySection) lore.getLoreMap().get("RaritySection");
         descriptionSection.updateSection(description);
         raritySection.updateSection(rarity);
         item = lore.applyLore();

@@ -29,14 +29,14 @@ public class AbilityEnchantment extends AbstractEnchantment {
 
     private ItemStack addOrUpdateAbilityLore(ItemStack item, Component enchant, Component eLevel) {
         Lore lore = new Lore(item);
-        AbilitySection abilitySection = (AbilitySection) lore.getLoreSection("AbilitySection").getDefinition();
+        AbilitySection abilitySection = (AbilitySection) lore.getLoreSection("AbilitySection");
         abilitySection.addOrUpdateAbilityFromSection(enchant, eLevel, action, description);
         return lore.applyLore();
     }
 
     private ItemStack removeAbilityLore(ItemStack item, Component enchant) {
         Lore lore = new Lore(item);
-        AbilitySection abilitySection = (AbilitySection) lore.getLoreSection("AbilitySection").getDefinition();
+        AbilitySection abilitySection = (AbilitySection) lore.getLoreSection("AbilitySection");
         abilitySection.removeAbilityFromSection(enchant);
         return lore.applyLore();
     }
