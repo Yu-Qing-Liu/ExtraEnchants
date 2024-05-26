@@ -8,9 +8,7 @@ import java.time.Duration;
 import java.util.function.Consumer;
 
 /**
- * The internal scheduler for the Blessings plugin.
- * <br/>
- * Is set up on load by the main.
+ * The internal scheduler for the plugin.
  */
 public final class Scheduler {
     private Scheduler() {}
