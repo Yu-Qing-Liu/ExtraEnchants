@@ -21,8 +21,12 @@ public final class Enchantment {
         return definition.getName();
     }
 
-    public TextColor getNameColor() {
-        return definition.getNameColor();
+    public Component getLeveledName(int level) {
+        return definition.getLeveledName(level);
+    }
+
+    public TextColor getLevelColor(int level) {
+        return definition.getLevelColor(level);
     }
 
     public TextColor getDescriptionColor() {

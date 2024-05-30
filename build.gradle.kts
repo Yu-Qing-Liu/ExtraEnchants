@@ -25,7 +25,6 @@ dependencies {
     testAnnotationProcessor("org.projectlombok:lombok:${project.property("lombok_version")}")
 
     implementation(project(":api"))
-    implementation("net.objecthunter:exp4j:0.4.8")
 
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")

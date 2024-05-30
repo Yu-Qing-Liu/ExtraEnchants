@@ -21,8 +21,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
 
 import com.github.yuqingliu.extraenchants.enchantment.EnchantmentOffer;
-import com.github.yuqingliu.extraenchants.utils.MathUtils;
-import com.github.yuqingliu.extraenchants.utils.TextUtils;
+import com.github.yuqingliu.extraenchants.api.utils.MathUtils;
 
 public class EnchantmentTableMenu {
     private final int START_SLOT = 0;
@@ -79,8 +78,7 @@ public class EnchantmentTableMenu {
         ItemMeta metaOffer = enchantOption.getItemMeta();
         if (metaOffer != null) {
             List<Component> existingLore = metaOffer.lore() != null ? metaOffer.lore() : new ArrayList<>();
-            Component enchantmentName = enchantment.getName();
-            Component name = enchantmentName.append(Component.text(" " + TextUtils.toRoman(offer.getLevel()), enchantment.getNameColor()));
+            Component enchantmentName = enchantment.getLeveledName(offer.getLevel());
             Component lvlReq = Component.text("Required Level: " + offer.getRequiredLevel(), NamedTextColor.GREEN);
             Component expCost = Component.text("Experience Cost: " + offer.getCost(), NamedTextColor.DARK_GREEN);
             Component description = enchantment.getLeveledDescription(offer.getLevel());
@@ -88,7 +86,7 @@ public class EnchantmentTableMenu {
             existingLore.add(expCost);
             existingLore.add(description);
             metaOffer.lore(existingLore);
-            metaOffer.displayName(name);
+            metaOffer.displayName(enchantmentName);
             enchantOption.setItemMeta(metaOffer);
         }
         return enchantOption;

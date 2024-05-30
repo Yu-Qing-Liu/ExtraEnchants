@@ -17,7 +17,7 @@ import net.kyori.adventure.text.Component;
 
 import com.github.yuqingliu.extraenchants.api.Keys;
 import com.github.yuqingliu.extraenchants.enchantment.AbstractEnchantment;
-import com.github.yuqingliu.extraenchants.utils.TextUtils;
+import com.github.yuqingliu.extraenchants.api.utils.TextUtils;
 
 public class VanillaEnchantment extends AbstractEnchantment {
     private Enchantment enchantment;  
@@ -58,8 +58,7 @@ public class VanillaEnchantment extends AbstractEnchantment {
             if(item.getType() == Material.BOOK) {
                 item = new ItemStack(Material.ENCHANTED_BOOK);
             }
-            Component eLevel = Component.text(" " + TextUtils.toRoman(level), name.color());
-            item = addOrUpdateEnchantmentLore(item, name, eLevel);
+            item = addOrUpdateEnchantmentLore(item, getName(level), getLevel(level));
             ItemMeta meta = item.getItemMeta();
             PersistentDataContainer container = meta.getPersistentDataContainer();
             container.set(key, PersistentDataType.INTEGER, level);

@@ -14,7 +14,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.github.yuqingliu.extraenchants.ExtraEnchantsImpl;
 import com.github.yuqingliu.extraenchants.item.items.Item;
-import com.github.yuqingliu.extraenchants.utils.TextUtils;
+import com.github.yuqingliu.extraenchants.api.utils.TextUtils;
 
 public class PlayerReceivesItem implements Listener {
     private Map<String, Item> registry;

@@ -48,10 +48,9 @@ public class GrindstoneMenu {
         ItemStack enchantOption = new ItemStack(Material.ENCHANTED_BOOK);
         ItemMeta metaOffer = enchantOption.getItemMeta();
         if (metaOffer != null) {
-            Component enchantmentName = enchant.getName();
             int level = enchant.getEnchantmentLevel(item);
-            Component levelComponent = Component.text(" " + level, enchant.getNameColor());
-            metaOffer.displayName(enchantmentName.append(levelComponent));
+            Component enchantmentName = enchant.getLeveledName(level);
+            metaOffer.displayName(enchantmentName);
             enchantOption.setItemMeta(metaOffer);
         }
         return enchantOption;
@@ -185,7 +184,6 @@ public class GrindstoneMenu {
                 continue;
             } 
             inv.setItem(slotptr, enchantmentOption(offer, item));
-            slotptr = incrementPtr(slotptr);
         }
         // Fill options
         optionsFill(inv);

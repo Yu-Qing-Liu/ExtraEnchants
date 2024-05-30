@@ -14,7 +14,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import com.github.yuqingliu.extraenchants.api.Keys;
 import com.github.yuqingliu.extraenchants.enchantment.AbstractEnchantment;
-import com.github.yuqingliu.extraenchants.utils.TextUtils;
+import com.github.yuqingliu.extraenchants.api.utils.TextUtils;
 
 public class CustomEnchantment extends AbstractEnchantment {
     private NamespacedKey key = Keys.itemEnchant(TextUtils.componentToString(name));
@@ -60,8 +60,7 @@ public class CustomEnchantment extends AbstractEnchantment {
             item.setItemMeta(meta);
             meta = item.getItemMeta();
             if (meta != null) {
-                Component eLevel = Component.text(" " + TextUtils.toRoman(level), name.color());
-                item = addOrUpdateEnchantmentLore(item, name, eLevel);
+                item = addOrUpdateEnchantmentLore(item, getName(level), getLevel(level));
             }
         }
         return item;
@@ -77,7 +76,7 @@ public class CustomEnchantment extends AbstractEnchantment {
         item.setItemMeta(meta);
         meta = item.getItemMeta();
         if (meta != null) {
-            item = removeEnchantmentLore(item, name);
+            item = removeEnchantmentLore(item, getName(getEnchantmentLevel(item)));
         }
         return item;
     }

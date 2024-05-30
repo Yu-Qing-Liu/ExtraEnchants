@@ -3,6 +3,7 @@ package com.github.yuqingliu.extraenchants.item.lore.implementations;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.yuqingliu.extraenchants.api.utils.TextUtils;
 import com.github.yuqingliu.extraenchants.item.lore.AbstractLoreSection;
 
 import net.kyori.adventure.text.Component;
@@ -25,7 +26,7 @@ public class EnchantmentSection extends AbstractLoreSection {
             List<Component> children = line.children();
             for (int i = 0; i < children.size(); i++) {
                 Component child = children.get(i);
-                if (child.equals(enchant)) {
+                if (TextUtils.componentStringEquals(enchant, child)) {
                     i++;
                 } else if (!child.equals(comma) && !child.equals(Component.empty())) {
                     filteredComponents.add(child);
@@ -79,7 +80,7 @@ public class EnchantmentSection extends AbstractLoreSection {
             List<Component> children = line.children();
             for (int i = 0; i < children.size(); i++) {
                 Component child = children.get(i);
-                if (child.equals(enchant)) {
+                if (TextUtils.componentStringEquals(enchant, child)) {
                     i++;
                 } else if (!child.equals(comma) && !child.equals(Component.empty())) {
                     filteredComponents.add(child);

@@ -15,7 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.yuqingliu.extraenchants.api.item.ItemUtils.Rarity;
 
-import com.github.yuqingliu.extraenchants.utils.TextUtils;
+import com.github.yuqingliu.extraenchants.api.utils.TextUtils;
 
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
