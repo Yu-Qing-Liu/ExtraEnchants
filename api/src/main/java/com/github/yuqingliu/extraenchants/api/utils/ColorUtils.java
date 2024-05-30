@@ -13,8 +13,8 @@ public class ColorUtils {
         HSVLike initialHsv = color.asHSV();
         
         float finalH = initialHsv.h() + 0.06f;
-        float finalS = initialHsv.h() + 0.06f;
-        float finalV = initialHsv.h() + 0.06f;
+        float finalS = initialHsv.h() + 0.03f;
+        float finalV = initialHsv.h() + 0.03f;
         float stepSizeH = (finalH - initialHsv.h()) / (float) numColors;
         float stepSizeS = (finalS - initialHsv.s()) / (float) numColors;
         float stepSizeV = (finalV - initialHsv.v()) / (float) numColors;
