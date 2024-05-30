@@ -48,7 +48,7 @@ public class Homing implements Listener {
                 LivingEntity shooter = (LivingEntity) arrow.getShooter();
                 ItemStack handItem = shooter.getEquipment().getItemInMainHand();
 
-                // Check if the hand item is a crossbow with Homing enchantment
+                // Check if the hand item is a bow with Homing enchantment
                 if (handItem.getType() == Material.BOW && enchant.getEnchantmentLevel(handItem) > 0) {
                     // Calculate additional damage based on Power level
                     RangedWeapon bow = new RangedWeapon(handItem);
