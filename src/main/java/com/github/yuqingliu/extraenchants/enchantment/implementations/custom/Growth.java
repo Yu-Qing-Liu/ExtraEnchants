@@ -12,7 +12,7 @@ public class Growth extends CustomEnchantment {
     public Growth(TextColor nameColor, TextColor descriptionColor, ApplicableItemsRegistry registry) {
         super(
             Component.text("Growth", nameColor),
-            1,
+            5,
             Component.text("Adds 1 HP per level", descriptionColor),
             registry.getArmorApplicable(),
             new ArrayList<>(),

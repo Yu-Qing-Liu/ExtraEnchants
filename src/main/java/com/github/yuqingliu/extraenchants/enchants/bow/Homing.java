@@ -1,6 +1,7 @@
 package com.github.yuqingliu.extraenchants.enchants.bow;
 
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -69,21 +70,44 @@ public class Homing implements Listener {
             }
 
             // Define the maximum distance to check for entities
-            double maxDistance = 256;
-            RayTraceResult rayTraceResult = player.getWorld().rayTraceEntities(
-                player.getEyeLocation(),
-                player.getEyeLocation().getDirection(),
-                maxDistance,
-                1.0,
-                entity -> !entity.equals(player) && !entity.equals(arrow) // Make sure not to target the player or the arrow itself
+            double maxDistance = 100;
+
+            // Ray trace for entities
+            RayTraceResult entityRayTraceResult = player.getWorld().rayTraceEntities(
+                    player.getEyeLocation(),
+                    player.getEyeLocation().getDirection(),
+                    maxDistance
             );
 
-            Location targetLocation;
-            if (rayTraceResult != null && rayTraceResult.getHitEntity() != null) {
-                // An entity was hit by the ray trace
-                targetLocation = rayTraceResult.getHitEntity().getLocation();
-            } else {
-                // No entity was found, fall back to targeting the block location
+            // Ray trace for blocks
+            RayTraceResult blockRayTraceResult = player.getWorld().rayTraceBlocks(
+                    player.getEyeLocation(),
+                    player.getEyeLocation().getDirection(),
+                    maxDistance
+            );
+
+            Location targetLocation = null;
+            Location blockLocation = null;
+
+            if(entityRayTraceResult != null && entityRayTraceResult.getHitEntity() != null) {
+                if(!entityRayTraceResult.getHitEntity().equals(player) && !(entityRayTraceResult.getHitEntity().getType() == EntityType.ARROW)) {
+                    Vector hitPosition = entityRayTraceResult.getHitPosition();
+                    targetLocation = new Location(player.getWorld(), hitPosition.getX(), hitPosition.getY(), hitPosition.getZ());
+                }
+            }
+            if(blockRayTraceResult != null && blockRayTraceResult.getHitBlock().isSolid()) {
+                Vector hitPosition = blockRayTraceResult.getHitPosition();
+                blockLocation = new Location(player.getWorld(), hitPosition.getX(), hitPosition.getY(), hitPosition.getZ());
+            } 
+            if(blockLocation != null && targetLocation != null) {
+                if(blockLocation.distanceSquared(player.getEyeLocation()) < targetLocation.distanceSquared(player.getEyeLocation())) {
+                    Vector hitPosition = blockRayTraceResult.getHitPosition();
+                    targetLocation = new Location(player.getWorld(), hitPosition.getX(), hitPosition.getY(), hitPosition.getZ());
+                }
+            } else if(blockLocation != null && targetLocation == null) {
+                Vector hitPosition = blockRayTraceResult.getHitPosition();
+                targetLocation = new Location(player.getWorld(), hitPosition.getX(), hitPosition.getY(), hitPosition.getZ());
+            } else if(blockLocation == null && targetLocation == null) {
                 targetLocation = player.getEyeLocation().add(player.getEyeLocation().getDirection().multiply(maxDistance));
             }
 

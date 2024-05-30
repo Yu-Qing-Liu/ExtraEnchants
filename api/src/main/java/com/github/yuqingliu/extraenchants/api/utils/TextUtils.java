@@ -1,4 +1,4 @@
-package com.github.yuqingliu.extraenchants.utils;
+package com.github.yuqingliu.extraenchants.api.utils;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
@@ -79,6 +79,12 @@ public class TextUtils {
     public static boolean componentContains(Component component, String match) {
         String plainText = PlainTextComponentSerializer.plainText().serialize(component);
         return plainText.contains(match);
+    }
+
+    public static boolean componentStringEquals(Component expected, Component result) {
+        String exp = componentToString(expected);
+        String res = componentToString(result);
+        return exp.equals(res);
     }
 
     public static String componentToString(Component component) {

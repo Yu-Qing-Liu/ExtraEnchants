@@ -12,7 +12,7 @@ public class PowerStrike extends CustomEnchantment {
     public PowerStrike(TextColor nameColor, TextColor descriptionColor, ApplicableItemsRegistry registry) {
         super(
             Component.text("Power Strike", nameColor),
-            1,
+            5,
             Component.text("Adds 20% more damage to the first hit dealt", descriptionColor),
             registry.getMeleeApplicable(),
             new ArrayList<>(),

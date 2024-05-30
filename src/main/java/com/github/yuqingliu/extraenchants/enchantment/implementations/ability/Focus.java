@@ -15,7 +15,7 @@ public class Focus extends AbilityEnchantment {
         super(
             Component.text(" Left Click", NamedTextColor.YELLOW).decorate(TextDecoration.BOLD),
             Component.text("Focus", nameColor),
-            1,
+            5,
             Component.text("Marks a target. Deal 20% increased damage to the target per level", descriptionColor),
             registry.getBowApplicable(),
             new ArrayList<>(),

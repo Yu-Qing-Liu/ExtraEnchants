@@ -12,7 +12,8 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import com.github.yuqingliu.extraenchants.api.enchantment.Enchant;
-
+import com.github.yuqingliu.extraenchants.api.utils.ColorUtils;
+import com.github.yuqingliu.extraenchants.api.utils.TextUtils;
 import com.github.yuqingliu.extraenchants.item.lore.Lore;
 import com.github.yuqingliu.extraenchants.item.lore.implementations.EnchantmentSection;
 
@@ -31,6 +32,7 @@ public abstract class AbstractEnchantment implements Enchant {
     protected List<Component> applicableDisplayNames;
     protected String requiredLevelFormula;
     protected String costFormula;
+    protected List<TextColor> leveledColors;
 
     public AbstractEnchantment(Component name, int maxLevel, Component description, List<Material> applicable, List<Component> applicableDisplayNames, String requiredLevelFormula, String costFormula) {
         this.name = name;
@@ -40,8 +42,9 @@ public abstract class AbstractEnchantment implements Enchant {
         this.applicableDisplayNames = applicableDisplayNames;
         this.requiredLevelFormula = requiredLevelFormula;
         this.costFormula = costFormula;
+        this.leveledColors = ColorUtils.generateMonochromaticGradient(name.color(), maxLevel);
     }
-
+    
     public Component getDescription() {
         Pattern replace = Pattern.compile("(\\d+%?)");
         TextReplacementConfig replacementConfig = TextReplacementConfig.builder()
@@ -84,35 +87,53 @@ public abstract class AbstractEnchantment implements Enchant {
 
         return finalComponent;
     }
+    
+    public Component getLeveledName(int level) {
+        Component name = this.name.color(getLevelColor(level));
+        Component eLevel = Component.text(" " + TextUtils.toRoman(level), getLevelColor(level));
+        return name.append(eLevel);
+    }
+    
+    public TextColor getDescriptionColor() {
+        return this.description.color();
+    }
+    
+    public TextColor getLevelColor(int level) {
+        return this.leveledColors.get(level - 1);
+    }
+    
+    public abstract int getEnchantmentLevel(ItemStack item);
+    
+    public abstract boolean canEnchant(ItemStack item);
+    
+    public abstract ItemStack applyEnchantment(ItemStack item, int level);
+    
+    public abstract ItemStack removeEnchantment(ItemStack item);
 
-    public ItemStack addOrUpdateEnchantmentLore(ItemStack item, Component enchant, Component eLevel) {
+    protected ItemStack addOrUpdateEnchantmentLore(ItemStack item, Component enchant, Component eLevel) {
         Lore lore = new Lore(item);
         EnchantmentSection enchantmentSection = (EnchantmentSection) lore.getLoreSection("EnchantmentSection");
         enchantmentSection.addOrUpdateEnchantmentFromSection(enchant, eLevel);
         return lore.applyLore();
     }
 
-    public ItemStack removeEnchantmentLore(ItemStack item, Component enchant) {
+    protected ItemStack removeEnchantmentLore(ItemStack item, Component enchant) {
         Lore lore = new Lore(item);
         EnchantmentSection enchantmentSection = (EnchantmentSection) lore.getLoreSection("EnchantmentSection");
         enchantmentSection.removeEnchantmentFromSection(enchant);
         return lore.applyLore();
     }
 
-    public abstract int getEnchantmentLevel(ItemStack item);
-
-    public abstract boolean canEnchant(ItemStack item);
-
-    public abstract ItemStack applyEnchantment(ItemStack item, int level);
-
-    public abstract ItemStack removeEnchantment(ItemStack item);
-
-    public TextColor getNameColor() {
-        return this.name.color();
+    protected Component getName(int colorLevel) {
+        return this.name.color(getLevelColor(colorLevel));
     }
 
-    public TextColor getDescriptionColor() {
-        return this.description.color();
+    protected Component getLevel(int colorLevel) {
+        return Component.text(" " + TextUtils.toRoman(colorLevel), getLevelColor(colorLevel));
+    }
+
+    protected Component getLevel(int level, int colorLevel) {
+        return Component.text(" " + TextUtils.toRoman(level), getLevelColor(colorLevel));
     }
 
     @Override

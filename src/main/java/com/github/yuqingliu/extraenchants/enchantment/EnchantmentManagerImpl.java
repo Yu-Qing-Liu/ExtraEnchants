@@ -9,7 +9,7 @@ import com.github.yuqingliu.extraenchants.enchantment.implementations.vanilla.*;
 import com.github.yuqingliu.extraenchants.enchantment.implementations.ability.*;
 import com.github.yuqingliu.extraenchants.ExtraEnchantsImpl;
 import com.github.yuqingliu.extraenchants.enchantment.implementations.*;
-import com.github.yuqingliu.extraenchants.utils.TextUtils;
+import com.github.yuqingliu.extraenchants.api.utils.TextUtils;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -30,7 +30,7 @@ public class EnchantmentManagerImpl implements EnchantmentManager {
     protected FileConfiguration config;
     protected ApplicableItemsRegistry applicable;
     private NamedTextColor vanilla = NamedTextColor.BLUE;
-    private NamedTextColor custom = NamedTextColor.DARK_PURPLE;
+    private NamedTextColor custom = NamedTextColor.BLUE;
     private NamedTextColor ability = NamedTextColor.GOLD;
     private NamedTextColor descriptionColor = NamedTextColor.DARK_GRAY;
     private Map<String, Enchantment> enchantmentRegistry = new HashMap<>();

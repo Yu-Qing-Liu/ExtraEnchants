@@ -16,7 +16,7 @@ import com.github.yuqingliu.extraenchants.api.Keys;
 import com.github.yuqingliu.extraenchants.enchantment.AbstractEnchantment;
 import com.github.yuqingliu.extraenchants.item.lore.Lore;
 import com.github.yuqingliu.extraenchants.item.lore.implementations.AbilitySection;
-import com.github.yuqingliu.extraenchants.utils.TextUtils;
+import com.github.yuqingliu.extraenchants.api.utils.TextUtils;
 
 public class AbilityEnchantment extends AbstractEnchantment {
     private Component action;
@@ -78,8 +78,7 @@ public class AbilityEnchantment extends AbstractEnchantment {
             item.setItemMeta(meta);
             meta = item.getItemMeta();
             if (meta != null) {
-                Component eLevel = Component.text(" " + TextUtils.toRoman(level), name.color());
-                item = addOrUpdateAbilityLore(item, name, eLevel);
+                item = addOrUpdateAbilityLore(item, getName(1), getLevel(level, 1));
             }
         }
         return item;
