@@ -15,7 +15,7 @@ public class BaneOfArthropods extends VanillaEnchantment {
             Enchantment.BANE_OF_ARTHROPODS,
             Component.text("Bane of Arthropods", nameColor),
             Enchantment.BANE_OF_ARTHROPODS.getMaxLevel(),
-            Component.text("Increases damage and applies Slowness IV to arthropod mobs (spiders, cave spiders, silverfish, endermites and bees)", descriptionColor),
+            Component.text("Increases damage and applies Slowness IV to arthropod mobs", descriptionColor),
             new ArrayList<>(),
             new ArrayList<>(),
             "x^2",

@@ -17,7 +17,7 @@ public class RapidFire extends AbilityEnchantment {
             Component.text(" Left Click", NamedTextColor.YELLOW).decorate(TextDecoration.BOLD),
             Component.text("Rapid Fire", nameColor),
             1,
-            Component.text("Shoots a barrage of projectile", descriptionColor),
+            Component.text("Shoots a barrage of arrows", descriptionColor),
             registry.getCrossbowApplicable(),
             new ArrayList<>(),
             "x^2",
