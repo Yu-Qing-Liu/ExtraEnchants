@@ -12,7 +12,7 @@ public class Snipe extends CustomEnchantment {
     public Snipe(TextColor nameColor, TextColor descriptionColor, ApplicableItemsRegistry registry) {
         super(
             Component.text("Snipe", nameColor),
-            1,
+            4,
             Component.text("Increase arrow velocity by 25% per level", descriptionColor),
             registry.getCrossbowApplicable(),
             new ArrayList<>(),

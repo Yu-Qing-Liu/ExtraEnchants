@@ -12,7 +12,7 @@ public class Wither extends CustomEnchantment {
     public Wither(TextColor nameColor, TextColor descriptionColor, ApplicableItemsRegistry registry) {
         super(
             Component.text("Wither", nameColor),
-            1,
+            2,
             Component.text("Applies wither effect for 3 seconds per level", descriptionColor),
             registry.getWeaponsApplicable(),
             new ArrayList<>(),

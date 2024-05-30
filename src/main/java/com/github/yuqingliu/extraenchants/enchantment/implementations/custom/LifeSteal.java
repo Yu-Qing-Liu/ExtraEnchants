@@ -12,7 +12,7 @@ public class LifeSteal extends CustomEnchantment {
     public LifeSteal(TextColor nameColor, TextColor descriptionColor, ApplicableItemsRegistry registry) {
         super(
             Component.text("Life Steal", nameColor),
-            1,
+            5,
             Component.text("Steals 1% of the victim's total health per level", descriptionColor),
             registry.getMeleeApplicable(),
             new ArrayList<>(),

@@ -12,7 +12,7 @@ public class Mitigation extends CustomEnchantment {
     public Mitigation(TextColor nameColor, TextColor descriptionColor, ApplicableItemsRegistry registry) {
         super(
             Component.text("Mitigation", nameColor),
-            1,
+            5,
             Component.text("1% chance to negate damage per level", descriptionColor),
             registry.getArmorApplicable(),
             new ArrayList<>(),

@@ -12,7 +12,7 @@ public class Venom extends CustomEnchantment {
     public Venom(TextColor nameColor, TextColor descriptionColor, ApplicableItemsRegistry registry) {
         super(
             Component.text("Venom", nameColor),
-            1,
+            2,
             Component.text("Applies poison effect for 3 seconds per level", descriptionColor),
             registry.getWeaponsApplicable(),
             new ArrayList<>(),
