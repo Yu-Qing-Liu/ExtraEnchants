@@ -25,14 +25,14 @@ import java.util.Objects;
 @Getter
 public abstract class AbstractEnchantment implements Enchant {
     protected Component comma = Component.text(", ", NamedTextColor.DARK_BLUE);
-    protected Component name;
+    @Setter protected Component name;
     @Setter protected int maxLevel;
-    protected Component description;
-    protected List<Material> applicable;
-    protected List<Component> applicableDisplayNames;
-    protected String requiredLevelFormula;
-    protected String costFormula;
-    protected List<TextColor> leveledColors;
+    @Setter protected Component description;
+    @Setter protected List<Material> applicable;
+    @Setter protected List<Component> applicableDisplayNames;
+    @Setter protected String requiredLevelFormula;
+    @Setter protected String costFormula;
+    @Setter protected List<TextColor> leveledColors;
 
     public AbstractEnchantment(Component name, int maxLevel, Component description, List<Material> applicable, List<Component> applicableDisplayNames, String requiredLevelFormula, String costFormula) {
         this.name = name;
@@ -99,6 +99,9 @@ public abstract class AbstractEnchantment implements Enchant {
     }
     
     public TextColor getLevelColor(int level) {
+        if(level != leveledColors.size()) {
+            leveledColors = ColorUtils.generateMonochromaticGradient(this.name.color(), this.maxLevel);
+        } 
         return this.leveledColors.get(level - 1);
     }
     

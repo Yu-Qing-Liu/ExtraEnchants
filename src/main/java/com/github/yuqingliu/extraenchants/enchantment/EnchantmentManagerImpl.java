@@ -13,6 +13,7 @@ import com.github.yuqingliu.extraenchants.api.utils.TextUtils;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -124,14 +125,19 @@ public class EnchantmentManagerImpl implements EnchantmentManager {
             Enchantment enchantment = entry.getValue();
             List<Material> applicableItems = enchantment.getApplicableItems();
             List<Component> applicableNames = enchantment.getApplicableDisplayNames();
+            List<TextColor> leveledColors = enchantment.getLeveledColors();
             List<String> applicableMaterials = new ArrayList<>();
             List<String> applicableDisplayNames = new ArrayList<>();
+            List<String> levelColors = new ArrayList<>();
             for(Material material : applicableItems) {
                 applicableMaterials.add(material.name());
             }
             for(Component name : applicableNames) {
                 String data = TextUtils.componentToJson(name);
                 applicableDisplayNames.add(data);
+            }
+            for(TextColor color : leveledColors) {
+                levelColors.add(color.asHexString());
             }
             String path = "Enchantments." + key;
             if(!config.isSet(path)) {
@@ -142,7 +148,8 @@ public class EnchantmentManagerImpl implements EnchantmentManager {
                     enchantment.getCostFormula(),
                     TextUtils.componentToJson(enchantment.getDescription()),
                     applicableMaterials,
-                    applicableDisplayNames
+                    applicableDisplayNames,
+                    levelColors
                 );
                 config.set(path, defaultOptions);
             }
@@ -154,15 +161,12 @@ public class EnchantmentManagerImpl implements EnchantmentManager {
         if(enchantmentsSection != null) {
             for(String key : enchantmentsSection.getKeys(false)) {
                 Object value = enchantmentsSection.get(key);
-                Enchantment enchantment = createEnchantment(value, key);
-                if(enchantment != null) {
-                    enchantmentRegistry.put(key, enchantment);
-                }
+                updateEnchantment(value, key);
             }
         }
     }
 
-    private Enchantment createEnchantment(Object data, String key) {
+    private void updateEnchantment(Object data, String key) {
         if(data instanceof List) {
             List<?> info = (List<?>) data;
             String sname = (String) info.get(0);
@@ -174,43 +178,19 @@ public class EnchantmentManagerImpl implements EnchantmentManager {
             Component description = TextUtils.jsonToComponent(sdescription);
             List<?> applicableMaterials = (List<?>) info.get(5);
             List<?> applicableDisplayNames = (List<?>) info.get(6);
+            List<?> leveledColors = (List<?>) info.get(7);
             List<Material> applicableItems = parseMaterialList(applicableMaterials);
             List<Component> applicableNames = parseNamesList(applicableDisplayNames);
-            if(TextUtils.isAbilityEnchantment(key)) {
-                if(maxLevel == 0) {
-                    enchantmentRegistry.get(key).setMaxLevel(0);
-                }
-                return null;
-            }
-            org.bukkit.enchantments.Enchantment enchantment = TextUtils.getVanillaEnchantment(key);
-            if(enchantment != null) {
-                return new Enchantment(
-                    new VanillaEnchantment(
-                        enchantment,
-                        name,
-                        maxLevel,
-                        description,
-                        applicableItems,
-                        applicableNames,
-                        levelFormula,
-                        costFormula
-                    )
-                );
-            }
-
-            return new Enchantment(
-                new CustomEnchantment(
-                    name,
-                    maxLevel,
-                    description,
-                    applicableItems,
-                    applicableNames,
-                    levelFormula,
-                    costFormula
-                )
-            );
+            List<TextColor> levelColors = parseLevelColors(leveledColors);
+            enchantmentRegistry.get(key).setName(name);
+            enchantmentRegistry.get(key).setMaxLevel(maxLevel);
+            enchantmentRegistry.get(key).setDescription(description);
+            enchantmentRegistry.get(key).setApplicable(applicableItems);
+            enchantmentRegistry.get(key).setApplicableDisplayNames(applicableNames);
+            enchantmentRegistry.get(key).setRequiredLevelFormula(levelFormula);
+            enchantmentRegistry.get(key).setCostFormula(costFormula);
+            enchantmentRegistry.get(key).setLeveledColors(levelColors);
         }
-        return null;
     }
 
     private List<Material> parseMaterialList(List<?> data) {
@@ -231,5 +211,15 @@ public class EnchantmentManagerImpl implements EnchantmentManager {
             applicable.add(displayName);
         }
         return applicable;
+    }
+
+    private List<TextColor> parseLevelColors(List<?> data) {
+        List<TextColor> colors = new ArrayList<>();
+        for(Object T : data) {
+            String t = (String) T;
+            TextColor color = TextColor.fromHexString(t);
+            colors.add(color);
+        }
+        return colors;
     }
 }

@@ -41,6 +41,10 @@ public final class Enchantment {
         return definition.getLeveledDescription(level);
     }
 
+    public List<TextColor> getLeveledColors() {
+        return definition.getLeveledColors();
+    }
+
     public int getMaxLevel() {
         return definition.getMaxLevel();
     }
@@ -65,8 +69,36 @@ public final class Enchantment {
         return definition.getEnchantmentLevel(item);
     }
 
+    public void setName(Component name) {
+        definition.setName(name);
+    }
+
     public void setMaxLevel(int level) {
         definition.setMaxLevel(level);
+    }
+
+    public void setDescription(Component description) {
+        definition.setDescription(description);
+    }
+
+    public void setApplicable(List<Material> applicable) {
+        definition.setApplicable(applicable);
+    }
+
+    public void setApplicableDisplayNames(List<Component> names) {
+        definition.setApplicableDisplayNames(names);
+    }
+
+    public void setRequiredLevelFormula(String formula) {
+        definition.setRequiredLevelFormula(formula);
+    }
+
+    public void setCostFormula(String formula) {
+        definition.setCostFormula(formula);
+    }
+
+    public void setLeveledColors(List<TextColor> colors) {
+        definition.setLeveledColors(colors);
     }
 
     public boolean canEnchant(ItemStack item) {

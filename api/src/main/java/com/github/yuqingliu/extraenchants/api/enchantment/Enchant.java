@@ -16,11 +16,11 @@ public interface Enchant {
 
     @NotNull TextColor getLevelColor(int level);
 
-    @NotNull public TextColor getDescriptionColor();
+    @NotNull TextColor getDescriptionColor();
+
+    @NotNull List<TextColor> getLeveledColors();
 
     @NotNull int getMaxLevel();
-
-    @NotNull void setMaxLevel(int level);
 
     @NotNull Component getDescription();
 
@@ -32,13 +32,29 @@ public interface Enchant {
 
     @NotNull String getCostFormula();
 
-    @NotNull public Component getLeveledDescription(int level);
+    @NotNull Component getLeveledDescription(int level);
 
-    @NotNull abstract int getEnchantmentLevel(ItemStack item);
+    @NotNull int getEnchantmentLevel(ItemStack item);
+    
+    void setName(Component name);
 
-    @NotNull abstract boolean canEnchant(ItemStack item);
+    void setDescription(Component description);
 
-    @NotNull abstract ItemStack applyEnchantment(ItemStack item, int level);
+    void setApplicable(List<Material> applicable);
 
-    @NotNull abstract ItemStack removeEnchantment(ItemStack item);
+    void setApplicableDisplayNames(List<Component> names);
+
+    void setRequiredLevelFormula(String formula);
+
+    void setCostFormula(String formula);
+
+    void setMaxLevel(int level);
+
+    void setLeveledColors(List<TextColor> colors);
+
+    @NotNull boolean canEnchant(ItemStack item);
+
+    @NotNull ItemStack applyEnchantment(ItemStack item, int level);
+
+    @NotNull ItemStack removeEnchantment(ItemStack item);
 }
