@@ -111,6 +111,7 @@ public class EnchantmentManagerImpl implements EnchantmentManager {
         enchantmentRegistry.put(Venom.class.getSimpleName(), new Enchantment(new Venom(custom, descriptionColor, applicable)));
         enchantmentRegistry.put(Warped.class.getSimpleName(), new Enchantment(new Warped(custom, descriptionColor, applicable)));
         enchantmentRegistry.put(Wither.class.getSimpleName(), new Enchantment(new Wither(custom, descriptionColor, applicable)));
+        enchantmentRegistry.put(Immolate.class.getSimpleName(), new Enchantment(new Immolate(custom, descriptionColor, applicable)));
         // Ability enchants
         enchantmentRegistry.put(SonicBoom.class.getSimpleName(), new Enchantment(new SonicBoom(ability, descriptionColor, applicable)));
         enchantmentRegistry.put(Focus.class.getSimpleName(), new Enchantment(new Focus(ability, descriptionColor, applicable)));

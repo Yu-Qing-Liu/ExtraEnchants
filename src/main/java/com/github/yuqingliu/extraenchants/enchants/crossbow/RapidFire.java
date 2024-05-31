@@ -6,7 +6,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.event.block.Action;
@@ -68,11 +67,11 @@ public class RapidFire implements Listener {
             fireParticleBeam(player, weapon);
             player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ARROW_SHOOT, 1.0f, 1.0f);
             shots++;
-            if(shots > 5) {
+            if(shots >= 5) {
                 task.cancel();
                 shots = 0;
             }
-        }, Duration.ofMillis(100), Duration.ofSeconds(0));
+        }, Duration.ofMillis(100), Duration.ZERO);
     }
 
     public static Location getRightSide(Location location, double distance) {

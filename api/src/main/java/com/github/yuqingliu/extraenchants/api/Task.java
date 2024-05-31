@@ -7,7 +7,6 @@ import org.bukkit.scheduler.BukkitTask;
 import lombok.Getter;
 
 import java.time.Duration;
-import java.time.Instant;
 import java.util.function.Consumer;
 
 public class Task {
@@ -15,12 +14,10 @@ public class Task {
     private final Plugin plugin;
     private final Consumer<Task> taskConsumer;
     @Getter private BukkitTask task;
-    private Instant startTime;
 
     public Task(Plugin plugin, Consumer<Task> taskConsumer) {
         this.plugin = plugin;
         this.taskConsumer = taskConsumer;
-        this.startTime = Instant.now();
     }
 
     public void runTask() {
@@ -33,7 +30,6 @@ public class Task {
 
     public void runTaskTimer(Duration delay, Duration interval) {
         this.task = Bukkit.getScheduler().runTaskTimer(plugin, () -> taskConsumer.accept(this), toTicks(delay), toTicks(interval));
-        startTime = Instant.now();
     }
 
     public void runAsyncTask() {
@@ -46,27 +42,11 @@ public class Task {
 
     public void runAsyncTaskTimer(Duration delay, Duration interval) {
         this.task = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> taskConsumer.accept(this), toTicks(delay), toTicks(interval));
-        startTime = Instant.now();
     }
 
     public void cancel() {
         if (task != null) {
             this.task.cancel();
-        }
-    }
-
-    public void cancelAfter(Duration duration, Runnable runnable) {
-        if (Duration.between(startTime, Instant.now()).compareTo(duration) >= 0) {
-            cancel();
-            if(runnable != null) {
-                runnable.run();
-            }
-        }
-    }
-
-    public void cancelAfter(Duration duration) {
-        if (Duration.between(startTime, Instant.now()).compareTo(duration) >= 0) {
-            cancel();
         }
     }
 

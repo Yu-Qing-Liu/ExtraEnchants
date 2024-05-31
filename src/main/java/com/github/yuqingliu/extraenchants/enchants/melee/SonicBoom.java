@@ -16,6 +16,7 @@ import java.util.UUID;
 import org.bukkit.event.block.Action;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 
 import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
@@ -68,8 +69,8 @@ public class SonicBoom implements Listener {
             player.getWorld().playSound(step, Sound.ENTITY_WARDEN_SONIC_BOOM, 1.0F, 1.0F);
 
             // Check for entities in the beam path
-            RayTraceResult rayTraceResult = player.getWorld().rayTraceEntities(eye, direction, i, 0.5);
-            if (rayTraceResult != null && rayTraceResult.getHitEntity() != null) {
+            RayTraceResult rayTraceResult = player.getWorld().rayTraceEntities(eye, direction, i);
+            if (rayTraceResult != null && rayTraceResult.getHitEntity() != null && !rayTraceResult.getHitEntity().equals(player)) {
                 Entity hitEntity = rayTraceResult.getHitEntity();
                 Location hitEntityLocation = hitEntity.getLocation();
                 delayedTeleportPlayer(player, hitEntityLocation, teleportDelay);
