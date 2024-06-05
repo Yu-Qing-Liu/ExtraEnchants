@@ -38,9 +38,10 @@ public class AnvilManager {
         this.file = file;
         this.config = YamlConfiguration.loadConfiguration(file);
         initializeCombinations();
+        registerCombinations();
     }
 
-    public void registerCombinations() {
+    private void registerCombinations() {
         insertCombinations();
         try {
             config.save(file);
@@ -50,7 +51,7 @@ public class AnvilManager {
         updateCombinations();
     }
 
-    public void initializeCombinations() {
+    private void initializeCombinations() {
         for(Material material : Registry.MATERIAL) {
             anvilRegistry.put(material, new ArrayList<>());
         }

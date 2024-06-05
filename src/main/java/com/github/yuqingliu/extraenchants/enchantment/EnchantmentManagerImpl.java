@@ -41,6 +41,7 @@ public class EnchantmentManagerImpl implements EnchantmentManager {
         this.config = plugin.getConfig();
         this.applicable = plugin.getApplicableItemsRegistry();
         initializeEnchantments();
+        registerEnchants();
     }
 
     public Map<String, Enchantment> getEnchantments() {
@@ -51,7 +52,7 @@ public class EnchantmentManagerImpl implements EnchantmentManager {
         return this.enchantmentRegistry.get(className);
     }
 
-    public void registerEnchants() {
+    private void registerEnchants() {
         insertEnchants();
         plugin.saveConfig();
         updateEnchants();

@@ -44,9 +44,10 @@ public class ItemManager {
         this.file = file;
         this.config = YamlConfiguration.loadConfiguration(file);
         initializeItems();
+        registerItems();
     }
 
-    public void initializeItems() {
+    private void initializeItems() {
         for(Material material : Registry.MATERIAL) {
             itemRegistry.put(
                 material.name(),
@@ -60,7 +61,7 @@ public class ItemManager {
         }
     }
 
-    public void registerItems() {
+    private void registerItems() {
         insertItems();
         try {
             config.save(file);

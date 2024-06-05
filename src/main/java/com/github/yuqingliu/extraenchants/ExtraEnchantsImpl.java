@@ -3,6 +3,7 @@ package com.github.yuqingliu.extraenchants;
 import org.bukkit.plugin.PluginManager;
 
 import com.github.yuqingliu.extraenchants.api.ExtraEnchants;
+import com.github.yuqingliu.extraenchants.api.command.CommandManager;
 import com.github.yuqingliu.extraenchants.api.item.ApplicableItemsRegistry;
 
 import com.github.yuqingliu.extraenchants.item.ItemUtilsImpl;
@@ -30,6 +31,7 @@ public final class ExtraEnchantsImpl extends ExtraEnchants {
     private ItemUtilsImpl itemUtils;
     private ApplicableItemsRegistry applicableItemsRegistry;
     private ItemManager itemManager;
+    private CommandManager commandManager;
     
     @Override
     public void onEnable() {
@@ -37,44 +39,17 @@ public final class ExtraEnchantsImpl extends ExtraEnchants {
         File blocksFile = new File(getDataFolder(), "blocks.csv");
         CustomBlockDatabase.start(blocksFile);
         
-        /*Plugin Manager*/
+        /*Managers*/
         pluginManager = getServer().getPluginManager();
-        
-        /*Registries*/
         applicableItemsRegistry = new ApplicableItemsRegistry();
-
-        /*Configuration*/
-        this.saveDefaultConfig();
-        
-        /*Constants*/
         configurationManager = new ConfigurationManager(this);
-        configurationManager.registerConstants();
-
-        /*Enchantments*/
         enchantmentManager = new EnchantmentManagerImpl(this);
-        enchantmentManager.registerEnchants();
-        
-        /*Items*/
         itemUtils = new ItemUtilsImpl(this);
         itemManager = new ItemManager(this);
-        itemManager.registerItems();
-
-        /*Anvil*/
         anvilManager = new AnvilManager(this);
-        anvilManager.registerCombinations();
-        
-        /*Events*/
         eventManager = new EventManager(this);
-        eventManager.registerListeners();
-
-        /*Enchants*/
         enchantsManager = new EnchantsManager(this);
-        enchantsManager.registerListeners();
-
-        /*Commands*/
-        this.getCommand("ee").setExecutor(new EECommand(this));
-        this.getCommand("eelist").setExecutor(new EEListCommand(this));
-        this.getCommand("eeget").setExecutor(new EEGetCommand());
+        commandManager = new CommandManagerImpl(this);
     }
 
     @Override

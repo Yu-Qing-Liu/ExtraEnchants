@@ -13,6 +13,11 @@ public class ConfigurationManager {
 
     public ConfigurationManager(JavaPlugin plugin) {
         this.plugin = plugin;
+        initializeConstants();
+        registerConstants();
+    }
+
+    private void initializeConstants() {
         constantsRegistry.put(GlobalConstants.class.getSimpleName(), new GlobalConstants(plugin));
         constantsRegistry.put(AnvilConstants.class.getSimpleName(), new AnvilConstants(plugin));
         constantsRegistry.put(CooldownConstants.class.getSimpleName(), new CooldownConstants(plugin));
@@ -22,7 +27,7 @@ public class ConfigurationManager {
         return this.constantsRegistry;  
     }
 
-    public void registerConstants() {
+    private void registerConstants() {
         for(AbstractConstants constants : constantsRegistry.values()) {
             constants.registerConstants();
         }

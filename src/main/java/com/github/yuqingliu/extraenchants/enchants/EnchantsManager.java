@@ -32,6 +32,7 @@ public class EnchantsManager {
         CooldownConstants cooldowns = (CooldownConstants) plugin.getConfigurationManager().getConstants().get("CooldownConstants");
         this.cooldownRegistry = cooldowns.getCooldownRegistry();
         initializeListeners();
+        registerListeners();
     }
 
     private void initializeListeners() {
@@ -57,7 +58,7 @@ public class EnchantsManager {
         listeners.add(new Focus(plugin, registry.get("Focus")));
     }
 
-    public void registerListeners() {
+    private void registerListeners() {
         for(Listener listener : listeners) {
             String listenerName = listener.getClass().getSimpleName();
             Enchantment correspondingEnchantment = registry.get(listenerName);

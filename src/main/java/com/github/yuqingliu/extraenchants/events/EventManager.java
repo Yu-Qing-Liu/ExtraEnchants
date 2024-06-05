@@ -14,6 +14,7 @@ public class EventManager {
     public EventManager(ExtraEnchantsImpl plugin) {
         this.plugin = plugin;
         initializeListeners();
+        registerListeners();
     }
 
     private void initializeListeners() {
@@ -26,7 +27,7 @@ public class EventManager {
         listeners.add(new PlayerReceivesItem(plugin));
     }
 
-    public void registerListeners() {
+    private void registerListeners() {
         for(Listener listener : listeners) {
             plugin.getPluginManager().registerEvents(listener, plugin);
         }
