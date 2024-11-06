@@ -24,6 +24,7 @@ import com.github.yuqingliu.extraenchants.api.managers.NameSpacedKeyManager;
 import com.github.yuqingliu.extraenchants.api.managers.TextManager;
 import com.github.yuqingliu.extraenchants.api.repositories.ItemRepository;
 import com.github.yuqingliu.extraenchants.enchantment.implementations.CustomEnchantment;
+import com.github.yuqingliu.extraenchants.weapon.implementations.RangedWeapon;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;

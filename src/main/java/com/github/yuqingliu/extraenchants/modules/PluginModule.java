@@ -9,6 +9,7 @@ import com.github.yuqingliu.extraenchants.api.managers.ColorManager;
 import com.github.yuqingliu.extraenchants.api.managers.CommandManager;
 import com.github.yuqingliu.extraenchants.api.managers.EventManager;
 import com.github.yuqingliu.extraenchants.api.managers.InventoryManager;
+import com.github.yuqingliu.extraenchants.api.managers.LoreManager;
 import com.github.yuqingliu.extraenchants.api.managers.NameSpacedKeyManager;
 import com.github.yuqingliu.extraenchants.api.managers.SoundManager;
 import com.github.yuqingliu.extraenchants.api.managers.TextManager;
@@ -17,6 +18,7 @@ import com.github.yuqingliu.extraenchants.managers.ColorManagerImpl;
 import com.github.yuqingliu.extraenchants.managers.CommandManagerImpl;
 import com.github.yuqingliu.extraenchants.managers.EventManagerImpl;
 import com.github.yuqingliu.extraenchants.managers.InventoryManagerImpl;
+import com.github.yuqingliu.extraenchants.managers.LoreManagerImpl;
 import com.github.yuqingliu.extraenchants.managers.NameSpacedKeyManagerImpl;
 import com.github.yuqingliu.extraenchants.managers.SoundManagerImpl;
 import com.github.yuqingliu.extraenchants.managers.TextManagerImpl;
@@ -53,8 +55,8 @@ public class PluginModule extends AbstractModule {
 
     @Provides
     @Singleton
-    public EventManager provideEventManager() {
-        return new EventManagerImpl(plugin);
+    public EventManager provideEventManager(InventoryManager inventoryManager) {
+        return new EventManagerImpl(plugin, inventoryManager);
     }
 
     @Provides
@@ -79,5 +81,11 @@ public class PluginModule extends AbstractModule {
     @Singleton
     public ColorManager provideColorManager() {
         return new ColorManagerImpl();
+    }
+
+    @Provides
+    @Singleton
+    public LoreManager provideLoreManager(TextManager textManager, NameSpacedKeyManager keyManager) {
+        return new LoreManagerImpl(textManager, keyManager);
     }
 }

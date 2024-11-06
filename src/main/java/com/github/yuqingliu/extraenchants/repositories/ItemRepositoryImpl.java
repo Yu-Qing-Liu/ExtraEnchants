@@ -19,10 +19,16 @@ public class ItemRepositoryImpl implements ItemRepository {
     private final Map<ItemCategory, Set<Item>> items = new HashMap<>();
     
     public ItemRepositoryImpl() {
-        initializeRangedItems();
+        initializeItems();
     }
 
-    private void initializeRangedItems() {
+    private void initializeItems() {
+        items.put(ItemCategory.BOW,
+            Set.of(
+                new ItemImpl(new ItemStack(Material.BOW))
+            )
+        );
+
         items.put(ItemCategory.RANGED,
             Set.of(
                 new ItemImpl(new ItemStack(Material.BOW)),
