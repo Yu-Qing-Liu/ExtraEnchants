@@ -1,0 +1,90 @@
+package com.github.yuqingliu.extraenchants.enchantment.implementations;
+
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+
+import net.kyori.adventure.text.Component;
+
+import java.util.Set;
+
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
+
+import com.github.yuqingliu.extraenchants.api.enums.CustomEnchant;
+import com.github.yuqingliu.extraenchants.api.item.Item;
+import com.github.yuqingliu.extraenchants.api.managers.ColorManager;
+import com.github.yuqingliu.extraenchants.api.managers.LoreManager;
+import com.github.yuqingliu.extraenchants.api.managers.NameSpacedKeyManager;
+import com.github.yuqingliu.extraenchants.api.managers.TextManager;
+import com.github.yuqingliu.extraenchants.enchantment.AbstractEnchantment;
+import com.github.yuqingliu.extraenchants.item.ItemImpl;
+
+
+public class CustomEnchantment extends AbstractEnchantment {
+    private NamespacedKey key;
+
+    public CustomEnchantment(TextManager textManager, LoreManager loreManager, ColorManager colorManager, NameSpacedKeyManager keyManager, Component name, Component description, int maxLevel, Set<Item> applicable, String requiredLevelFormula, String costFormula, CustomEnchant enchantment) {
+        super(textManager, loreManager, colorManager, keyManager, name, description, maxLevel, applicable, requiredLevelFormula, costFormula);
+        this.key = keyManager.getEnchantKey(enchantment);
+    }
+
+    @Override
+    public int getEnchantmentLevel(ItemStack item) {
+        if(item == null || item.getType() == Material.AIR) {
+            return 0;
+        }
+        ItemMeta meta = item.getItemMeta();
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+        if (container.has(key, PersistentDataType.INTEGER)) {
+            return container.get(key, PersistentDataType.INTEGER);
+        }
+        return 0;
+    }
+    
+    @Override
+    public boolean canEnchant(ItemStack item) {
+        if(item == null || item.getType() == Material.AIR) {
+            return false;
+        }
+        if(item.getType() == Material.BOOK || item.getType() == Material.ENCHANTED_BOOK) {
+            return true;
+        }
+        Item i = new ItemImpl(item);
+        return applicable.contains(i);
+    }
+    
+    @Override
+    public ItemStack applyEnchantment(ItemStack item, int level) {
+        if (level <= maxLevel) {
+            if (item.getType() == Material.BOOK) {
+                item = new ItemStack(Material.ENCHANTED_BOOK);
+            }
+            ItemMeta meta = item.getItemMeta();
+            PersistentDataContainer container = meta.getPersistentDataContainer();
+            container.set(key, PersistentDataType.INTEGER, level);
+            item.setItemMeta(meta);
+            meta = item.getItemMeta();
+            if (meta != null) {
+                item = addOrUpdateEnchantmentLore(item, getName(level), getLevel(level));
+            }
+        }
+        return item;
+    }
+    
+    @Override
+    public ItemStack removeEnchantment(ItemStack item) {
+        ItemMeta meta = item.getItemMeta();
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+        if(container.has(key, PersistentDataType.INTEGER)) {
+            container.remove(key);
+        }
+        item.setItemMeta(meta);
+        meta = item.getItemMeta();
+        if (meta != null) {
+            item = removeEnchantmentLore(item, getName(getEnchantmentLevel(item)));
+        }
+        return item;
+    }
+}

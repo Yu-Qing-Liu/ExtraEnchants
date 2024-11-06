@@ -21,7 +21,7 @@ public class ItemImpl implements Item {
             return false;
         }
         ItemImpl other = (ItemImpl) obj;
-        return this.itemStack.isSimilar(other.itemStack);
+        return this.itemStack.getType().equals(other.getItemStack().getType()) && this.itemStack.displayName().equals(other.getItemStack().displayName());
     }
 
     @Override
