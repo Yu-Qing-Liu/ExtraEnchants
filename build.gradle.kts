@@ -25,6 +25,7 @@ dependencies {
     testAnnotationProcessor("org.projectlombok:lombok:${project.property("lombok_version")}")
 
     implementation(project(":api"))
+    implementation("com.google.inject:guice:7.0.0")
 
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
