@@ -5,10 +5,15 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.github.yuqingliu.extraenchants.api.logger.Logger;
 import com.github.yuqingliu.extraenchants.api.managers.*;
+import com.github.yuqingliu.extraenchants.api.persistence.Database;
 import com.github.yuqingliu.extraenchants.api.repositories.*;
 import com.github.yuqingliu.extraenchants.managers.*;
+import com.github.yuqingliu.extraenchants.persistence.enchantments.EnchantmentDatabase;
 import com.github.yuqingliu.extraenchants.logger.LoggerImpl;
 import com.github.yuqingliu.extraenchants.repositories.*;
+
+import java.io.File;
+
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class PluginModule extends AbstractModule {
@@ -25,6 +30,13 @@ public class PluginModule extends AbstractModule {
         return new LoggerImpl();
     }
 
+    // Provide data folder
+    @Provides
+    @Singleton
+    public File providePluginDataFolder() {
+        return plugin.getDataFolder();
+    }
+
     // Repositories
     @Provides
     @Singleton
@@ -36,6 +48,13 @@ public class PluginModule extends AbstractModule {
     @Singleton
     public ItemRepository provideItemRepository() {
         return new ItemRepositoryImpl();
+    }
+
+    // Persistence
+    @Provides
+    @Singleton
+    public Database provideEnchantmentDatabase(EnchantmentRepository enchantmentRepository) {
+        return new EnchantmentDatabase(plugin.getDataFolder(), enchantmentRepository);
     }
 
     // Managers

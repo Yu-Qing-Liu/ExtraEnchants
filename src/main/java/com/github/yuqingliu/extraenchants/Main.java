@@ -2,16 +2,11 @@ package com.github.yuqingliu.extraenchants;
 
 import com.github.yuqingliu.extraenchants.api.ExtraEnchants;
 import com.github.yuqingliu.extraenchants.api.logger.Logger;
-import com.github.yuqingliu.extraenchants.api.managers.ColorManager;
-import com.github.yuqingliu.extraenchants.api.managers.CommandManager;
-import com.github.yuqingliu.extraenchants.api.managers.EventManager;
-import com.github.yuqingliu.extraenchants.api.managers.InventoryManager;
-import com.github.yuqingliu.extraenchants.api.managers.LoreManager;
-import com.github.yuqingliu.extraenchants.api.managers.MathManager;
-import com.github.yuqingliu.extraenchants.api.managers.NameSpacedKeyManager;
-import com.github.yuqingliu.extraenchants.api.managers.SoundManager;
-import com.github.yuqingliu.extraenchants.api.managers.TextManager;
+import com.github.yuqingliu.extraenchants.api.managers.*;
+import com.github.yuqingliu.extraenchants.api.persistence.Database;
+import com.github.yuqingliu.extraenchants.api.repositories.*;
 import com.github.yuqingliu.extraenchants.modules.PluginModule;
+import com.github.yuqingliu.extraenchants.persistence.enchantments.EnchantmentDatabase;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
@@ -22,6 +17,12 @@ public class Main extends ExtraEnchants {
     private Injector injector;
     
     private Logger extraenchantsLogger;
+
+    private ItemRepository itemRepository;
+    private EnchantmentRepository enchantmentRepository;
+
+    private Database enchantmentDatabase;
+
     private EventManager eventManager;
     private CommandManager commandManager;
     private InventoryManager inventoryManager;
@@ -46,7 +47,11 @@ public class Main extends ExtraEnchants {
         colorManager = injector.getInstance(ColorManager.class);
         loreManager = injector.getInstance(LoreManager.class);
         mathManager = injector.getInstance(MathManager.class);
+        enchantmentRepository = injector.getInstance(EnchantmentRepository.class);
+        itemRepository = injector.getInstance(ItemRepository.class);
+        enchantmentDatabase = injector.getInstance(EnchantmentDatabase.class);
 
         inventoryManager.initialize(eventManager);
+        enchantmentDatabase.initialize();
     }
 }
