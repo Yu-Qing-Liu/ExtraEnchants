@@ -1,6 +1,7 @@
 package com.github.yuqingliu.extraenchants.enchantment.implementations.custom;
 
 import java.time.Duration;
+import java.util.HashSet;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,13 +17,14 @@ import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
 import com.github.yuqingliu.extraenchants.api.Scheduler;
-import com.github.yuqingliu.extraenchants.api.enums.CustomEnchant;
-import com.github.yuqingliu.extraenchants.api.enums.ItemCategory;
 import com.github.yuqingliu.extraenchants.api.managers.ColorManager;
 import com.github.yuqingliu.extraenchants.api.managers.LoreManager;
 import com.github.yuqingliu.extraenchants.api.managers.NameSpacedKeyManager;
 import com.github.yuqingliu.extraenchants.api.managers.TextManager;
+import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository;
 import com.github.yuqingliu.extraenchants.api.repositories.ItemRepository;
+import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository.EnchantID;
+import com.github.yuqingliu.extraenchants.api.repositories.ItemRepository.ItemCategory;
 import com.github.yuqingliu.extraenchants.enchantment.implementations.CustomEnchantment;
 import com.github.yuqingliu.extraenchants.weapon.implementations.RangedWeapon;
 
@@ -30,16 +32,17 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class Homing extends CustomEnchantment {
-    public Homing(TextColor nameColor, TextColor descriptionColor, ItemRepository itemRepository, TextManager textManager, LoreManager loreManager, ColorManager colorManager, NameSpacedKeyManager keyManager) {
+    public Homing(TextManager textManager, LoreManager loreManager, ColorManager colorManager, NameSpacedKeyManager keyManager, EnchantmentRepository enchantmentRepository, ItemRepository itemRepository, TextColor nameColor, TextColor descriptionColor) {
         super(
-            textManager, loreManager, colorManager, keyManager,
+            textManager, loreManager, colorManager, keyManager, enchantmentRepository,
+            EnchantID.HOMING,
             Component.text("Homing", nameColor),
             Component.text("Guided Arrows", descriptionColor),
             1,
             itemRepository.getItems().get(ItemCategory.BOW),
+            new HashSet<>(),
             "x^2",
-            "x",
-            CustomEnchant.HOMING
+            "x"
         );
     }
     

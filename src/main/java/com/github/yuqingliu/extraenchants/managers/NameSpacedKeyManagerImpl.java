@@ -4,8 +4,8 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.github.yuqingliu.extraenchants.api.enums.CustomEnchant;
 import com.github.yuqingliu.extraenchants.api.managers.NameSpacedKeyManager;
+import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository.EnchantID;
 import com.google.inject.Singleton;
 
 import lombok.Getter;
@@ -21,11 +21,7 @@ public class NameSpacedKeyManagerImpl implements NameSpacedKeyManager {
         loreKey = new NamespacedKey(plugin , "loreKey");
     }
 
-    public NamespacedKey getEnchantKey(Enchantment enchant) {
-        return new NamespacedKey(plugin, String.format("enchantKey-%s", enchant.getKey().getKey()));
-    }
-
-    public NamespacedKey getEnchantKey(CustomEnchant enchant) {
+    public NamespacedKey getEnchantKey(EnchantID enchant) {
         return new NamespacedKey(plugin, String.format("enchantKey-%s", enchant.name()));
     }
 }

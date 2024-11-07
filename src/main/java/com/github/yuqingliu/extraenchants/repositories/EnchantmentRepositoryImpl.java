@@ -3,6 +3,7 @@ package com.github.yuqingliu.extraenchants.repositories;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.bukkit.inventory.ItemStack;
 
@@ -15,12 +16,13 @@ import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository
 import com.github.yuqingliu.extraenchants.api.repositories.ItemRepository;
 import com.github.yuqingliu.extraenchants.enchantment.implementations.custom.Homing;
 import com.github.yuqingliu.extraenchants.item.ItemImpl;
+import com.google.inject.Singleton;
 
 import lombok.Getter;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 @Getter
+@Singleton
 public class EnchantmentRepositoryImpl implements EnchantmentRepository {
     private final Set<Enchantment> enchantments = new LinkedHashSet<>();
     private final ItemRepository itemRepository;
@@ -43,13 +45,20 @@ public class EnchantmentRepositoryImpl implements EnchantmentRepository {
     }
 
     private void initialize() {
-        enchantments.add(new Homing(custom, descriptionColor, itemRepository, textManager, loreManager, colorManager, keyManager));
+        enchantments.add(new Homing(textManager, loreManager, colorManager, keyManager, this, itemRepository, custom, descriptionColor));
     }
 
-    public Enchantment getEnchantment(String enchantName) {
-        return enchantments.stream().filter(enchant -> PlainTextComponentSerializer.plainText().serialize(enchant.getName()).equals(enchantName)).findFirst().orElse(null);
+    @Override
+    public Set<Enchantment> getEnchantments(Set<EnchantID> ids) {
+        return enchantments.stream().filter(enchant -> ids.contains(enchant.getId())).collect(Collectors.toSet());
     }
-
+    
+    @Override
+    public Enchantment getEnchantment(EnchantID id) {
+        return enchantments.stream().filter(enchant -> enchant.getId() == id).findFirst().orElse(null);
+    }
+    
+    @Override
     public Enchantment[] getApplicableEnchantments(ItemStack item) {
         Map<Enchantment, Integer> itemEnchants = new ItemImpl(item).getEnchantments(this);
         return enchantments.stream().filter(enchant -> 

@@ -6,30 +6,35 @@ import org.bukkit.NamespacedKey;
 
 import net.kyori.adventure.text.Component;
 
+import java.time.Duration;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-import com.github.yuqingliu.extraenchants.api.enums.CustomEnchant;
 import com.github.yuqingliu.extraenchants.api.item.Item;
 import com.github.yuqingliu.extraenchants.api.managers.ColorManager;
 import com.github.yuqingliu.extraenchants.api.managers.LoreManager;
 import com.github.yuqingliu.extraenchants.api.managers.NameSpacedKeyManager;
 import com.github.yuqingliu.extraenchants.api.managers.TextManager;
+import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository;
+import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository.EnchantID;
 import com.github.yuqingliu.extraenchants.enchantment.AbstractEnchantment;
 import com.github.yuqingliu.extraenchants.item.ItemImpl;
 import com.github.yuqingliu.extraenchants.lore.implementations.AbilitySection;
 
 public class AbilityEnchantment extends AbstractEnchantment {
     private Component action;
+    protected Duration cooldown;
     private NamespacedKey key;
 
-    public AbilityEnchantment(TextManager textManager, LoreManager loreManager, ColorManager colorManager, NameSpacedKeyManager keyManager, Component name, Component description, int maxLevel, Set<Item> applicable, String requiredLevelFormula, String costFormula, Component action, CustomEnchant enchantment) {
-        super(textManager, loreManager, colorManager, keyManager, name, description, maxLevel, applicable, requiredLevelFormula, costFormula);
+    public AbilityEnchantment(TextManager textManager, LoreManager loreManager, ColorManager colorManager, NameSpacedKeyManager keyManager, EnchantmentRepository enchantmentRepository, EnchantID id, Component name, Component description, int maxLevel, Set<Item> applicable, Set<EnchantID> conflicting, String requiredLevelFormula, String costFormula, Component action, Duration cooldown) {
+        super(textManager, loreManager, colorManager, keyManager, enchantmentRepository, id, name, description, maxLevel, applicable, conflicting, requiredLevelFormula, costFormula);
         this.action = action;
-        this.key = keyManager.getEnchantKey(enchantment);
+        this.cooldown = cooldown;
+        this.key = keyManager.getEnchantKey(id);
     }
 
     private ItemStack addOrUpdateAbilityLore(ItemStack item, Component enchant, Component eLevel) {
@@ -66,6 +71,10 @@ public class AbilityEnchantment extends AbstractEnchantment {
             return true;
         }
         Item i = new ItemImpl(item);
+        Set<EnchantID> keySet = i.getEnchantments(enchantmentRepository).keySet().stream().map(enchant -> enchant.getId()).collect(Collectors.toSet());
+        if (keySet.retainAll(conflicting) && keySet.size() > 0) {
+            return false;
+        }
         return applicable.contains(i);
     }
     
