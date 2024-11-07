@@ -41,6 +41,12 @@ public class PluginModule extends AbstractModule {
     // Managers
     @Provides
     @Singleton
+    public MathManager provideMathManager() {
+        return new MathManagerImpl();
+    }
+
+    @Provides
+    @Singleton
     public NameSpacedKeyManager provideNameSpacedKeyManager() {
         return new NameSpacedKeyManagerImpl(plugin);
     }
@@ -59,8 +65,8 @@ public class PluginModule extends AbstractModule {
 
     @Provides
     @Singleton
-    public InventoryManager provideInventoryManager(SoundManager soundManager, Logger logger, EnchantmentRepository enchantmentRepository) {
-        return new InventoryManagerImpl(soundManager, logger, enchantmentRepository);
+    public InventoryManager provideInventoryManager(MathManager mathManager, SoundManager soundManager, Logger logger, EnchantmentRepository enchantmentRepository) {
+        return new InventoryManagerImpl(mathManager, soundManager, logger, enchantmentRepository);
     }
 
     @Provides
@@ -86,6 +92,5 @@ public class PluginModule extends AbstractModule {
     public LoreManager provideLoreManager(TextManager textManager, NameSpacedKeyManager keyManager) {
         return new LoreManagerImpl(textManager, keyManager);
     }
-
 }
 

@@ -1,6 +1,7 @@
 package com.github.yuqingliu.extraenchants.enchantment;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -15,7 +16,6 @@ import com.github.yuqingliu.extraenchants.api.managers.TextManager;
 import com.github.yuqingliu.extraenchants.lore.implementations.EnchantmentSection;
 import com.google.inject.Inject;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
@@ -25,7 +25,6 @@ import net.kyori.adventure.text.format.TextColor;
 
 @Getter
 @Setter
-@EqualsAndHashCode
 public abstract class AbstractEnchantment implements Enchantment {
     protected Component comma = Component.text(", ", NamedTextColor.DARK_BLUE);
     protected final TextManager textManager;
@@ -52,6 +51,7 @@ public abstract class AbstractEnchantment implements Enchantment {
         this.applicable = applicable;
         this.requiredLevelFormula = requiredLevelFormula;
         this.costFormula = costFormula;
+        this.leveledColors = colorManager.generateMonochromaticGradient(this.name.color(), this.maxLevel);
     }
 
     public Component getDescription() {
@@ -104,8 +104,8 @@ public abstract class AbstractEnchantment implements Enchantment {
     }
 
     public TextColor getLevelColor(int level) {
-        if (level != leveledColors.size()) {
-            leveledColors = colorManager.generateMonochromaticGradient(this.name.color(), this.maxLevel);
+        if (level > leveledColors.size()) {
+            return null;
         }
         return this.leveledColors.get(level - 1);
     }
@@ -140,5 +140,18 @@ public abstract class AbstractEnchantment implements Enchantment {
 
     protected Component getLevel(int level, int colorLevel) {
         return Component.text(" " + textManager.toRoman(level), getLevelColor(colorLevel));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AbstractEnchantment that = (AbstractEnchantment) o;
+        return this.name.equals(that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }

@@ -2,6 +2,7 @@ package com.github.yuqingliu.extraenchants.view;
 
 import com.github.yuqingliu.extraenchants.api.logger.Logger;
 import com.github.yuqingliu.extraenchants.api.managers.EventManager;
+import com.github.yuqingliu.extraenchants.api.managers.MathManager;
 import com.github.yuqingliu.extraenchants.api.managers.SoundManager;
 import com.github.yuqingliu.extraenchants.api.view.PlayerInventory;
 import com.github.yuqingliu.extraenchants.api.Scheduler;
@@ -28,6 +29,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 @Getter
 public abstract class AbstractPlayerInventory implements PlayerInventory {
@@ -35,11 +37,12 @@ public abstract class AbstractPlayerInventory implements PlayerInventory {
     protected EventManager eventManager;
     protected final SoundManager soundManager;
     protected final Logger logger;
+    protected final MathManager mathManager;
     @Setter protected Component displayName;
     protected final int inventorySize;
     protected final Component unavailableComponent = Component.text("Unavailable", NamedTextColor.DARK_PURPLE);
     protected final Component loadingComponent = Component.text("Loading...", NamedTextColor.RED);
-    protected Map<Material, ItemStack> backgroundItems = new HashMap<>();   
+    protected Map<Material, ItemStack> backgroundItems = new HashMap<>();
     protected ItemStack nextPage;
     protected ItemStack prevPage;
     protected ItemStack prevMenu;
@@ -47,10 +50,14 @@ public abstract class AbstractPlayerInventory implements PlayerInventory {
     protected ItemStack reload;
     protected ItemStack unavailable;
     protected ItemStack loading;
+    protected ItemStack enchantingTable;
+    protected ItemStack grindStone;
+    protected ItemStack anvil;
         
     @Inject
-    public AbstractPlayerInventory(EventManager eventManager, SoundManager soundManager, Logger logger, Component displayName, int inventorySize) {
+    public AbstractPlayerInventory(EventManager eventManager, MathManager mathManager, SoundManager soundManager, Logger logger, Component displayName, int inventorySize) {
         this.eventManager = eventManager;
+        this.mathManager = mathManager;
         this.soundManager = soundManager;
         this.logger = logger;
         this.displayName = displayName;
@@ -75,10 +82,18 @@ public abstract class AbstractPlayerInventory implements PlayerInventory {
         this.reload = createSlotItem(Material.YELLOW_WOOL, Component.text("Refresh", NamedTextColor.YELLOW));
         this.unavailable = createSlotItem(Material.GLASS_PANE, unavailableComponent);
         this.loading = createSlotItem(Material.BARRIER, loadingComponent);
+        this.enchantingTable = createSlotItem(Material.ENCHANTING_TABLE, Component.text("Enchanting Table", NamedTextColor.DARK_PURPLE));
+        this.grindStone = createSlotItem(Material.GRINDSTONE, Component.text("Grindstone", NamedTextColor.GRAY));
+        this.anvil = createSlotItem(Material.ANVIL, Component.text("Anvil", NamedTextColor.DARK_GRAY));
     }
 
     public boolean isUnavailable(ItemStack item) {
-        return item.isSimilar(loading) || item.isSimilar(unavailable);
+        return item.isSimilar(loading) ||
+        item.isSimilar(unavailable) ||
+        backgroundItems.containsValue(item) ||
+        item.isSimilar(enchantingTable) ||
+        item.isSimilar(grindStone) ||
+        item.isSimilar(anvil);
     }
 
     public ItemStack createSlotItem(Material material, Component displayName, List<Component> lore) {
@@ -125,6 +140,11 @@ public abstract class AbstractPlayerInventory implements PlayerInventory {
 
     public int toIndex(int[] coords) {
         return coords[0] + (coords[1] * inventoryLength);
+    }
+
+    public ItemStack getItem(Inventory inv, int[] coords) {
+        int index = toIndex(coords);
+        return inv.getItem(index);
     }
 
     public void setItem(Inventory inv, int[] coords, ItemStack item) {

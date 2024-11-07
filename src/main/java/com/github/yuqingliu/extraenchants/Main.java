@@ -7,6 +7,7 @@ import com.github.yuqingliu.extraenchants.api.managers.CommandManager;
 import com.github.yuqingliu.extraenchants.api.managers.EventManager;
 import com.github.yuqingliu.extraenchants.api.managers.InventoryManager;
 import com.github.yuqingliu.extraenchants.api.managers.LoreManager;
+import com.github.yuqingliu.extraenchants.api.managers.MathManager;
 import com.github.yuqingliu.extraenchants.api.managers.NameSpacedKeyManager;
 import com.github.yuqingliu.extraenchants.api.managers.SoundManager;
 import com.github.yuqingliu.extraenchants.api.managers.TextManager;
@@ -29,6 +30,7 @@ public class Main extends ExtraEnchants {
     private TextManager textManager;
     private ColorManager colorManager;
     private LoreManager loreManager;
+    private MathManager mathManager;
 
     @Override
     public void onEnable() {
@@ -43,6 +45,7 @@ public class Main extends ExtraEnchants {
         textManager = injector.getInstance(TextManager.class);
         colorManager = injector.getInstance(ColorManager.class);
         loreManager = injector.getInstance(LoreManager.class);
+        mathManager = injector.getInstance(MathManager.class);
 
         inventoryManager.initialize(eventManager);
     }

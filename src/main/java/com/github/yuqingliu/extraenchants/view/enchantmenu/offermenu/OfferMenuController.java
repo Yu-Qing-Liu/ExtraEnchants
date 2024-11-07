@@ -1,4 +1,4 @@
-package com.github.yuqingliu.extraenchants.view.enchantmenu.mainmenu;
+package com.github.yuqingliu.extraenchants.view.enchantmenu.offermenu;
 
 import java.time.Duration;
 import java.util.ArrayDeque;
@@ -17,17 +17,21 @@ import org.bukkit.inventory.ItemStack;
 
 import com.github.yuqingliu.extraenchants.api.Scheduler;
 import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
+import com.github.yuqingliu.extraenchants.enchantment.EnchantmentOffer;
 import com.github.yuqingliu.extraenchants.view.enchantmenu.EnchantMenu;
 import com.github.yuqingliu.extraenchants.view.enchantmenu.EnchantMenu.MenuType;
 
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 @Getter
-public class MainMenuController {
+public class OfferMenuController {
     private final EnchantMenu enchantMenu;
     private final int[] nextPageButton = new int[]{6,0};
     private final int[] prevPageButton = new int[]{6,5};
-    private final int[] exitMenuButton = new int[]{8,0};
+    private final int[] prevMenuButton = new int[]{8,0};
+    private final int[] exitMenuButton = new int[]{8,5};
     private final int[] itemSlot = new int[]{7,2};
     private final int[] decorationSlot = new int[]{7,3};
     private final int[] enchantOptionsStart = new int[]{0,0};
@@ -36,25 +40,21 @@ public class MainMenuController {
     private final int enchantOptionsSize = enchantOptionsLength * enchantOptionsWidth;
     private final List<int[]> enchantOptions;
     private Map<Player, int[]> pageNumbers = new ConcurrentHashMap<>();
-    private Map<Integer, Map<List<Integer>, Enchantment>> pageData = new ConcurrentHashMap<>();
+    private Map<Integer, Map<List<Integer>, EnchantmentOffer>> pageData = new ConcurrentHashMap<>();
+    private Map<Player, Enchantment> selectedEnchantments = new ConcurrentHashMap<>();
 
-    public MainMenuController(EnchantMenu enchantMenu) {
+    public OfferMenuController(EnchantMenu enchantMenu) {
         this.enchantMenu = enchantMenu;
         this.enchantOptions = enchantMenu.rectangleArea(enchantOptionsStart, enchantOptionsWidth, enchantOptionsLength);
     }
 
-    public void openMenu(Player player, Inventory inv) {
+    public void openMenu(Player player, Inventory inv, Enchantment enchantment) {
         pageNumbers.put(player, new int[]{1});
+        selectedEnchantments.put(player, enchantment);
         Scheduler.runLaterAsync((task) -> {
-            enchantMenu.getPlayerMenuTypes().put(player, MenuType.MainMenu);
+            enchantMenu.getPlayerMenuTypes().put(player, MenuType.OfferMenu);
         }, Duration.ofMillis(50));
-        border(inv);
         buttons(inv);
-        reload(player, inv);;
-    }
-
-    public void reload(Player player, Inventory inv) {
-        clear(inv);
         fetchOptions(player, inv);
         displayOptions(player, inv);
     }
@@ -81,18 +81,31 @@ public class MainMenuController {
         enchantMenu.fillRectangleArea(inv, enchantOptionsStart, enchantOptionsWidth, enchantOptionsLength, enchantMenu.getUnavailable());
     }
 
+    public void applyOffer(Player player, Inventory inv, EnchantmentOffer offer) {
+        ItemStack item = enchantMenu.getItem(inv, itemSlot);
+        if(item != null && item.getType() != Material.AIR) {
+            ItemStack result = offer.applyOffer(player, item);
+            enchantMenu.setItem(inv, itemSlot, result);
+            enchantMenu.getMainMenu().getController().openMenu(player, inv);
+        } else {
+            enchantMenu.getLogger().sendPlayerErrorMessage(player, "Could not apply offer.");
+        }
+    }
+
     private void fetchOptions(Player player, Inventory inv) {
         pageData.clear();
-        ItemStack item = enchantMenu.getItem(inv, itemSlot);
-        Enchantment[] applicable = enchantMenu.getEnchantmentRepository().getApplicableEnchantments(item);
-        Queue<Enchantment> offers = new ArrayDeque<>();
-        for (Enchantment enchantment : applicable) {
-            offers.offer(enchantment);
+        Enchantment selectedEnchantment = selectedEnchantments.get(player);
+        Queue<EnchantmentOffer> offers = new ArrayDeque<>();
+        for (int i = 1; i <= selectedEnchantment.getMaxLevel(); i++) {
+            int requiredLevel = enchantMenu.getMathManager().evaluateExpression(selectedEnchantment.getRequiredLevelFormula(), i);
+            int cost = enchantMenu.getMathManager().evaluateExpression(selectedEnchantment.getCostFormula(), i);
+            EnchantmentOffer offer = new EnchantmentOffer(enchantMenu.getSoundManager(), selectedEnchantment, i, requiredLevel, cost);
+            offers.offer(offer);
         }
-        int maxPages = (int) Math.ceil((double) applicable.length / (double) enchantOptionsSize);
+        int maxPages = (int) Math.ceil((double) offers.size() / (double) enchantOptionsSize);
         for (int i = 0; i < maxPages; i++) {
             int pageNum = i + 1;
-            Map<List<Integer>, Enchantment> options = new LinkedHashMap<>();
+            Map<List<Integer>, EnchantmentOffer> options = new LinkedHashMap<>();
             for(int[] coords : this.enchantOptions) {
                 if(offers.isEmpty()) {
                     options.put(Arrays.asList(coords[0], coords[1]), null);
@@ -105,14 +118,18 @@ public class MainMenuController {
     }
 
     private void displayOptions(Player player, Inventory inv) {
-        Map<List<Integer>, Enchantment> options = pageData.getOrDefault(pageNumbers.get(player)[0], Collections.emptyMap());       
-        for(Map.Entry<List<Integer>, Enchantment> entry : options.entrySet()) {
+        Map<List<Integer>, EnchantmentOffer> options = pageData.getOrDefault(pageNumbers.get(player)[0], Collections.emptyMap());       
+        for(Map.Entry<List<Integer>, EnchantmentOffer> entry : options.entrySet()) {
             List<Integer> coords = entry.getKey();
-            Enchantment option = entry.getValue();
-            if(option == null) {
+            EnchantmentOffer offer = entry.getValue();
+            if(offer == null) {
                 enchantMenu.setItem(inv, coords, enchantMenu.getUnavailable());
             } else {
-                enchantMenu.setItem(inv, coords, enchantMenu.createSlotItem(Material.ENCHANTED_BOOK, option.getName()));;
+                Component displayName = offer.getEnchantment().getLeveledName(offer.getLevel());
+                Component levelRequired = Component.text("LEVEL REQUIRED: ", NamedTextColor.GREEN).append(Component.text(offer.getRequiredLevel(), NamedTextColor.DARK_GREEN));
+                Component enchantCost = Component.text("EXP COST: ", NamedTextColor.GREEN).append(Component.text(offer.getCost(), NamedTextColor.DARK_GREEN));
+                ItemStack icon = enchantMenu.createSlotItem(Material.ENCHANTED_BOOK, displayName, Arrays.asList(levelRequired, enchantCost));
+                enchantMenu.setItem(inv, coords, icon);
             }
         }
     }
@@ -120,19 +137,14 @@ public class MainMenuController {
     private void buttons(Inventory inv) {
         enchantMenu.setItem(inv, nextPageButton, enchantMenu.getNextPage());
         enchantMenu.setItem(inv, prevPageButton, enchantMenu.getPrevPage());
+        enchantMenu.setItem(inv, prevMenuButton, enchantMenu.getPrevMenu());
         enchantMenu.setItem(inv, exitMenuButton, enchantMenu.getExitMenu());
         enchantMenu.setItem(inv, decorationSlot, enchantMenu.getEnchantingTable());
     }
 
-    private void border(Inventory inv) {
-        enchantMenu.fillRectangleArea(inv, new int[]{6,1}, 4, 1, enchantMenu.getBackgroundItems().get(Material.PURPLE_STAINED_GLASS_PANE));
-        enchantMenu.fillRectangleArea(inv, new int[]{8,0}, 6, 1, enchantMenu.getBackgroundItems().get(Material.PURPLE_STAINED_GLASS_PANE));
-        enchantMenu.fillRectangleArea(inv, new int[]{7,0}, 2, 1, enchantMenu.getBackgroundItems().get(Material.PURPLE_STAINED_GLASS_PANE));
-        enchantMenu.fillRectangleArea(inv, new int[]{7,4}, 2, 1, enchantMenu.getBackgroundItems().get(Material.PURPLE_STAINED_GLASS_PANE));
-    }
-
     public void onClose(Player player) {
         pageNumbers.remove(player);
+        selectedEnchantments.remove(player);
         pageData.clear();
     }
 }

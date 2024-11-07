@@ -6,6 +6,7 @@ import java.util.Map;
 import com.github.yuqingliu.extraenchants.api.logger.Logger;
 import com.github.yuqingliu.extraenchants.api.managers.EventManager;
 import com.github.yuqingliu.extraenchants.api.managers.InventoryManager;
+import com.github.yuqingliu.extraenchants.api.managers.MathManager;
 import com.github.yuqingliu.extraenchants.api.managers.SoundManager;
 import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository;
 import com.github.yuqingliu.extraenchants.api.view.PlayerInventory;
@@ -21,11 +22,13 @@ import net.kyori.adventure.text.format.NamedTextColor;
 public class InventoryManagerImpl implements InventoryManager {
     private final SoundManager soundManager;
     private final Logger logger;
-    private EnchantmentRepository enchantmentRepository;
+    private final EnchantmentRepository enchantmentRepository;
+    private final MathManager mathManager;
     private Map<String, AbstractPlayerInventory> inventories = new HashMap<>();
     
     @Inject
-    public InventoryManagerImpl(SoundManager soundManager, Logger logger, EnchantmentRepository enchantmentRepository) {
+    public InventoryManagerImpl(MathManager mathManager, SoundManager soundManager, Logger logger, EnchantmentRepository enchantmentRepository) {
+        this.mathManager = mathManager;
         this.soundManager = soundManager;
         this.logger = logger;
         this.enchantmentRepository = enchantmentRepository;
@@ -36,7 +39,7 @@ public class InventoryManagerImpl implements InventoryManager {
         inventories.put(
             EnchantMenu.class.getSimpleName(),
             new EnchantMenu(
-                eventManager, soundManager, logger,
+                eventManager, mathManager, soundManager, logger,
                 Component.text("Enchanting Table", NamedTextColor.DARK_PURPLE),
                 enchantmentRepository
             )

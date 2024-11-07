@@ -51,8 +51,9 @@ public class EnchantmentRepositoryImpl implements EnchantmentRepository {
     }
 
     public Enchantment[] getApplicableEnchantments(ItemStack item) {
+        Map<Enchantment, Integer> itemEnchants = new ItemImpl(item).getEnchantments(this);
         return enchantments.stream().filter(enchant -> 
-            enchant.canEnchant(item)
+            enchant.canEnchant(item) && (itemEnchants.containsKey(enchant) ? (itemEnchants.get(enchant) < enchant.getMaxLevel()) : true)
         ).toArray(Enchantment[]::new);
     }
 }
