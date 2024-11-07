@@ -123,6 +123,10 @@ public abstract class AbstractPlayerInventory implements PlayerInventory {
         return new int[] { x, y };
     }
 
+    public int toIndex(int[] coords) {
+        return coords[0] + (coords[1] * inventoryLength);
+    }
+
     public void setItem(Inventory inv, int[] coords, ItemStack item) {
         inv.setItem(coords[0] + (coords[1] * inventoryLength), item);
     }

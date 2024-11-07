@@ -7,6 +7,7 @@ import com.github.yuqingliu.extraenchants.api.logger.Logger;
 import com.github.yuqingliu.extraenchants.api.managers.EventManager;
 import com.github.yuqingliu.extraenchants.api.managers.InventoryManager;
 import com.github.yuqingliu.extraenchants.api.managers.SoundManager;
+import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository;
 import com.github.yuqingliu.extraenchants.api.view.PlayerInventory;
 import com.github.yuqingliu.extraenchants.view.AbstractPlayerInventory;
 import com.github.yuqingliu.extraenchants.view.enchantmenu.EnchantMenu;
@@ -21,22 +22,25 @@ public class InventoryManagerImpl implements InventoryManager {
     private final EventManager eventManager;
     private final SoundManager soundManager;
     private final Logger logger;
+    private EnchantmentRepository enchantmentRepository;
     private Map<String, AbstractPlayerInventory> inventories = new HashMap<>();
     
     @Inject
-    public InventoryManagerImpl(EventManager eventManager, SoundManager soundManager, Logger logger) {
+    public InventoryManagerImpl(EventManager eventManager, SoundManager soundManager, Logger logger, EnchantmentRepository enchantmentRepository) {
         this.eventManager = eventManager;
         this.soundManager = soundManager;
         this.logger = logger;
-        initializeInventories();
+        this.enchantmentRepository = enchantmentRepository;
     }
-
-    private void initializeInventories() {
+    
+    @Override
+    public void initialize() {
         inventories.put(
             EnchantMenu.class.getSimpleName(),
             new EnchantMenu(
                 eventManager, soundManager, logger,
-                Component.text("Enchanting Table", NamedTextColor.DARK_PURPLE)
+                Component.text("Enchanting Table", NamedTextColor.DARK_PURPLE),
+                enchantmentRepository
             )
         );       
     }

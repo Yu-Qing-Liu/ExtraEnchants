@@ -10,7 +10,7 @@ import com.google.inject.Singleton;
 public class SoundManagerImpl implements SoundManager {
     @Override
     public void playEnchantmentSound(Player player) {
-        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 2.0f);
+        player.playSound(player.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0f, 1.0f);
     }
 
     @Override

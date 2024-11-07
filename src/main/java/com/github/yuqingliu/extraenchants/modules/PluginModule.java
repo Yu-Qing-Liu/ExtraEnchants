@@ -3,26 +3,12 @@ package com.github.yuqingliu.extraenchants.modules;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-
 import com.github.yuqingliu.extraenchants.api.logger.Logger;
-import com.github.yuqingliu.extraenchants.api.managers.ColorManager;
-import com.github.yuqingliu.extraenchants.api.managers.CommandManager;
-import com.github.yuqingliu.extraenchants.api.managers.EventManager;
-import com.github.yuqingliu.extraenchants.api.managers.InventoryManager;
-import com.github.yuqingliu.extraenchants.api.managers.LoreManager;
-import com.github.yuqingliu.extraenchants.api.managers.NameSpacedKeyManager;
-import com.github.yuqingliu.extraenchants.api.managers.SoundManager;
-import com.github.yuqingliu.extraenchants.api.managers.TextManager;
+import com.github.yuqingliu.extraenchants.api.managers.*;
+import com.github.yuqingliu.extraenchants.api.repositories.*;
+import com.github.yuqingliu.extraenchants.managers.*;
 import com.github.yuqingliu.extraenchants.logger.LoggerImpl;
-import com.github.yuqingliu.extraenchants.managers.ColorManagerImpl;
-import com.github.yuqingliu.extraenchants.managers.CommandManagerImpl;
-import com.github.yuqingliu.extraenchants.managers.EventManagerImpl;
-import com.github.yuqingliu.extraenchants.managers.InventoryManagerImpl;
-import com.github.yuqingliu.extraenchants.managers.LoreManagerImpl;
-import com.github.yuqingliu.extraenchants.managers.NameSpacedKeyManagerImpl;
-import com.github.yuqingliu.extraenchants.managers.SoundManagerImpl;
-import com.github.yuqingliu.extraenchants.managers.TextManagerImpl;
-
+import com.github.yuqingliu.extraenchants.repositories.*;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class PluginModule extends AbstractModule {
@@ -32,6 +18,7 @@ public class PluginModule extends AbstractModule {
         this.plugin = plugin;
     }
 
+    // Provide Logger
     @Provides
     @Singleton
     public Logger provideExtraEnchantsLogger() {
@@ -39,6 +26,17 @@ public class PluginModule extends AbstractModule {
     }
 
     // Repositories
+    @Provides
+    @Singleton
+    public EnchantmentRepository provideEnchantmentRepository() {
+        return new EnchantmentRepositoryImpl();
+    }
+
+    @Provides
+    @Singleton
+    public ItemRepository provideItemRepository() {
+        return new ItemRepositoryImpl();
+    }
 
     // Managers
     @Provides
@@ -61,8 +59,8 @@ public class PluginModule extends AbstractModule {
 
     @Provides
     @Singleton
-    public InventoryManager provideInventoryManager(EventManager eventManager, SoundManager soundManager, Logger logger) {
-        return new InventoryManagerImpl(eventManager, soundManager, logger);
+    public InventoryManager provideInventoryManager(EventManager eventManager, SoundManager soundManager, Logger logger, EnchantmentRepository enchantmentRepository) {
+        return new InventoryManagerImpl(eventManager, soundManager, logger, enchantmentRepository);
     }
 
     @Provides
@@ -73,14 +71,14 @@ public class PluginModule extends AbstractModule {
 
     @Provides
     @Singleton
-    public TextManager provideTextManager() {
-        return new TextManagerImpl();
-    }
-
-    @Provides
-    @Singleton
     public ColorManager provideColorManager() {
         return new ColorManagerImpl();
+    }
+
+    @Provides 
+    @Singleton
+    public TextManager provideTextManager() {
+        return new TextManagerImpl();
     }
 
     @Provides
@@ -88,4 +86,6 @@ public class PluginModule extends AbstractModule {
     public LoreManager provideLoreManager(TextManager textManager, NameSpacedKeyManager keyManager) {
         return new LoreManagerImpl(textManager, keyManager);
     }
+
 }
+

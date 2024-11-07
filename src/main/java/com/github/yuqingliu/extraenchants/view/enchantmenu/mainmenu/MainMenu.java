@@ -12,6 +12,9 @@ import org.bukkit.inventory.ItemStack;
 import com.github.yuqingliu.extraenchants.view.enchantmenu.EnchantMenu;
 import com.github.yuqingliu.extraenchants.view.enchantmenu.EnchantMenu.MenuType;
 
+import lombok.Getter;
+
+@Getter
 public class MainMenu implements Listener {
     private final EnchantMenu enchantMenu;
     private final MainMenuController controller;

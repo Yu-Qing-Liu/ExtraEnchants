@@ -1,9 +1,13 @@
 package com.github.yuqingliu.extraenchants.api.repositories;
 
-import java.util.Map;
+import java.util.Set;
+
+import org.bukkit.inventory.ItemStack;
 
 import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
 
 public interface EnchantmentRepository {
-    Map<String, Enchantment> getEnchantments();   
+    Set<Enchantment> getEnchantments();
+    Enchantment[] getApplicableEnchantments(ItemStack item);
+    Enchantment getEnchantment(String enchantmentName);
 }

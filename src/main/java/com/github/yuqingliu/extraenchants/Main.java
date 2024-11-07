@@ -21,29 +21,30 @@ import lombok.Getter;
 public class Main extends ExtraEnchants {
     private Injector injector;
     
-    @Inject
     private Logger extraenchantsLogger;
-    @Inject
     private EventManager eventManager;
-    @Inject
     private CommandManager commandManager;
-    @Inject
     private InventoryManager inventoryManager;
-    @Inject
     private NameSpacedKeyManager nameSpacedKeyManager;
-    @Inject
     private SoundManager soundManager;
-    @Inject
     private TextManager textManager;
-    @Inject
     private ColorManager colorManager;
-    @Inject
     private LoreManager loreManager;
 
     @Override
     public void onEnable() {
         injector = Guice.createInjector(new PluginModule(this));
         injector.injectMembers(this);
-    }
+        extraenchantsLogger = injector.getInstance(Logger.class);
+        eventManager = injector.getInstance(EventManager.class);
+        commandManager = injector.getInstance(CommandManager.class);
+        inventoryManager = injector.getInstance(InventoryManager.class);
+        nameSpacedKeyManager = injector.getInstance(NameSpacedKeyManager.class);
+        soundManager = injector.getInstance(SoundManager.class);
+        textManager = injector.getInstance(TextManager.class);
+        colorManager = injector.getInstance(ColorManager.class);
+        loreManager = injector.getInstance(LoreManager.class);
 
+        inventoryManager.initialize();
+    }
 }
