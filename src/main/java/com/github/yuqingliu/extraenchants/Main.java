@@ -12,7 +12,6 @@ import com.github.yuqingliu.extraenchants.api.managers.SoundManager;
 import com.github.yuqingliu.extraenchants.api.managers.TextManager;
 import com.github.yuqingliu.extraenchants.modules.PluginModule;
 import com.google.inject.Guice;
-import com.google.inject.Inject;
 import com.google.inject.Injector;
 
 import lombok.Getter;
@@ -45,6 +44,6 @@ public class Main extends ExtraEnchants {
         colorManager = injector.getInstance(ColorManager.class);
         loreManager = injector.getInstance(LoreManager.class);
 
-        inventoryManager.initialize();
+        inventoryManager.initialize(eventManager);
     }
 }

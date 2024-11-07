@@ -19,22 +19,20 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 @Singleton
 public class InventoryManagerImpl implements InventoryManager {
-    private final EventManager eventManager;
     private final SoundManager soundManager;
     private final Logger logger;
     private EnchantmentRepository enchantmentRepository;
     private Map<String, AbstractPlayerInventory> inventories = new HashMap<>();
     
     @Inject
-    public InventoryManagerImpl(EventManager eventManager, SoundManager soundManager, Logger logger, EnchantmentRepository enchantmentRepository) {
-        this.eventManager = eventManager;
+    public InventoryManagerImpl(SoundManager soundManager, Logger logger, EnchantmentRepository enchantmentRepository) {
         this.soundManager = soundManager;
         this.logger = logger;
         this.enchantmentRepository = enchantmentRepository;
     }
     
     @Override
-    public void initialize() {
+    public void initialize(EventManager eventManager) {
         inventories.put(
             EnchantMenu.class.getSimpleName(),
             new EnchantMenu(

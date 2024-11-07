@@ -28,8 +28,8 @@ public class PluginModule extends AbstractModule {
     // Repositories
     @Provides
     @Singleton
-    public EnchantmentRepository provideEnchantmentRepository() {
-        return new EnchantmentRepositoryImpl();
+    public EnchantmentRepository provideEnchantmentRepository(ItemRepository itemRepository, TextManager textManager, LoreManager loreManager, ColorManager colorManager, NameSpacedKeyManager keyManager) {
+        return new EnchantmentRepositoryImpl(itemRepository, textManager, loreManager, colorManager, keyManager);
     }
 
     @Provides
@@ -59,8 +59,8 @@ public class PluginModule extends AbstractModule {
 
     @Provides
     @Singleton
-    public InventoryManager provideInventoryManager(EventManager eventManager, SoundManager soundManager, Logger logger, EnchantmentRepository enchantmentRepository) {
-        return new InventoryManagerImpl(eventManager, soundManager, logger, enchantmentRepository);
+    public InventoryManager provideInventoryManager(SoundManager soundManager, Logger logger, EnchantmentRepository enchantmentRepository) {
+        return new InventoryManagerImpl(soundManager, logger, enchantmentRepository);
     }
 
     @Provides

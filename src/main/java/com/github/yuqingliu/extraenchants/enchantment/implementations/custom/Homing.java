@@ -30,8 +30,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class Homing extends CustomEnchantment {
-
-    public Homing(TextColor nameColor, TextColor descriptionColor, ItemRepository itemRepository, TextManager textManager, LoreManager loreManager, ColorManager colorManager, NameSpacedKeyManager keyManager, String requiredLevelFormula, String costFormula) {
+    public Homing(TextColor nameColor, TextColor descriptionColor, ItemRepository itemRepository, TextManager textManager, LoreManager loreManager, ColorManager colorManager, NameSpacedKeyManager keyManager) {
         super(
             textManager, loreManager, colorManager, keyManager,
             Component.text("Homing", nameColor),

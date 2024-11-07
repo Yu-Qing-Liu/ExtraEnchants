@@ -49,10 +49,13 @@ public class MainMenuController {
         }, Duration.ofMillis(50));
         enchantMenu.fill(inv, enchantMenu.getBackgroundItems().get(Material.PURPLE_STAINED_GLASS_PANE));
         buttons(inv);
+        clear(inv);
+    }
+
+    public void reload(Player player, Inventory inv) {
         fetchOptions(player, inv);
         displayOptions(player, inv);
     }
-
 
     public void nextPage(Player player, Inventory inv) {
         pageNumbers.get(player)[0]++;
@@ -70,6 +73,10 @@ public class MainMenuController {
         } else {
             pageNumbers.get(player)[0]++;
         }
+    }
+
+    public void clear(Inventory inv) {
+        enchantMenu.fillRectangleArea(inv, enchantOptionsStart, enchantOptionsWidth, enchantOptionsLength, enchantMenu.getUnavailable());
     }
 
     private void fetchOptions(Player player, Inventory inv) {

@@ -22,10 +22,10 @@ public class NameSpacedKeyManagerImpl implements NameSpacedKeyManager {
     }
 
     public NamespacedKey getEnchantKey(Enchantment enchant) {
-        return new NamespacedKey(plugin, String.format("enchantKey,%s", enchant.getKey().getKey()));
+        return new NamespacedKey(plugin, String.format("enchantKey-%s", enchant.getKey().getKey()));
     }
 
     public NamespacedKey getEnchantKey(CustomEnchant enchant) {
-        return new NamespacedKey(plugin, String.format("enchantKey,%s", enchant.name()));
+        return new NamespacedKey(plugin, String.format("enchantKey-%s", enchant.name()));
     }
 }
