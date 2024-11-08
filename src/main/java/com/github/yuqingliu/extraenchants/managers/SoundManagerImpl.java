@@ -17,4 +17,19 @@ public class SoundManagerImpl implements SoundManager {
     public void playAnvilSound(Player player) {
         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 2.0f);
     }
+
+    @Override
+    public void playArrowSound(Player player) {
+        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ARROW_SHOOT, 1.0f, 1.0f);
+    }
+
+    @Override
+    public void playSonicBoomSound(Player player) {
+        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_WARDEN_SONIC_BOOM, 1.0F, 1.0F);
+    }
+    
+    @Override
+    public void playMitigationSound(Player player) {
+        player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.0f, 1.0f);
+    }
 }

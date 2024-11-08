@@ -24,8 +24,10 @@ public class AnvilRepositoryImpl implements AnvilRepository {
 
     private void initializeCombinations() {
         for(Material m : Material.values()) {
-            Item i = new ItemImpl(new ItemStack(m));
-            anvilCombinations.put(i, new HashSet<>());
+            try {
+                Item i = new ItemImpl(new ItemStack(m));
+                anvilCombinations.put(i, new HashSet<>());
+            } catch (Exception e) {}
         }
     }
 }

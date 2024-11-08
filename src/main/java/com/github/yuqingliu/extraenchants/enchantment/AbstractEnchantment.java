@@ -14,6 +14,7 @@ import com.github.yuqingliu.extraenchants.api.managers.ColorManager;
 import com.github.yuqingliu.extraenchants.api.managers.EventManager;
 import com.github.yuqingliu.extraenchants.api.managers.LoreManager;
 import com.github.yuqingliu.extraenchants.api.managers.NameSpacedKeyManager;
+import com.github.yuqingliu.extraenchants.api.managers.SoundManager;
 import com.github.yuqingliu.extraenchants.api.managers.TextManager;
 import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository;
 import com.github.yuqingliu.extraenchants.api.repositories.ManagerRepository;
@@ -36,6 +37,7 @@ public abstract class AbstractEnchantment implements Enchantment {
     protected final TextManager textManager;
     protected final LoreManager loreManager;
     protected final ColorManager colorManager;
+    protected final SoundManager soundManager;
     protected final NameSpacedKeyManager keyManager;
     protected final EnchantmentRepository enchantmentRepository;
     protected final EventManager eventManager;
@@ -59,6 +61,7 @@ public abstract class AbstractEnchantment implements Enchantment {
         this.textManager = managerRepository.getTextManager();
         this.loreManager = managerRepository.getLoreManager();
         this.colorManager = managerRepository.getColorManager();
+        this.soundManager = managerRepository.getSoundManager();
         this.keyManager = managerRepository.getKeyManager();
         this.eventManager = managerRepository.getEventManager();
         this.plugin = managerRepository.getPlugin();

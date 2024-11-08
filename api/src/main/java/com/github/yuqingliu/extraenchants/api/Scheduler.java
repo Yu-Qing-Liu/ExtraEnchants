@@ -16,6 +16,12 @@ public final class Scheduler {
     @Setter
     private static JavaPlugin plugin;
 
+    public static BukkitTask runSync(Consumer<Task> consumer) {
+        Task task = new Task(plugin, consumer);
+        task.runTask();
+        return task.getTask();
+    }
+
     public static BukkitTask runLater(Consumer<Task> consumer, Duration duration) {
         Task task = new Task(plugin, consumer);
         task.runTaskLater(duration);

@@ -3,6 +3,7 @@ package com.github.yuqingliu.extraenchants.modules;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 import com.github.yuqingliu.extraenchants.api.logger.Logger;
 import com.github.yuqingliu.extraenchants.api.persistence.Database;
 import com.github.yuqingliu.extraenchants.persistence.anvil.AnvilDatabase;
@@ -64,12 +65,14 @@ public class PluginModule extends AbstractModule {
     // Persistence
     @Provides
     @Singleton
+    @Named("EnchantmentDatabase")
     public Database provideEnchantmentDatabase(EnchantmentRepository enchantmentRepository) {
         return new EnchantmentDatabase(plugin.getDataFolder(), enchantmentRepository);
     }
 
     @Provides
     @Singleton
+    @Named("AnvilDatabase")
     public Database provideAnvilDatabase(AnvilRepository anvilRepository) {
         return new AnvilDatabase(plugin.getDataFolder(), anvilRepository);
     }

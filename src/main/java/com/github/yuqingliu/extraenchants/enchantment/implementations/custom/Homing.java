@@ -82,23 +82,17 @@ public class Homing extends CustomEnchantment {
 
     private void setHomingArrow(Player player, Arrow arrow) {
         arrow.setGravity(false);
-        Scheduler.runTimer(task -> {
+        Scheduler.runTimerAsync(task -> {
             if (!arrow.isValid() || arrow.isOnGround()) {
                 task.cancel();
                 return;
             }
-
-            // Define the maximum distance to check for entities
             double maxDistance = 100;
-
-            // Ray trace for entities
             RayTraceResult entityRayTraceResult = player.getWorld().rayTraceEntities(
                     player.getEyeLocation(),
                     player.getEyeLocation().getDirection(),
                     maxDistance
             );
-
-            // Ray trace for blocks
             RayTraceResult blockRayTraceResult = player.getWorld().rayTraceBlocks(
                     player.getEyeLocation(),
                     player.getEyeLocation().getDirection(),
@@ -128,7 +122,9 @@ public class Homing extends CustomEnchantment {
                 targetLocation = player.getEyeLocation().add(player.getEyeLocation().getDirection().multiply(maxDistance));
             }
             Vector direction = targetLocation.toVector().subtract(arrow.getLocation().toVector()).normalize();
-            arrow.setVelocity(direction);
+            Scheduler.runSync(t -> {
+                arrow.setVelocity(direction);
+            });
         }, Duration.ofMillis(50), Duration.ofSeconds(0));
     }
 }
