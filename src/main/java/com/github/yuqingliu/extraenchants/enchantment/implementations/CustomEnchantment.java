@@ -14,11 +14,8 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import com.github.yuqingliu.extraenchants.api.item.Item;
-import com.github.yuqingliu.extraenchants.api.managers.ColorManager;
-import com.github.yuqingliu.extraenchants.api.managers.LoreManager;
-import com.github.yuqingliu.extraenchants.api.managers.NameSpacedKeyManager;
-import com.github.yuqingliu.extraenchants.api.managers.TextManager;
 import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository;
+import com.github.yuqingliu.extraenchants.api.repositories.ManagerRepository;
 import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository.EnchantID;
 import com.github.yuqingliu.extraenchants.enchantment.AbstractEnchantment;
 import com.github.yuqingliu.extraenchants.item.ItemImpl;
@@ -27,8 +24,8 @@ import com.github.yuqingliu.extraenchants.item.ItemImpl;
 public class CustomEnchantment extends AbstractEnchantment {
     private NamespacedKey key;
 
-    public CustomEnchantment(TextManager textManager, LoreManager loreManager, ColorManager colorManager, NameSpacedKeyManager keyManager, EnchantmentRepository enchantmentRepository, EnchantID id, Component name, Component description, int maxLevel, Set<Item> applicable, Set<EnchantID> conflicting, String requiredLevelFormula, String costFormula) {
-        super(textManager, loreManager, colorManager, keyManager, enchantmentRepository, id, name, description, maxLevel, applicable, conflicting, requiredLevelFormula, costFormula);
+    public CustomEnchantment(ManagerRepository managerRepository, EnchantmentRepository enchantmentRepository, EnchantID id, Component name, Component description, int maxLevel, Set<Item> applicable, Set<EnchantID> conflicting, String requiredLevelFormula, String costFormula) {
+        super(managerRepository, enchantmentRepository, id, name, description, maxLevel, applicable, conflicting, requiredLevelFormula, costFormula);
         this.key = keyManager.getEnchantKey(id);
     }
 
@@ -54,7 +51,7 @@ public class CustomEnchantment extends AbstractEnchantment {
             return true;
         }
         Item i = new ItemImpl(item);
-        Set<EnchantID> keySet = i.getEnchantments(enchantmentRepository).keySet().stream().map(enchant -> enchant.getId()).collect(Collectors.toSet());
+        Set<EnchantID> keySet = enchantmentRepository.getEnchantments(item).keySet().stream().map(enchant -> enchant.getId()).collect(Collectors.toSet());
         if (keySet.retainAll(conflicting) && keySet.size() > 0) {
             return false;
         }

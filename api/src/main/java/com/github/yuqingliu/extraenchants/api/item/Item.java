@@ -1,14 +1,11 @@
 package com.github.yuqingliu.extraenchants.api.item;
 
-import java.util.Map;
+import org.bukkit.Material;
 
-import org.bukkit.inventory.ItemStack;
-
-import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
-import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository;
+import net.kyori.adventure.text.Component;
 
 public interface Item {
-    ItemStack getItemStack();
-    Map<Enchantment, Integer> getEnchantments(EnchantmentRepository enchantmentRepository);
+    Material getMaterial();
+    Component getDisplayName();
 }
 

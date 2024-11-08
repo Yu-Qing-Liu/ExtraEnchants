@@ -4,6 +4,7 @@ import java.io.File;
 
 import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
 import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository;
+import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository.EnchantID;
 import com.github.yuqingliu.extraenchants.persistence.AbstractDatabase;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -12,7 +13,7 @@ import com.google.inject.Singleton;
 public class EnchantmentDatabase extends AbstractDatabase {
     private final EnchantmentRepository enchantmentRepository;
     private final File enchantmentDirectory = new File(rootDirectory, "enchantments/");
-    
+
     @Inject
     public EnchantmentDatabase(File rootDirectory, EnchantmentRepository enchantmentRepository) {
         super(rootDirectory);
@@ -20,27 +21,43 @@ public class EnchantmentDatabase extends AbstractDatabase {
     }
 
     @Override
-    public void initialize() {
+    public void postConstruct() {
         try {
             if (!enchantmentDirectory.exists()) {
                 enchantmentDirectory.mkdir();
             }
             File[] files = enchantmentDirectory.listFiles();
             if (files.length > 0) {
-                // Use this data
-                enchantmentRepository.getEnchantments().clear();
-                for(File enchantmentFile : files) {
-                    enchantmentRepository.getEnchantments().add(readObject(enchantmentFile, Enchantment.class));
+                // Update data
+                for (File enchantmentFile : files) {
+                    EnchantmentDTO data = readObject(enchantmentFile, EnchantmentDTO.class);
+                    EnchantID enchantID = data.getEnchantID();
+                    mergeData(data, enchantmentRepository.getEnchantment(enchantID));
                 }
             } else {
                 // Populate with defaults
                 enchantmentRepository.getEnchantments().forEach(enchant -> {
                     File enchantmentFile = new File(enchantmentDirectory, enchant.getId().name() + ".json");
-                    writeObject(enchantmentFile, enchant);
+                    EnchantmentDTO data = new EnchantmentDTO(enchant.getId(), enchant.getName(),
+                            enchant.getDescription(), enchant.getMaxLevel(), enchant.getApplicable(),
+                            enchant.getConflicting(), enchant.getRequiredLevelFormula(), enchant.getCostFormula(),
+                            enchant.getLeveledColors());
+                    writeObject(enchantmentFile, data);
                 });
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void mergeData(EnchantmentDTO data, Enchantment enchantment) {
+        enchantment.setName(data.getName());
+        enchantment.setDescription(data.getDescription());
+        enchantment.setMaxLevel(data.getMaxLevel());
+        enchantment.setApplicable(data.getApplicable());
+        enchantment.setConflicting(data.getConflicting());
+        enchantment.setRequiredLevelFormula(data.getRequiredLevelFormula());
+        enchantment.setCostFormula(data.getCostFormula());
+        enchantment.setLeveledColors(data.getLeveledColors());
     }
 }

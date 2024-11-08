@@ -13,6 +13,7 @@ import com.github.yuqingliu.extraenchants.api.managers.LoreManager;
 import com.github.yuqingliu.extraenchants.api.managers.NameSpacedKeyManager;
 import com.github.yuqingliu.extraenchants.api.managers.TextManager;
 import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository;
+import com.github.yuqingliu.extraenchants.api.repositories.ManagerRepository;
 import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository.EnchantID;
 import com.github.yuqingliu.extraenchants.lore.implementations.EnchantmentSection;
 import com.google.inject.Inject;
@@ -48,11 +49,11 @@ public abstract class AbstractEnchantment implements Enchantment {
     protected List<TextColor> leveledColors;
     
     @Inject
-    public AbstractEnchantment(TextManager textManager, LoreManager loreManager, ColorManager colorManager, NameSpacedKeyManager keyManager, EnchantmentRepository enchantmentRepository, EnchantID id, Component name, Component description, int maxLevel, Set<Item> applicable, Set<EnchantID> conflicting, String requiredLevelFormula, String costFormula) {
-        this.textManager = textManager;
-        this.loreManager = loreManager;
-        this.colorManager = colorManager;
-        this.keyManager = keyManager;
+    public AbstractEnchantment(ManagerRepository managerRepository, EnchantmentRepository enchantmentRepository, EnchantID id, Component name, Component description, int maxLevel, Set<Item> applicable, Set<EnchantID> conflicting, String requiredLevelFormula, String costFormula) {
+        this.textManager = managerRepository.getTextManager();
+        this.loreManager = managerRepository.getLoreManager();
+        this.colorManager = managerRepository.getColorManager();
+        this.keyManager = managerRepository.getKeyManager();
         this.enchantmentRepository = enchantmentRepository;
         this.name = name;
         this.id = id;
@@ -64,7 +65,7 @@ public abstract class AbstractEnchantment implements Enchantment {
         this.costFormula = costFormula;
         this.leveledColors = colorManager.generateMonochromaticGradient(this.name.color(), this.maxLevel);
     }
-    
+
     @Override
     public Component getDescription() {
         Pattern replace = Pattern.compile("(\\d+%?)");

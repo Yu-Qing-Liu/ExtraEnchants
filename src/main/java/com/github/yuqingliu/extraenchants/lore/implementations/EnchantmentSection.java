@@ -3,7 +3,7 @@ package com.github.yuqingliu.extraenchants.lore.implementations;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.yuqingliu.extraenchants.api.managers.TextManager;
+import com.github.yuqingliu.extraenchants.api.repositories.ManagerRepository;
 import com.github.yuqingliu.extraenchants.lore.AbstractLoreSection;
 import com.google.inject.Inject;
 
@@ -15,8 +15,8 @@ public class EnchantmentSection extends AbstractLoreSection {
     private int maxComponents = 3;
     
     @Inject
-    public EnchantmentSection(int position, TextManager textManager, int[] sectionSizes, List<Component> itemLore) {
-        super(position, textManager, sectionSizes, itemLore);
+    public EnchantmentSection(int position, ManagerRepository managerRepository, int[] sectionSizes, List<Component> itemLore) {
+        super(position, managerRepository, sectionSizes, itemLore);
         name = this.getClass().getSimpleName();
     }
     

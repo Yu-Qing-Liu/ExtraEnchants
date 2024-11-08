@@ -15,11 +15,8 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import com.github.yuqingliu.extraenchants.api.item.Item;
-import com.github.yuqingliu.extraenchants.api.managers.ColorManager;
-import com.github.yuqingliu.extraenchants.api.managers.LoreManager;
-import com.github.yuqingliu.extraenchants.api.managers.NameSpacedKeyManager;
-import com.github.yuqingliu.extraenchants.api.managers.TextManager;
 import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository;
+import com.github.yuqingliu.extraenchants.api.repositories.ManagerRepository;
 import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository.EnchantID;
 import com.github.yuqingliu.extraenchants.enchantment.AbstractEnchantment;
 import com.github.yuqingliu.extraenchants.item.ItemImpl;
@@ -30,8 +27,8 @@ public class AbilityEnchantment extends AbstractEnchantment {
     protected Duration cooldown;
     private NamespacedKey key;
 
-    public AbilityEnchantment(TextManager textManager, LoreManager loreManager, ColorManager colorManager, NameSpacedKeyManager keyManager, EnchantmentRepository enchantmentRepository, EnchantID id, Component name, Component description, int maxLevel, Set<Item> applicable, Set<EnchantID> conflicting, String requiredLevelFormula, String costFormula, Component action, Duration cooldown) {
-        super(textManager, loreManager, colorManager, keyManager, enchantmentRepository, id, name, description, maxLevel, applicable, conflicting, requiredLevelFormula, costFormula);
+    public AbilityEnchantment(ManagerRepository managerRepository, EnchantmentRepository enchantmentRepository, EnchantID id, Component name, Component description, int maxLevel, Set<Item> applicable, Set<EnchantID> conflicting, String requiredLevelFormula, String costFormula, Component action, Duration cooldown) {
+        super(managerRepository, enchantmentRepository, id, name, description, maxLevel, applicable, conflicting, requiredLevelFormula, costFormula);
         this.action = action;
         this.cooldown = cooldown;
         this.key = keyManager.getEnchantKey(id);
@@ -71,7 +68,7 @@ public class AbilityEnchantment extends AbstractEnchantment {
             return true;
         }
         Item i = new ItemImpl(item);
-        Set<EnchantID> keySet = i.getEnchantments(enchantmentRepository).keySet().stream().map(enchant -> enchant.getId()).collect(Collectors.toSet());
+        Set<EnchantID> keySet = enchantmentRepository.getEnchantments(item).keySet().stream().map(enchant -> enchant.getId()).collect(Collectors.toSet());
         if (keySet.retainAll(conflicting) && keySet.size() > 0) {
             return false;
         }

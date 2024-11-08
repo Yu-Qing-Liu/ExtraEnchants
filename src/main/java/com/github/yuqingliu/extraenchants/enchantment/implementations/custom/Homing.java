@@ -17,12 +17,9 @@ import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
 import com.github.yuqingliu.extraenchants.api.Scheduler;
-import com.github.yuqingliu.extraenchants.api.managers.ColorManager;
-import com.github.yuqingliu.extraenchants.api.managers.LoreManager;
-import com.github.yuqingliu.extraenchants.api.managers.NameSpacedKeyManager;
-import com.github.yuqingliu.extraenchants.api.managers.TextManager;
 import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository;
 import com.github.yuqingliu.extraenchants.api.repositories.ItemRepository;
+import com.github.yuqingliu.extraenchants.api.repositories.ManagerRepository;
 import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository.EnchantID;
 import com.github.yuqingliu.extraenchants.api.repositories.ItemRepository.ItemCategory;
 import com.github.yuqingliu.extraenchants.enchantment.implementations.CustomEnchantment;
@@ -32,9 +29,9 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class Homing extends CustomEnchantment {
-    public Homing(TextManager textManager, LoreManager loreManager, ColorManager colorManager, NameSpacedKeyManager keyManager, EnchantmentRepository enchantmentRepository, ItemRepository itemRepository, TextColor nameColor, TextColor descriptionColor) {
+    public Homing(ManagerRepository managerRepository, EnchantmentRepository enchantmentRepository, ItemRepository itemRepository, TextColor nameColor, TextColor descriptionColor) {
         super(
-            textManager, loreManager, colorManager, keyManager, enchantmentRepository,
+            managerRepository, enchantmentRepository,
             EnchantID.HOMING,
             Component.text("Homing", nameColor),
             Component.text("Guided Arrows", descriptionColor),

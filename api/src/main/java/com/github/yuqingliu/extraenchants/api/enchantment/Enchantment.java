@@ -30,6 +30,7 @@ public interface Enchantment extends Listener {
     void setName(Component name);
     void setDescription(Component description);
     void setApplicable(Set<Item> applicable);
+    void setConflicting(Set<EnchantID> conflicting);
     void setRequiredLevelFormula(String formula);
     void setCostFormula(String formula);
     void setMaxLevel(int level);

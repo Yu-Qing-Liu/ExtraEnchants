@@ -16,11 +16,8 @@ import org.bukkit.persistence.PersistentDataType;
 import net.kyori.adventure.text.Component;
 
 import com.github.yuqingliu.extraenchants.api.item.Item;
-import com.github.yuqingliu.extraenchants.api.managers.ColorManager;
-import com.github.yuqingliu.extraenchants.api.managers.LoreManager;
-import com.github.yuqingliu.extraenchants.api.managers.NameSpacedKeyManager;
-import com.github.yuqingliu.extraenchants.api.managers.TextManager;
 import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository;
+import com.github.yuqingliu.extraenchants.api.repositories.ManagerRepository;
 import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository.EnchantID;
 import com.github.yuqingliu.extraenchants.enchantment.AbstractEnchantment;
 import com.github.yuqingliu.extraenchants.item.ItemImpl;
@@ -29,8 +26,8 @@ public class VanillaEnchantment extends AbstractEnchantment {
     private Enchantment enchantment;
     private NamespacedKey key;
 
-    public VanillaEnchantment(TextManager textManager, LoreManager loreManager, ColorManager colorManager, NameSpacedKeyManager keyManager, EnchantmentRepository enchantmentRepository, EnchantID id, Component name, Component description, int maxLevel, Set<Item> applicable, Set<EnchantID> conflicting, String requiredLevelFormula, String costFormula, Enchantment enchantment) {
-        super(textManager, loreManager, colorManager, keyManager, enchantmentRepository, id, name, description, maxLevel, applicable, conflicting, requiredLevelFormula, costFormula);
+    public VanillaEnchantment(ManagerRepository managerRepository, EnchantmentRepository enchantmentRepository, EnchantID id, Component name, Component description, int maxLevel, Set<Item> applicable, Set<EnchantID> conflicting, String requiredLevelFormula, String costFormula, Enchantment enchantment) {
+        super(managerRepository, enchantmentRepository, id, name, description, maxLevel, applicable, conflicting, requiredLevelFormula, costFormula);
         this.enchantment = enchantment;
         this.key = keyManager.getEnchantKey(id);
     }
@@ -54,9 +51,9 @@ public class VanillaEnchantment extends AbstractEnchantment {
         }
         if(item.getType() == Material.BOOK || item.getType() == Material.ENCHANTED_BOOK) {
             return true;
-        } 
+        }
         Item i = new ItemImpl(item);
-        Set<EnchantID> keySet = i.getEnchantments(enchantmentRepository).keySet().stream().map(enchant -> enchant.getId()).collect(Collectors.toSet());
+        Set<EnchantID> keySet = enchantmentRepository.getEnchantments(item).keySet().stream().map(enchant -> enchant.getId()).collect(Collectors.toSet());
         if (keySet.retainAll(conflicting) && keySet.size() > 0) {
             return false;
         }
