@@ -1,19 +1,7 @@
 package com.github.yuqingliu.extraenchants.enchantment.implementations.custom;
 
-import java.time.Duration;
 import java.util.HashSet;
 
-import org.bukkit.Color;
-import org.bukkit.Particle;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.scheduler.BukkitTask;
-
-import com.github.yuqingliu.extraenchants.api.Scheduler;
 import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository;
 import com.github.yuqingliu.extraenchants.api.repositories.ItemRepository;
 import com.github.yuqingliu.extraenchants.api.repositories.ManagerRepository;
@@ -30,7 +18,7 @@ public class LifeSteal extends CustomEnchantment {
             managerRepository, enchantmentRepository,
             EnchantID.LIFESTEAL,
             Component.text("Life Steal", nameColor),
-            Component.text("", descriptionColor),
+            Component.text("Steals 1% of the victim's total health per level", descriptionColor),
             2,
             itemRepository.getItems().get(ItemCategory.MELEE),
             new HashSet<>(),
