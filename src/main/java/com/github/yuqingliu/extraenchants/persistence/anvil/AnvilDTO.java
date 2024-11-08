@@ -13,10 +13,14 @@ import lombok.Getter;
 @Getter
 public class AnvilDTO {
     @JsonDeserialize(contentAs = ItemImpl.class)
-    private final Map<Item, Set<Item>> anvilCombinations;
+    private final Item item;
+    @JsonDeserialize(contentAs = ItemImpl.class)
+    private final Set<Item> combinable;
 
     public AnvilDTO(
-        @JsonProperty("anvilCombinations") Map<Item, Set<Item>> anvilCombinations) {
-        this.anvilCombinations = anvilCombinations;
+        @JsonProperty("item") Item item,
+        @JsonProperty("combinable") Set<Item> combinable) {
+        this.item = item;
+        this.combinable = combinable;
     }
 }

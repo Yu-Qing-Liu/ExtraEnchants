@@ -9,10 +9,11 @@ import com.github.yuqingliu.extraenchants.api.repositories.AnvilRepository;
 import com.github.yuqingliu.extraenchants.persistence.AbstractDatabase;
 import com.google.inject.Inject;
 
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+
 public class AnvilDatabase extends AbstractDatabase {
     private final AnvilRepository anvilRepository;
     private final File anvilDirectory = new File(rootDirectory, "anvilcombinations/");
-    private final File anvilFile = new File(anvilDirectory, "ANVILDATA.json");
     
     @Inject
     public AnvilDatabase(File rootDirectory, AnvilRepository anvilRepository) {
@@ -29,19 +30,22 @@ public class AnvilDatabase extends AbstractDatabase {
             File[] files = anvilDirectory.listFiles();
             if (files.length > 0) {
                 // Update data
-                AnvilDTO data = readObject(anvilFile, AnvilDTO.class);
-                mergeData(data, anvilRepository.getAnvilCombinations());
+                for(File anvilFile : files) {
+                    AnvilDTO data = readObject(anvilFile, AnvilDTO.class);
+                    Item key = data.getItem();
+                    Set<Item> value = data.getCombinable();
+                    anvilRepository.getAnvilCombinations().put(key, value);
+                }
             } else {
                 // Populate with defaults
-                AnvilDTO data = new AnvilDTO(anvilRepository.getAnvilCombinations());
-                writeObject(anvilFile, data);
+                for(Map.Entry<Item, Set<Item>> entry : anvilRepository.getAnvilCombinations().entrySet()) {
+                    File anvilFile = new File(anvilDirectory, PlainTextComponentSerializer.plainText().serialize(entry.getKey().getDisplayName()) + ".json");
+                    AnvilDTO data = new AnvilDTO(entry.getKey(), entry.getValue());
+                    writeObject(anvilFile, data);
+                }   
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    private void mergeData(AnvilDTO data, Map<Item, Set<Item>> anvilCombinations) {
-        anvilCombinations.putAll(data.getAnvilCombinations());
     }
 }
