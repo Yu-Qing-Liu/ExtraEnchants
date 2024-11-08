@@ -1,10 +1,14 @@
 package com.github.yuqingliu.extraenchants.enchantment.implementations.ability;
 
 import java.time.Duration;
-import java.util.ArrayList;
+import java.util.HashSet;
 
+import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository;
+import com.github.yuqingliu.extraenchants.api.repositories.ItemRepository;
+import com.github.yuqingliu.extraenchants.api.repositories.ManagerRepository;
+import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository.EnchantID;
+import com.github.yuqingliu.extraenchants.api.repositories.ItemRepository.ItemCategory;
 import com.github.yuqingliu.extraenchants.enchantment.implementations.AbilityEnchantment;
-import com.github.yuqingliu.extraenchants.api.item.ApplicableItemsRegistry;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -12,16 +16,24 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 
 public class SonicBoom extends AbilityEnchantment {
-    public SonicBoom(TextColor nameColor, TextColor descriptionColor, ApplicableItemsRegistry registry) {
+    public SonicBoom(ManagerRepository managerRepository, EnchantmentRepository enchantmentRepository, ItemRepository itemRepository, TextColor nameColor, TextColor descriptionColor) {
         super(
-            Component.text(" Right Click", NamedTextColor.YELLOW).decorate(TextDecoration.BOLD),
+            managerRepository, enchantmentRepository,
+            EnchantID.SONIC_BOOM,
             Component.text("Sonic Boom", nameColor),
-            1,
             Component.text("Warden's Ability", descriptionColor),
-            registry.getMeleeApplicable(),
-            new ArrayList<>(),
+            1,
+            itemRepository.getItems().get(ItemCategory.SWORD),
+            new HashSet<>(),
             "x^2",
-            "x"
+            "x",
+            Component.text(" Right Click", NamedTextColor.YELLOW).decorate(TextDecoration.BOLD),
+            Duration.ofSeconds(10)
         );
+    }
+
+    @Override
+    public void postConstruct() {
+        eventManager.registerEvent(this);
     }
 }
