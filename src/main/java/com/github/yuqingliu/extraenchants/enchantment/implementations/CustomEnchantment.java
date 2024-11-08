@@ -20,8 +20,7 @@ import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository
 import com.github.yuqingliu.extraenchants.enchantment.AbstractEnchantment;
 import com.github.yuqingliu.extraenchants.item.ItemImpl;
 
-
-public class CustomEnchantment extends AbstractEnchantment {
+public abstract class CustomEnchantment extends AbstractEnchantment {
     private NamespacedKey key;
 
     public CustomEnchantment(ManagerRepository managerRepository, EnchantmentRepository enchantmentRepository, EnchantID id, Component name, Component description, int maxLevel, Set<Item> applicable, Set<EnchantID> conflicting, String requiredLevelFormula, String costFormula) {

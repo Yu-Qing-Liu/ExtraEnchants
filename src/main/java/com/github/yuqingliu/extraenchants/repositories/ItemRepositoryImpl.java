@@ -48,6 +48,7 @@ public class ItemRepositoryImpl implements ItemRepository {
             )
         );
 
+        // Ranged Weapons (Bow & Crossbow)
         items.put(ItemCategory.RANGED,
             Set.of(
                 new ItemImpl(new ItemStack(Material.BOW)),
@@ -58,6 +59,27 @@ public class ItemRepositoryImpl implements ItemRepository {
         // Melee Weapons (Sword & Axe & Mace)
         items.put(ItemCategory.MELEE, 
             Set.of(
+                new ItemImpl(new ItemStack(Material.WOODEN_SWORD)),
+                new ItemImpl(new ItemStack(Material.STONE_SWORD)),
+                new ItemImpl(new ItemStack(Material.IRON_SWORD)),
+                new ItemImpl(new ItemStack(Material.GOLDEN_SWORD)),
+                new ItemImpl(new ItemStack(Material.DIAMOND_SWORD)),
+                new ItemImpl(new ItemStack(Material.NETHERITE_SWORD)),
+                new ItemImpl(new ItemStack(Material.WOODEN_AXE)),
+                new ItemImpl(new ItemStack(Material.STONE_AXE)),
+                new ItemImpl(new ItemStack(Material.IRON_AXE)),
+                new ItemImpl(new ItemStack(Material.GOLDEN_AXE)),
+                new ItemImpl(new ItemStack(Material.DIAMOND_AXE)),
+                new ItemImpl(new ItemStack(Material.NETHERITE_AXE)),
+                new ItemImpl(new ItemStack(Material.MACE))
+            )
+        );
+
+        // All Weapons
+        items.put(ItemCategory.WEAPON,
+            Set.of(
+                new ItemImpl(new ItemStack(Material.BOW)),
+                new ItemImpl(new ItemStack(Material.CROSSBOW)),
                 new ItemImpl(new ItemStack(Material.WOODEN_SWORD)),
                 new ItemImpl(new ItemStack(Material.STONE_SWORD)),
                 new ItemImpl(new ItemStack(Material.IRON_SWORD)),

@@ -5,10 +5,12 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
 import com.github.yuqingliu.extraenchants.api.item.Item;
 import com.github.yuqingliu.extraenchants.api.managers.ColorManager;
+import com.github.yuqingliu.extraenchants.api.managers.EventManager;
 import com.github.yuqingliu.extraenchants.api.managers.LoreManager;
 import com.github.yuqingliu.extraenchants.api.managers.NameSpacedKeyManager;
 import com.github.yuqingliu.extraenchants.api.managers.TextManager;
@@ -35,6 +37,8 @@ public abstract class AbstractEnchantment implements Enchantment {
     protected final ColorManager colorManager;
     protected final NameSpacedKeyManager keyManager;
     protected final EnchantmentRepository enchantmentRepository;
+    protected final EventManager eventManager;
+    protected final JavaPlugin plugin;
 
     @EqualsAndHashCode.Include
     protected final EnchantID id;
@@ -54,6 +58,8 @@ public abstract class AbstractEnchantment implements Enchantment {
         this.loreManager = managerRepository.getLoreManager();
         this.colorManager = managerRepository.getColorManager();
         this.keyManager = managerRepository.getKeyManager();
+        this.eventManager = managerRepository.getEventManager();
+        this.plugin = managerRepository.getPlugin();
         this.enchantmentRepository = enchantmentRepository;
         this.name = name;
         this.id = id;
@@ -138,6 +144,9 @@ public abstract class AbstractEnchantment implements Enchantment {
     
     @Override
     public abstract ItemStack removeEnchantment(ItemStack item);
+
+    @Override
+    public abstract void postConstruct();
 
     @Override
     public boolean conflictsWith(EnchantID id) {

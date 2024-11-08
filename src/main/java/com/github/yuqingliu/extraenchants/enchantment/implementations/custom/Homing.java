@@ -42,6 +42,11 @@ public class Homing extends CustomEnchantment {
             "x"
         );
     }
+
+    @Override
+    public void postConstruct() {
+        eventManager.registerEvent(this);   
+    }
     
     @EventHandler
     public void onBowShoot(EntityShootBowEvent event) {

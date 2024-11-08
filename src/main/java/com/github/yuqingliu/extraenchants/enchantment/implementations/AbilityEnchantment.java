@@ -22,7 +22,7 @@ import com.github.yuqingliu.extraenchants.enchantment.AbstractEnchantment;
 import com.github.yuqingliu.extraenchants.item.ItemImpl;
 import com.github.yuqingliu.extraenchants.lore.implementations.AbilitySection;
 
-public class AbilityEnchantment extends AbstractEnchantment {
+public abstract class AbilityEnchantment extends AbstractEnchantment {
     private Component action;
     protected Duration cooldown;
     private NamespacedKey key;

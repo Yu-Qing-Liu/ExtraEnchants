@@ -12,8 +12,7 @@ import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
 import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository;
 import com.github.yuqingliu.extraenchants.api.repositories.ItemRepository;
 import com.github.yuqingliu.extraenchants.api.repositories.ManagerRepository;
-import com.github.yuqingliu.extraenchants.enchantment.implementations.custom.Homing;
-import com.github.yuqingliu.extraenchants.item.ItemImpl;
+import com.github.yuqingliu.extraenchants.enchantment.implementations.custom.*;
 import com.google.inject.Singleton;
 
 import lombok.Getter;
@@ -34,10 +33,22 @@ public class EnchantmentRepositoryImpl implements EnchantmentRepository {
         this.itemRepository = itemRepository;
         this.managerRepository = managerRepository;
         initialize();
+        postConstruct();
     }
 
     private void initialize() {
+        // Vanilla enchants
+        // Custom enchants
+        enchantments.add(new AutoLooting(managerRepository, this, itemRepository, custom, descriptionColor));
+        enchantments.add(new Delicate(managerRepository, this, itemRepository, custom, descriptionColor));
+        enchantments.add(new Growth(managerRepository, this, itemRepository, custom, descriptionColor));
         enchantments.add(new Homing(managerRepository, this, itemRepository, custom, descriptionColor));
+        enchantments.add(new Immolate(managerRepository, this, itemRepository, custom, descriptionColor));
+        // Ability enchants
+    }
+
+    private void postConstruct() {
+        enchantments.forEach(enchant -> enchant.postConstruct());
     }
 
     @Override

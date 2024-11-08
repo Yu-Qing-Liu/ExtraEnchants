@@ -14,6 +14,7 @@ import lombok.Getter;
 @Getter
 @Singleton
 public class ManagerRepositoryImpl implements ManagerRepository {
+    private final JavaPlugin plugin;
     private final EventManager eventManager;
     private final CommandManager commandManager;
     private final InventoryManager inventoryManager;
@@ -26,6 +27,7 @@ public class ManagerRepositoryImpl implements ManagerRepository {
     
     @Inject
     public ManagerRepositoryImpl(JavaPlugin plugin, Logger logger) {
+        this.plugin = plugin;
         this.mathManager = new MathManagerImpl();
         this.soundManager = new SoundManagerImpl();
         this.commandManager = new CommandManagerImpl(plugin, logger);

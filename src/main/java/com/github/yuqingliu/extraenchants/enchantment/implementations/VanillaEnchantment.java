@@ -22,7 +22,7 @@ import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository
 import com.github.yuqingliu.extraenchants.enchantment.AbstractEnchantment;
 import com.github.yuqingliu.extraenchants.item.ItemImpl;
 
-public class VanillaEnchantment extends AbstractEnchantment {
+public abstract class VanillaEnchantment extends AbstractEnchantment {
     private Enchantment enchantment;
     private NamespacedKey key;
 

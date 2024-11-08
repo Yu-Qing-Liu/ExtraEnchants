@@ -39,4 +39,5 @@ public interface Enchantment extends Listener {
     boolean conflictsWith(EnchantID id);
     ItemStack applyEnchantment(ItemStack item, int level);
     ItemStack removeEnchantment(ItemStack item);
+    void postConstruct();
 }
