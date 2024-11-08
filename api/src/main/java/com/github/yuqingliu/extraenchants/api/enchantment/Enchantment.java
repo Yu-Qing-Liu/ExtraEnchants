@@ -1,5 +1,6 @@
 package com.github.yuqingliu.extraenchants.api.enchantment;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Set;
 
@@ -21,6 +22,7 @@ public interface Enchantment extends Listener {
     List<TextColor> getLeveledColors();
     int getMaxLevel();
     Component getDescription();
+    Duration getCooldown();
     Set<Item> getApplicable();
     String getRequiredLevelFormula();
     String getCostFormula();
@@ -29,6 +31,7 @@ public interface Enchantment extends Listener {
     Set<EnchantID> getConflicting();
     void setName(Component name);
     void setDescription(Component description);
+    void setCooldown(Duration cooldown);
     void setApplicable(Set<Item> applicable);
     void setConflicting(Set<EnchantID> conflicting);
     void setRequiredLevelFormula(String formula);

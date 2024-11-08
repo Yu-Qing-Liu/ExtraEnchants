@@ -1,5 +1,6 @@
 package com.github.yuqingliu.extraenchants.persistence.enchantments;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Set;
 
@@ -19,6 +20,7 @@ public class EnchantmentDTO {
     private EnchantID enchantID;
     private Component name;
     private Component description;
+    private Duration cooldown;
     private int maxLevel;
 
     @JsonDeserialize(contentAs = ItemImpl.class)
@@ -34,6 +36,7 @@ public class EnchantmentDTO {
             @JsonProperty("enchantID") EnchantID enchantID,
             @JsonProperty("name") Component name,
             @JsonProperty("description") Component description,
+            @JsonProperty("cooldown") Duration cooldown,
             @JsonProperty("maxLevel") int maxLevel,
             @JsonProperty("applicable") Set<Item> applicable,
             @JsonProperty("conflicting") Set<EnchantID> conflicting,
@@ -43,6 +46,7 @@ public class EnchantmentDTO {
         this.enchantID = enchantID;
         this.name = name;
         this.description = description;
+        this.cooldown = cooldown;
         this.maxLevel = maxLevel;
         this.applicable = applicable;
         this.conflicting = conflicting;

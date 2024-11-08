@@ -1,5 +1,6 @@
 package com.github.yuqingliu.extraenchants.enchantment;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -45,6 +46,7 @@ public abstract class AbstractEnchantment implements Enchantment {
 
     protected Component name;
     protected Component description;
+    protected Duration cooldown;
     protected int maxLevel;
     protected Set<Item> applicable;
     protected Set<EnchantID> conflicting;

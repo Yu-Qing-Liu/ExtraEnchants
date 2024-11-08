@@ -5,6 +5,7 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.github.yuqingliu.extraenchants.api.logger.Logger;
 import com.github.yuqingliu.extraenchants.api.persistence.Database;
+import com.github.yuqingliu.extraenchants.persistence.anvil.AnvilDatabase;
 import com.github.yuqingliu.extraenchants.persistence.enchantments.EnchantmentDatabase;
 import com.github.yuqingliu.extraenchants.logger.LoggerImpl;
 import com.github.yuqingliu.extraenchants.api.repositories.*;
@@ -50,6 +51,12 @@ public class PluginModule extends AbstractModule {
 
     @Provides
     @Singleton
+    public AnvilRepository provideAnvilRepository() {
+        return new AnvilRepositoryImpl();
+    }
+
+    @Provides
+    @Singleton
     public ManagerRepository provideManagerRepository(Logger logger) {
         return new ManagerRepositoryImpl(plugin, logger);
     }
@@ -59,6 +66,12 @@ public class PluginModule extends AbstractModule {
     @Singleton
     public Database provideEnchantmentDatabase(EnchantmentRepository enchantmentRepository) {
         return new EnchantmentDatabase(plugin.getDataFolder(), enchantmentRepository);
+    }
+
+    @Provides
+    @Singleton
+    public Database provideAnvilDatabase(AnvilRepository anvilRepository) {
+        return new AnvilDatabase(plugin.getDataFolder(), anvilRepository);
     }
 }
 

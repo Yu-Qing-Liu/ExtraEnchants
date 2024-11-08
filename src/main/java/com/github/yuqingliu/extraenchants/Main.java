@@ -5,6 +5,7 @@ import com.github.yuqingliu.extraenchants.api.logger.Logger;
 import com.github.yuqingliu.extraenchants.api.persistence.Database;
 import com.github.yuqingliu.extraenchants.api.repositories.*;
 import com.github.yuqingliu.extraenchants.modules.PluginModule;
+import com.github.yuqingliu.extraenchants.persistence.anvil.AnvilDatabase;
 import com.github.yuqingliu.extraenchants.persistence.enchantments.EnchantmentDatabase;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -22,6 +23,7 @@ public class Main extends ExtraEnchants {
     private ManagerRepository managerRepository;
 
     private Database enchantmentDatabase;
+    private Database anvilDatabase;
 
     @Override
     public void onEnable() {
@@ -32,11 +34,13 @@ public class Main extends ExtraEnchants {
         enchantmentRepository = injector.getInstance(EnchantmentRepository.class);
         itemRepository = injector.getInstance(ItemRepository.class);
         enchantmentDatabase = injector.getInstance(EnchantmentDatabase.class);
+        anvilDatabase = injector.getInstance(AnvilDatabase.class);
         postConstruct();
     }
 
     private void postConstruct() {
         enchantmentDatabase.postConstruct();
+        anvilDatabase.postConstruct();
         managerRepository.getInventoryManager().postConstruct(managerRepository, enchantmentRepository);
     }
 }

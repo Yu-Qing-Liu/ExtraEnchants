@@ -39,7 +39,7 @@ public class EnchantmentDatabase extends AbstractDatabase {
                 enchantmentRepository.getEnchantments().forEach(enchant -> {
                     File enchantmentFile = new File(enchantmentDirectory, enchant.getId().name() + ".json");
                     EnchantmentDTO data = new EnchantmentDTO(enchant.getId(), enchant.getName(),
-                            enchant.getDescription(), enchant.getMaxLevel(), enchant.getApplicable(),
+                            enchant.getDescription(), enchant.getCooldown(), enchant.getMaxLevel(), enchant.getApplicable(),
                             enchant.getConflicting(), enchant.getRequiredLevelFormula(), enchant.getCostFormula(),
                             enchant.getLeveledColors());
                     writeObject(enchantmentFile, data);
@@ -53,6 +53,7 @@ public class EnchantmentDatabase extends AbstractDatabase {
     private void mergeData(EnchantmentDTO data, Enchantment enchantment) {
         enchantment.setName(data.getName());
         enchantment.setDescription(data.getDescription());
+        enchantment.setCooldown(data.getCooldown());
         enchantment.setMaxLevel(data.getMaxLevel());
         enchantment.setApplicable(data.getApplicable());
         enchantment.setConflicting(data.getConflicting());

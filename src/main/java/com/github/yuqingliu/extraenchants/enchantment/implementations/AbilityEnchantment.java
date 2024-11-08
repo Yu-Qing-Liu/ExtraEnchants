@@ -24,13 +24,12 @@ import com.github.yuqingliu.extraenchants.lore.implementations.AbilitySection;
 
 public abstract class AbilityEnchantment extends AbstractEnchantment {
     private Component action;
-    protected Duration cooldown;
     private NamespacedKey key;
 
     public AbilityEnchantment(ManagerRepository managerRepository, EnchantmentRepository enchantmentRepository, EnchantID id, Component name, Component description, int maxLevel, Set<Item> applicable, Set<EnchantID> conflicting, String requiredLevelFormula, String costFormula, Component action, Duration cooldown) {
         super(managerRepository, enchantmentRepository, id, name, description, maxLevel, applicable, conflicting, requiredLevelFormula, costFormula);
         this.action = action;
-        this.cooldown = cooldown;
+        super.cooldown = cooldown;
         this.key = keyManager.getEnchantKey(id);
     }
 
