@@ -8,7 +8,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.yuqingliu.extraenchants.api.managers.EventManager;
-import com.github.yuqingliu.extraenchants.api.managers.InventoryManager;
 import com.github.yuqingliu.extraenchants.api.repositories.ManagerRepository;
 import com.github.yuqingliu.extraenchants.events.PlayerInteractsWithEnchantingTable;
 import com.google.inject.Inject;
@@ -18,21 +17,19 @@ import com.google.inject.Singleton;
 public class EventManagerImpl implements EventManager {
     private Map<String, Listener> listeners = new HashMap<>();
     private final JavaPlugin plugin;
-    private final InventoryManager inventoryManager;
     
     @Inject
-    public EventManagerImpl(JavaPlugin plugin, ManagerRepository managerRepository) {
+    public EventManagerImpl(JavaPlugin plugin) {
         this.plugin = plugin;
-        this.inventoryManager = managerRepository.getInventoryManager();
-        initializeListeners();
+    }
+
+    @Override
+    public void postConstruct(ManagerRepository managerRepository) {
+        listeners.put(PlayerInteractsWithEnchantingTable.class.getSimpleName(), new PlayerInteractsWithEnchantingTable(managerRepository.getInventoryManager()));
         registerEvents();
     }
 
-    private void initializeListeners() {
-        listeners.put(PlayerInteractsWithEnchantingTable.class.getSimpleName(), new PlayerInteractsWithEnchantingTable(inventoryManager));
-    }
-    
-    public void registerEvents() {
+    private void registerEvents() {
         for(Listener listener : listeners.values()) {
             registerEvent(listener);
         }

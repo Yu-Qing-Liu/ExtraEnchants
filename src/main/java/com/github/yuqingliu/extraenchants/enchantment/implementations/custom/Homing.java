@@ -82,7 +82,7 @@ public class Homing extends CustomEnchantment {
 
     private void setHomingArrow(Player player, Arrow arrow) {
         arrow.setGravity(false);
-        Scheduler.runTimerAsync(task -> {
+        Scheduler.runTimer(task -> {
             if (!arrow.isValid() || arrow.isOnGround()) {
                 task.cancel();
                 return;

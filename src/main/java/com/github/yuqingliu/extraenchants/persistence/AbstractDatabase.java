@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.yuqingliu.extraenchants.api.persistence.Database;
 
 import net.kyori.adventure.text.Component;
@@ -67,6 +68,7 @@ public abstract class AbstractDatabase implements Database {
         module.addSerializer(TextColor.class, new TextColorSerializer());
         module.addDeserializer(TextColor.class, new TextColorDeserializer());
         objectMapper.registerModule(module);
+        objectMapper.registerModule(new JavaTimeModule());
     }
 
     public <T> void writeObjects(File file, List<T> objects) {

@@ -15,6 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.github.yuqingliu.extraenchants.api.lore.LoreSection;
 import com.github.yuqingliu.extraenchants.api.managers.LoreManager;
 import com.github.yuqingliu.extraenchants.api.managers.NameSpacedKeyManager;
+import com.github.yuqingliu.extraenchants.api.managers.TextManager;
 import com.github.yuqingliu.extraenchants.api.repositories.ManagerRepository;
 import com.github.yuqingliu.extraenchants.lore.implementations.AbilitySection;
 import com.github.yuqingliu.extraenchants.lore.implementations.EnchantmentSection;
@@ -23,24 +24,26 @@ import com.google.inject.Inject;
 import net.kyori.adventure.text.Component;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 public class LoreManagerImpl implements LoreManager {
-    private JavaPlugin plugin;
-    private final ManagerRepository managerRepository;
+    private final JavaPlugin plugin;
+    private final TextManager textManager;
     private List<Component> lore = new ArrayList<>();
     private final Component seperator = Component.empty();
     private final NamespacedKey loreKey;
     
     @Inject
-    public LoreManagerImpl(ManagerRepository managerRepository, NameSpacedKeyManager keyManager) {
-        this.managerRepository = managerRepository;
+    public LoreManagerImpl(JavaPlugin plugin, TextManager textManager, NameSpacedKeyManager keyManager) {
+        this.plugin = plugin;
+        this.textManager = textManager;
         this.loreKey = keyManager.getLoreKey();
     }
-
+    
     private Map<String, LoreSection> initializeSections(int[] sectionSizes, List<Component> itemLore) {
         Map<String, LoreSection> loreMap = new LinkedHashMap<>();
-        loreMap.put(EnchantmentSection.class.getSimpleName(), new EnchantmentSection(1, managerRepository, sectionSizes, itemLore));
+        loreMap.put(EnchantmentSection.class.getSimpleName(), new EnchantmentSection(1, textManager, sectionSizes, itemLore));
         loreMap.put(AbilitySection.class.getSimpleName(), new AbilitySection(2, sectionSizes, itemLore));
         return loreMap;
     }

@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.github.yuqingliu.extraenchants.api.lore.LoreSection;
 import com.github.yuqingliu.extraenchants.api.managers.TextManager;
-import com.github.yuqingliu.extraenchants.api.repositories.ManagerRepository;
 import com.google.inject.Inject;
 
 import lombok.Getter;
@@ -21,8 +20,8 @@ public abstract class AbstractLoreSection implements LoreSection {
     protected Component seperator = Component.empty();
     
     @Inject
-    public AbstractLoreSection(int position, ManagerRepository managerRepository, int[] sectionSizes, List<Component> itemLore) {
-        this.textManager = managerRepository.getTextManager();
+    public AbstractLoreSection(int position, TextManager textManager, int[] sectionSizes, List<Component> itemLore) {
+        this.textManager = textManager;
         this.position = position;
         this.itemLore = itemLore;
         this.sectionSizes = sectionSizes;

@@ -1,6 +1,5 @@
 package com.github.yuqingliu.extraenchants.persistence.anvil;
 
-import java.util.Map;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -12,7 +11,7 @@ import lombok.Getter;
 
 @Getter
 public class AnvilDTO {
-    @JsonDeserialize(contentAs = ItemImpl.class)
+    @JsonDeserialize(as = ItemImpl.class)
     private final Item item;
     @JsonDeserialize(contentAs = ItemImpl.class)
     private final Set<Item> combinable;

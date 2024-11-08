@@ -113,7 +113,7 @@ public class Focus extends AbilityEnchantment {
     }
 
     private void startBeamTask(Player player, Entity target) {
-        Scheduler.runTimerAsync(task -> {
+        Scheduler.runTimer(task -> {
             if (!target.isValid() || target.isDead()) {
                 task.cancel();
                 return;

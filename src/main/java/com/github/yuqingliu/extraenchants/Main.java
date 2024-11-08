@@ -30,17 +30,22 @@ public class Main extends ExtraEnchants {
         injector = Guice.createInjector(new PluginModule(this));
         injector.injectMembers(this);
         extraenchantsLogger = injector.getInstance(Logger.class);
+
         managerRepository = injector.getInstance(ManagerRepository.class);
         enchantmentRepository = injector.getInstance(EnchantmentRepository.class);
         itemRepository = injector.getInstance(ItemRepository.class);
+
         enchantmentDatabase = injector.getInstance(EnchantmentDatabase.class);
         anvilDatabase = injector.getInstance(AnvilDatabase.class);
+
         postConstruct();
     }
 
     private void postConstruct() {
         enchantmentDatabase.postConstruct();
         anvilDatabase.postConstruct();
+
+        managerRepository.getEventManager().postConstruct(managerRepository);
         managerRepository.getInventoryManager().postConstruct(managerRepository, enchantmentRepository);
     }
 }

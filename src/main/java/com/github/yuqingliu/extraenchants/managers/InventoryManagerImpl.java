@@ -4,10 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.github.yuqingliu.extraenchants.api.logger.Logger;
-import com.github.yuqingliu.extraenchants.api.managers.EventManager;
 import com.github.yuqingliu.extraenchants.api.managers.InventoryManager;
-import com.github.yuqingliu.extraenchants.api.managers.MathManager;
-import com.github.yuqingliu.extraenchants.api.managers.SoundManager;
 import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository;
 import com.github.yuqingliu.extraenchants.api.repositories.ManagerRepository;
 import com.github.yuqingliu.extraenchants.api.view.PlayerInventory;
