@@ -21,26 +21,21 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 @Singleton
 public class InventoryManagerImpl implements InventoryManager {
-    private final SoundManager soundManager;
     private final Logger logger;
-    private final MathManager mathManager;
     private Map<String, AbstractPlayerInventory> inventories = new HashMap<>();
     
     @Inject
     public InventoryManagerImpl(ManagerRepository managerRepository, Logger logger) {
-        this.mathManager = managerRepository.getMathManager();
-        this.soundManager = managerRepository.getSoundManager();
         this.logger = logger;
     }
     
     @Override
-    public void postConstruct(EventManager eventManager, EnchantmentRepository enchantmentRepository) {
+    public void postConstruct(ManagerRepository managerRepository, EnchantmentRepository enchantmentRepository) {
         inventories.put(
             EnchantMenu.class.getSimpleName(),
             new EnchantMenu(
-                eventManager, mathManager, soundManager, logger,
-                Component.text("Enchanting Table", NamedTextColor.DARK_PURPLE),
-                enchantmentRepository
+                managerRepository, enchantmentRepository, logger,
+                Component.text("Enchanting Table", NamedTextColor.DARK_PURPLE)
             )
         );       
     }

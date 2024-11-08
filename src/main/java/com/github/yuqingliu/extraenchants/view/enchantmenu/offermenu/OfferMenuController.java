@@ -97,9 +97,9 @@ public class OfferMenuController {
         Enchantment selectedEnchantment = selectedEnchantments.get(player);
         Queue<EnchantmentOffer> offers = new ArrayDeque<>();
         for (int i = 1; i <= selectedEnchantment.getMaxLevel(); i++) {
-            int requiredLevel = enchantMenu.getMathManager().evaluateExpression(selectedEnchantment.getRequiredLevelFormula(), i);
-            int cost = enchantMenu.getMathManager().evaluateExpression(selectedEnchantment.getCostFormula(), i);
-            EnchantmentOffer offer = new EnchantmentOffer(enchantMenu.getSoundManager(), selectedEnchantment, i, requiredLevel, cost);
+            int requiredLevel = enchantMenu.getManagerRepository(). getMathManager().evaluateExpression(selectedEnchantment.getRequiredLevelFormula(), i);
+            int cost = enchantMenu.getManagerRepository().getMathManager().evaluateExpression(selectedEnchantment.getCostFormula(), i);
+            EnchantmentOffer offer = new EnchantmentOffer(enchantMenu.getManagerRepository().getSoundManager(), selectedEnchantment, i, requiredLevel, cost);
             offers.offer(offer);
         }
         int maxPages = (int) Math.ceil((double) offers.size() / (double) enchantOptionsSize);

@@ -1,6 +1,5 @@
 package com.github.yuqingliu.extraenchants.view.enchantmenu.offermenu;
 
-import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -11,12 +10,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import com.github.yuqingliu.extraenchants.api.Scheduler;
 import com.github.yuqingliu.extraenchants.enchantment.EnchantmentOffer;
 import com.github.yuqingliu.extraenchants.view.enchantmenu.EnchantMenu;
 import com.github.yuqingliu.extraenchants.view.enchantmenu.EnchantMenu.MenuType;
@@ -31,7 +28,7 @@ public class OfferMenu implements Listener {
     public OfferMenu(EnchantMenu enchantMenu) {
         this.enchantMenu = enchantMenu;
         this.controller = new OfferMenuController(enchantMenu);
-        enchantMenu.getEventManager().registerEvent(this);
+        enchantMenu.getManagerRepository().getEventManager().registerEvent(this);
     }
 
     @EventHandler

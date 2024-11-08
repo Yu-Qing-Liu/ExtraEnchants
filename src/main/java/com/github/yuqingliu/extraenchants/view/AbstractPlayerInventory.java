@@ -4,6 +4,7 @@ import com.github.yuqingliu.extraenchants.api.logger.Logger;
 import com.github.yuqingliu.extraenchants.api.managers.EventManager;
 import com.github.yuqingliu.extraenchants.api.managers.MathManager;
 import com.github.yuqingliu.extraenchants.api.managers.SoundManager;
+import com.github.yuqingliu.extraenchants.api.repositories.ManagerRepository;
 import com.github.yuqingliu.extraenchants.api.view.PlayerInventory;
 import com.github.yuqingliu.extraenchants.api.Scheduler;
 import com.google.inject.Inject;
@@ -29,15 +30,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 @Getter
 public abstract class AbstractPlayerInventory implements PlayerInventory {
     protected final int inventoryLength = 9;
-    protected EventManager eventManager;
-    protected final SoundManager soundManager;
+    protected final ManagerRepository managerRepository;
     protected final Logger logger;
-    protected final MathManager mathManager;
     @Setter protected Component displayName;
     protected final int inventorySize;
     protected final Component unavailableComponent = Component.text("Unavailable", NamedTextColor.DARK_PURPLE);
@@ -55,10 +53,8 @@ public abstract class AbstractPlayerInventory implements PlayerInventory {
     protected ItemStack anvil;
         
     @Inject
-    public AbstractPlayerInventory(EventManager eventManager, MathManager mathManager, SoundManager soundManager, Logger logger, Component displayName, int inventorySize) {
-        this.eventManager = eventManager;
-        this.mathManager = mathManager;
-        this.soundManager = soundManager;
+    public AbstractPlayerInventory(ManagerRepository managerRepository, Logger logger, Component displayName, int inventorySize) {
+        this.managerRepository = managerRepository;
         this.logger = logger;
         this.displayName = displayName;
         this.inventorySize = inventorySize;

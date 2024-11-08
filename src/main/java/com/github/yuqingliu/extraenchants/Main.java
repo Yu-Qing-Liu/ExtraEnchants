@@ -37,6 +37,6 @@ public class Main extends ExtraEnchants {
 
     private void postConstruct() {
         enchantmentDatabase.postConstruct();
-        managerRepository.getInventoryManager().postConstruct(managerRepository.getEventManager(), enchantmentRepository);
+        managerRepository.getInventoryManager().postConstruct(managerRepository, enchantmentRepository);
     }
 }

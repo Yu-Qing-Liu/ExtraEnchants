@@ -32,7 +32,7 @@ public class MainMenu implements Listener {
     public MainMenu(EnchantMenu enchantMenu) {
         this.enchantMenu = enchantMenu;
         this.controller = new MainMenuController(enchantMenu);
-        enchantMenu.getEventManager().registerEvent(this);
+        enchantMenu.getManagerRepository().getEventManager().registerEvent(this);
     }
 
     @EventHandler
