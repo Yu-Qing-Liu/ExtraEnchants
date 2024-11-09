@@ -9,6 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.yuqingliu.extraenchants.api.managers.EventManager;
 import com.github.yuqingliu.extraenchants.api.managers.InventoryManager;
+import com.github.yuqingliu.extraenchants.events.PlayerInteractsWithAnvil;
 import com.github.yuqingliu.extraenchants.events.PlayerInteractsWithEnchantingTable;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -28,6 +29,7 @@ public class EventManagerImpl implements EventManager {
     @Inject
     public void postConstruct() {
         listeners.put(PlayerInteractsWithEnchantingTable.class.getSimpleName(), new PlayerInteractsWithEnchantingTable(inventoryManager));
+        listeners.put(PlayerInteractsWithAnvil.class.getSimpleName(), new PlayerInteractsWithAnvil(inventoryManager));
         registerEvents();
     }
 

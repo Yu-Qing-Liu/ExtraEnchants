@@ -1,9 +1,6 @@
 package com.github.yuqingliu.extraenchants.view;
 
 import com.github.yuqingliu.extraenchants.api.logger.Logger;
-import com.github.yuqingliu.extraenchants.api.managers.EventManager;
-import com.github.yuqingliu.extraenchants.api.managers.MathManager;
-import com.github.yuqingliu.extraenchants.api.managers.SoundManager;
 import com.github.yuqingliu.extraenchants.api.repositories.ManagerRepository;
 import com.github.yuqingliu.extraenchants.api.view.PlayerInventory;
 import com.github.yuqingliu.extraenchants.api.Scheduler;
@@ -41,6 +38,7 @@ public abstract class AbstractPlayerInventory implements PlayerInventory {
     protected final Component unavailableComponent = Component.text("Unavailable", NamedTextColor.DARK_PURPLE);
     protected final Component loadingComponent = Component.text("Loading...", NamedTextColor.RED);
     protected Map<Material, ItemStack> backgroundItems = new HashMap<>();
+    protected Map<Material, ItemStack> unavailableItems = new HashMap<>();
     protected ItemStack nextPage;
     protected ItemStack prevPage;
     protected ItemStack prevMenu;
@@ -59,6 +57,7 @@ public abstract class AbstractPlayerInventory implements PlayerInventory {
         this.displayName = displayName;
         this.inventorySize = inventorySize;
         initializeBackgroundItems();
+        initializeUnavailableItems();
         initializeCommonItems();
     }
 
@@ -67,6 +66,14 @@ public abstract class AbstractPlayerInventory implements PlayerInventory {
             if(material.name().contains("STAINED_GLASS_PANE")) {
                 backgroundItems.put(material, createSlotItem(material, unavailableComponent));
             }
+        }
+    }
+
+    private void initializeUnavailableItems() {
+        for(Material material : Material.values()) {
+            try {
+                unavailableItems.put(material, createSlotItem(material, unavailableComponent));
+            } catch (Exception e) {}
         }
     }
 
@@ -83,10 +90,15 @@ public abstract class AbstractPlayerInventory implements PlayerInventory {
         this.anvil = createSlotItem(Material.ANVIL, Component.text("Anvil", NamedTextColor.DARK_GRAY));
     }
 
+    public boolean isItemNull(ItemStack item) {
+        return item == null || item.getType() == Material.AIR;
+    }
+
     public boolean isUnavailable(ItemStack item) {
         return item.isSimilar(loading) ||
         item.isSimilar(unavailable) ||
         backgroundItems.containsValue(item) ||
+        unavailableItems.containsValue(item) ||
         item.isSimilar(enchantingTable) ||
         item.isSimilar(grindStone) ||
         item.isSimilar(anvil);
