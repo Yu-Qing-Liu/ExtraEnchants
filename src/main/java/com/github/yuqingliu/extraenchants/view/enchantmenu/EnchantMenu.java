@@ -13,6 +13,7 @@ import com.github.yuqingliu.extraenchants.api.repositories.ManagerRepository;
 import com.github.yuqingliu.extraenchants.view.AbstractPlayerInventory;
 import com.github.yuqingliu.extraenchants.view.enchantmenu.mainmenu.MainMenu;
 import com.github.yuqingliu.extraenchants.view.enchantmenu.offermenu.OfferMenu;
+import com.github.yuqingliu.extraenchants.view.enchantmenu.selectionmenu.SelectionMenu;
 
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -23,16 +24,18 @@ public class EnchantMenu extends AbstractPlayerInventory {
     private final EnchantmentRepository enchantmentRepository;
 
     private final MainMenu mainMenu;
+    private final SelectionMenu selectionMenu;
     private final OfferMenu offerMenu;
 
     public enum MenuType {
-        MainMenu, OfferMenu;
+        MainMenu, SelectionMenu, OfferMenu;
     }
 
     public EnchantMenu(ManagerRepository managerRepository, EnchantmentRepository enchantmentRepository, Logger logger, Component displayName) {
         super(managerRepository, logger, displayName, 54);
         this.enchantmentRepository = enchantmentRepository;
         this.mainMenu = new MainMenu(this);
+        this.selectionMenu = new SelectionMenu(this);
         this.offerMenu = new OfferMenu(this);
     }
 

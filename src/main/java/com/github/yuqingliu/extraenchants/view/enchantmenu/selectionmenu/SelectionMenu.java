@@ -1,6 +1,5 @@
-package com.github.yuqingliu.extraenchants.view.enchantmenu.mainmenu;
+package com.github.yuqingliu.extraenchants.view.enchantmenu.selectionmenu;
 
-import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -11,36 +10,27 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import com.github.yuqingliu.extraenchants.api.Scheduler;
+import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
 import com.github.yuqingliu.extraenchants.view.enchantmenu.EnchantMenu;
 import com.github.yuqingliu.extraenchants.view.enchantmenu.EnchantMenu.MenuType;
 
 import lombok.Getter;
 
 @Getter
-public class MainMenu implements Listener {
+public class SelectionMenu implements Listener {
     private final EnchantMenu enchantMenu;
-    private final MainMenuController controller;
+    private final SelectionMenuController controller;
     
-    public MainMenu(EnchantMenu enchantMenu) {
+    public SelectionMenu(EnchantMenu enchantMenu) {
         this.enchantMenu = enchantMenu;
-        this.controller = new MainMenuController(enchantMenu);
+        this.controller = new SelectionMenuController(enchantMenu);
         enchantMenu.getManagerRepository().getEventManager().registerEvent(this);
     }
 
-    @EventHandler
-    public void onInventoryOpen(InventoryOpenEvent event) {
-        if (event.getView().title().equals(enchantMenu.getDisplayName())) {
-            Player player = (Player) event.getPlayer();
-            wait(player, event.getInventory());
-        }
-    }
-    
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
@@ -52,7 +42,7 @@ public class MainMenu implements Listener {
             return;
         }
 
-        if(enchantMenu.getPlayerMenuTypes().get(player) != MenuType.MainMenu) {
+        if(enchantMenu.getPlayerMenuTypes().get(player) != MenuType.SelectionMenu) {
             return;
         }
 
@@ -72,11 +62,9 @@ public class MainMenu implements Listener {
                 event.setCancelled(true);
                 enchantMenu.setItem(actionInventory, controller.getItemSlot(), currentItem.clone());
                 clickedInventory.clear(event.getSlot());
-                controller.reload(actionInventory);
-            } else {
-                controller.clear(actionInventory);
-                wait(player, actionInventory);
-            }
+                controller.onClose(player);
+                enchantMenu.getMainMenu().getController().openMenu(player, actionInventory);
+            } 
             return;
         }
 
@@ -84,21 +72,33 @@ public class MainMenu implements Listener {
             int[] slot = enchantMenu.toCoords(event.getSlot());
             if(Arrays.equals(slot, controller.getItemSlot())) {
                 controller.clear(clickedInventory);
-                wait(player, clickedInventory);
+                controller.onClose(player);
+                enchantMenu.getMainMenu().getController().openMenu(player, clickedInventory);
                 return;
             }
-            if(Arrays.equals(slot, controller.getVanillaEnchantsButton())) {
+            if(enchantMenu.rectangleContains(slot, controller.getEnchantOptions())) {
                 event.setCancelled(true);
-                controller.openVanillaSelectionMenu(player, clickedInventory);
-            }
-            if(Arrays.equals(slot, controller.getCustomEnchantsButton())) {
+                int pageNumber = controller.getPageNumbers().get(player)[0];
+                Enchantment selectedEnchantment = controller.getPageData().get(pageNumber).get(Arrays.asList(slot[0], slot[1]));
+                enchantMenu.getOfferMenu().getController().openMenu(player, clickedInventory, selectedEnchantment);
+                return;
+            }  
+            if(Arrays.equals(slot, controller.getNextPageButton())) {
                 event.setCancelled(true);
-                controller.openCustomSelectionMenu(player, clickedInventory);
-            }
-            if(Arrays.equals(slot, controller.getAbilityEnchantsButton())) {
+                controller.nextPage(player, clickedInventory);
+                return;
+            } 
+            if(Arrays.equals(slot, controller.getPrevPageButton())) {
                 event.setCancelled(true);
-                controller.openAbilitySelectionMenu(player, clickedInventory);
-            }
+                controller.prevPage(player, clickedInventory);
+                return;
+            } 
+            if(Arrays.equals(slot, controller.getPrevMenuButton())) {
+                event.setCancelled(true);
+                controller.onClose(player);
+                enchantMenu.getMainMenu().getController().openMenu(player, clickedInventory);
+                return;
+            } 
             if(Arrays.equals(slot, controller.getExitMenuButton())) {
                 event.setCancelled(true);
                 clickedInventory.close();
@@ -124,16 +124,7 @@ public class MainMenu implements Listener {
                 }
                 closedInventory.clear();
             }
+            controller.onClose(player);
         }
-    }
-
-    private void wait(Player player, Inventory inv) {
-        Scheduler.runTimerAsync(task -> {
-            ItemStack itemInTargetSlot = enchantMenu.getItem(inv, controller.getItemSlot());
-            if (itemInTargetSlot != null && itemInTargetSlot.getType() != Material.AIR) {
-                controller.reload(inv);
-                task.cancel();
-            }
-        }, Duration.ofMillis(250), Duration.ZERO);
-    }
+    }    
 }

@@ -14,6 +14,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+import com.github.yuqingliu.extraenchants.api.Scheduler;
 import com.github.yuqingliu.extraenchants.enchantment.EnchantmentOffer;
 import com.github.yuqingliu.extraenchants.view.enchantmenu.EnchantMenu;
 import com.github.yuqingliu.extraenchants.view.enchantmenu.EnchantMenu.MenuType;
@@ -80,9 +81,11 @@ public class OfferMenu implements Listener {
             if(enchantMenu.rectangleContains(slot, controller.getEnchantOptions())) {
                 event.setCancelled(true);
                 // Apply offer
-                int pageNumber = controller.getPageNumbers().get(player)[0];
-                EnchantmentOffer offer = controller.getPageData().get(pageNumber).get(Arrays.asList(slot[0], slot[1]));
-                controller.applyOffer(player, clickedInventory, offer);
+                Scheduler.runAsync(task -> {
+                    int pageNumber = controller.getPageNumbers().get(player)[0];
+                    EnchantmentOffer offer = controller.getPageData().get(pageNumber).get(Arrays.asList(slot[0], slot[1]));
+                    controller.applyOffer(player, clickedInventory, offer);
+                });
                 return;
             }  
             if(Arrays.equals(slot, controller.getNextPageButton())) {

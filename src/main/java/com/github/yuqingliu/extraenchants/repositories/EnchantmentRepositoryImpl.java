@@ -7,7 +7,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.bukkit.inventory.ItemStack;
-import org.eclipse.sisu.PostConstruct;
 
 import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
 import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository;
@@ -131,6 +130,30 @@ public class EnchantmentRepositoryImpl implements EnchantmentRepository {
         Map<Enchantment, Integer> itemEnchants = getEnchantments(item);
         return enchantments.stream().filter(enchant -> 
             enchant.canEnchant(item) && (itemEnchants.containsKey(enchant) ? (itemEnchants.get(enchant) < enchant.getMaxLevel()) : true)
+        ).toArray(Enchantment[]::new);
+    }
+
+    @Override
+    public Enchantment[] getVanillaApplicableEnchantments(ItemStack item) {
+        Map<Enchantment, Integer> itemEnchants = getEnchantments(item);
+        return enchantments.stream().filter(enchant -> 
+            EnchantID.getVanillaEnchantIds().contains(enchant.getId()) && enchant.canEnchant(item) && (itemEnchants.containsKey(enchant) ? (itemEnchants.get(enchant) < enchant.getMaxLevel()) : true)
+        ).toArray(Enchantment[]::new);
+    }
+
+    @Override
+    public Enchantment[] getCustomApplicableEnchantments(ItemStack item) {
+        Map<Enchantment, Integer> itemEnchants = getEnchantments(item);
+        return enchantments.stream().filter(enchant -> 
+            EnchantID.getCustomEnchantIds().contains(enchant.getId()) && enchant.canEnchant(item) && (itemEnchants.containsKey(enchant) ? (itemEnchants.get(enchant) < enchant.getMaxLevel()) : true)
+        ).toArray(Enchantment[]::new);
+    }
+
+    @Override
+    public Enchantment[] getAbilityApplicableEnchantments(ItemStack item) {
+        Map<Enchantment, Integer> itemEnchants = getEnchantments(item);
+        return enchantments.stream().filter(enchant -> 
+            EnchantID.getAbilityEnchantIds().contains(enchant.getId()) && enchant.canEnchant(item) && (itemEnchants.containsKey(enchant) ? (itemEnchants.get(enchant) < enchant.getMaxLevel()) : true)
         ).toArray(Enchantment[]::new);
     }
 }
