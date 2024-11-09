@@ -8,4 +8,5 @@ public interface SoundManager {
     void playArrowSound(Player player);
     void playSonicBoomSound(Player player);
     void playMitigationSound(Player player);
+    void playGrindstoneSound(Player player);
 }
