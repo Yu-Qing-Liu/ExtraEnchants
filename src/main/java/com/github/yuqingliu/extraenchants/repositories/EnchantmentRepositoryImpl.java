@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.bukkit.inventory.ItemStack;
+import org.eclipse.sisu.PostConstruct;
 
 import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
 import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository;
@@ -15,6 +16,7 @@ import com.github.yuqingliu.extraenchants.api.repositories.ManagerRepository;
 import com.github.yuqingliu.extraenchants.enchantment.implementations.custom.*;
 import com.github.yuqingliu.extraenchants.enchantment.implementations.vanilla.*;
 import com.github.yuqingliu.extraenchants.enchantment.implementations.ability.*;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import lombok.Getter;
@@ -31,14 +33,14 @@ public class EnchantmentRepositoryImpl implements EnchantmentRepository {
     private final NamedTextColor ability = NamedTextColor.GOLD;
     private final NamedTextColor descriptionColor = NamedTextColor.DARK_GRAY;
     
+    @Inject
     public EnchantmentRepositoryImpl(ManagerRepository managerRepository, ItemRepository itemRepository) {
         this.itemRepository = itemRepository;
         this.managerRepository = managerRepository;
-        initialize();
-        postConstruct();
     }
-
-    private void initialize() {
+    
+    @Override
+    public void postConstruct() {
         // Vanilla enchants
         enchantments.add(new AquaInfinity(managerRepository, this, vanilla, descriptionColor));
         enchantments.add(new BaneOfArthropods(managerRepository, this, vanilla, descriptionColor));
@@ -98,12 +100,11 @@ public class EnchantmentRepositoryImpl implements EnchantmentRepository {
         enchantments.add(new Focus(managerRepository, this, itemRepository, ability, descriptionColor));
         enchantments.add(new RapidFire(managerRepository, this, itemRepository, ability, descriptionColor));
         enchantments.add(new SonicBoom(managerRepository, this, itemRepository, ability, descriptionColor));
-    }
 
-    private void postConstruct() {
+        // Register enchantments
         enchantments.forEach(enchant -> enchant.postConstruct());
     }
-
+    
     @Override
     public Set<Enchantment> getEnchantments(Set<EnchantID> ids) {
         return enchantments.stream().filter(enchant -> ids.contains(enchant.getId())).collect(Collectors.toSet());

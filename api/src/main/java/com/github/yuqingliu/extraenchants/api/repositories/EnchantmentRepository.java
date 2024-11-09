@@ -45,4 +45,5 @@ public interface EnchantmentRepository {
     Set<Enchantment> getEnchantments(Set<EnchantID> ids);
     Map<Enchantment, Integer> getEnchantments(ItemStack item);
     Enchantment[] getApplicableEnchantments(ItemStack item);
+    void postConstruct();
 }

@@ -19,8 +19,8 @@ public class EnchantmentDatabase extends AbstractDatabase {
         super(rootDirectory);
         this.enchantmentRepository = enchantmentRepository;
     }
-
-    @Override
+    
+    @Inject
     public void postConstruct() {
         try {
             if (!enchantmentDirectory.exists()) {

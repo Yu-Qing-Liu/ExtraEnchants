@@ -4,6 +4,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
+import com.google.inject.name.Names;
 import com.github.yuqingliu.extraenchants.api.logger.Logger;
 import com.github.yuqingliu.extraenchants.api.managers.*;
 import com.github.yuqingliu.extraenchants.api.persistence.Database;
@@ -32,13 +33,6 @@ public class PluginModule extends AbstractModule {
         return plugin;
     }
 
-    // Provide Logger
-    @Provides
-    @Singleton
-    public Logger provideExtraEnchantsLogger() {
-        return new LoggerImpl();
-    }
-
     // Provide data folder
     @Provides
     @Singleton
@@ -46,9 +40,11 @@ public class PluginModule extends AbstractModule {
         return plugin.getDataFolder();
     }
 
-    // Managers
     @Override
     protected void configure() {
+        // Logger
+        bind(Logger.class).to(LoggerImpl.class).in(Singleton.class);
+        // Managers
         bind(ColorManager.class).to(ColorManagerImpl.class).in(Singleton.class);
         bind(CommandManager.class).to(CommandManagerImpl.class).in(Singleton.class);
         bind(EventManager.class).to(EventManagerImpl.class).in(Singleton.class);
@@ -58,46 +54,14 @@ public class PluginModule extends AbstractModule {
         bind(NameSpacedKeyManager.class).to(NameSpacedKeyManagerImpl.class).in(Singleton.class);
         bind(SoundManager.class).to(SoundManagerImpl.class).in(Singleton.class);
         bind(TextManager.class).to(TextManagerImpl.class).in(Singleton.class);
-    }
-
-    // Repositories
-    @Provides
-    @Singleton
-    public EnchantmentRepository provideEnchantmentRepository(ManagerRepository managerRepository, ItemRepository itemRepository) {
-        return new EnchantmentRepositoryImpl(managerRepository, itemRepository);
-    }
-
-    @Provides
-    @Singleton
-    public ItemRepository provideItemRepository() {
-        return new ItemRepositoryImpl();
-    }
-
-    @Provides
-    @Singleton
-    public AnvilRepository provideAnvilRepository() {
-        return new AnvilRepositoryImpl();
-    }
-
-    @Provides
-    @Singleton
-    public ManagerRepository provideManagerRepository(Logger logger, EventManager eventManager, CommandManager commandManager, InventoryManager inventoryManager, NameSpacedKeyManager keyManager, SoundManager soundManager, TextManager textManager, ColorManager colorManager, LoreManager loreManager, MathManager mathManager) {
-        return new ManagerRepositoryImpl(plugin, logger, eventManager, commandManager, inventoryManager, keyManager, soundManager, textManager, colorManager, loreManager, mathManager);
-    }
-
-    // Persistence
-    @Provides
-    @Singleton
-    @Named("EnchantmentDatabase")
-    public Database provideEnchantmentDatabase(EnchantmentRepository enchantmentRepository) {
-        return new EnchantmentDatabase(plugin.getDataFolder(), enchantmentRepository);
-    }
-
-    @Provides
-    @Singleton
-    @Named("AnvilDatabase")
-    public Database provideAnvilDatabase(AnvilRepository anvilRepository) {
-        return new AnvilDatabase(plugin.getDataFolder(), anvilRepository);
+        // Repositories
+        bind(EnchantmentRepository.class).to(EnchantmentRepositoryImpl.class).in(Singleton.class);
+        bind(ItemRepository.class).to(ItemRepositoryImpl.class).in(Singleton.class);
+        bind(AnvilRepository.class).to(AnvilRepositoryImpl.class).in(Singleton.class);
+        bind(ManagerRepository.class).to(ManagerRepositoryImpl.class).in(Singleton.class);
+        // Persistence
+        bind(Database.class).annotatedWith(Names.named(EnchantmentDatabase.class.getSimpleName())).to(EnchantmentDatabase.class).in(Singleton.class);
+        bind(Database.class).annotatedWith(Names.named(AnvilDatabase.class.getSimpleName())).to(AnvilDatabase.class).in(Singleton.class);
     }
 }
 

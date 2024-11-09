@@ -20,8 +20,8 @@ public class AnvilDatabase extends AbstractDatabase {
         super(rootDirectory);
         this.anvilRepository = anvilRepository;
     }
-
-    @Override
+    
+    @Inject
     public void postConstruct() {
         try {
             if (!anvilDirectory.exists()) {
