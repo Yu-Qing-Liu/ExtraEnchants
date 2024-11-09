@@ -34,11 +34,10 @@ public class Main extends ExtraEnchants {
         managerRepository = injector.getInstance(ManagerRepository.class);
         enchantmentRepository = injector.getInstance(EnchantmentRepository.class);
         itemRepository = injector.getInstance(ItemRepository.class);
+        postConstruct();
 
         enchantmentDatabase = injector.getInstance(EnchantmentDatabase.class);
         anvilDatabase = injector.getInstance(AnvilDatabase.class);
-
-        postConstruct();
     }
 
     private void postConstruct() {

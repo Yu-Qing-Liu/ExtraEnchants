@@ -39,7 +39,7 @@ public class AnvilDatabase extends AbstractDatabase {
             } else {
                 // Populate with defaults
                 for(Map.Entry<Item, Set<Item>> entry : anvilRepository.getAnvilCombinations().entrySet()) {
-                    File anvilFile = new File(anvilDirectory, PlainTextComponentSerializer.plainText().serialize(entry.getKey().getDisplayName()) + ".json");
+                    File anvilFile = new File(anvilDirectory, entry.getKey().getDisplayName() + ".json");
                     AnvilDTO data = new AnvilDTO(entry.getKey(), entry.getValue());
                     writeObject(anvilFile, data);
                 }   

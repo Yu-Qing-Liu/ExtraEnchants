@@ -1,7 +1,6 @@
 package com.github.yuqingliu.extraenchants.managers;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -29,7 +28,6 @@ import lombok.Getter;
 public class LoreManagerImpl implements LoreManager {
     private final JavaPlugin plugin;
     private final TextManager textManager;
-    private List<Component> lore = new ArrayList<>();
     private final Component seperator = Component.empty();
     private final NamespacedKey loreKey;
     
@@ -48,6 +46,7 @@ public class LoreManagerImpl implements LoreManager {
     }
     
     private List<Component> getLore(Map<Integer, LoreSection> loreMap) {
+        List<Component> lore = new ArrayList<>();
         for(LoreSection section : loreMap.values()) {
             List<Component> sectionLore = section.getLore();
             if(!sectionLore.isEmpty()) {

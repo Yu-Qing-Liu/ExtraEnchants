@@ -9,6 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -17,10 +18,10 @@ public class ItemImpl implements Item {
     @EqualsAndHashCode.Include
     private Material material;
     @EqualsAndHashCode.Include
-    private Component displayName;
+    private String displayName;
 
     public ItemImpl(ItemStack itemStack) {
         this.material = itemStack.getType();
-        this.displayName = itemStack.displayName();
+        this.displayName = PlainTextComponentSerializer.plainText().serialize(itemStack.displayName()); 
     }
 }
