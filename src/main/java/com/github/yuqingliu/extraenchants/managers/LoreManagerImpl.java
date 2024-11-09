@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -16,7 +17,6 @@ import com.github.yuqingliu.extraenchants.api.lore.LoreSection;
 import com.github.yuqingliu.extraenchants.api.managers.LoreManager;
 import com.github.yuqingliu.extraenchants.api.managers.NameSpacedKeyManager;
 import com.github.yuqingliu.extraenchants.api.managers.TextManager;
-import com.github.yuqingliu.extraenchants.api.repositories.ManagerRepository;
 import com.github.yuqingliu.extraenchants.lore.implementations.AbilitySection;
 import com.github.yuqingliu.extraenchants.lore.implementations.EnchantmentSection;
 import com.google.inject.Inject;
@@ -24,7 +24,6 @@ import com.google.inject.Inject;
 import net.kyori.adventure.text.Component;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 public class LoreManagerImpl implements LoreManager {
@@ -41,14 +40,14 @@ public class LoreManagerImpl implements LoreManager {
         this.loreKey = keyManager.getLoreKey();
     }
     
-    private Map<String, LoreSection> initializeSections(int[] sectionSizes, List<Component> itemLore) {
-        Map<String, LoreSection> loreMap = new LinkedHashMap<>();
-        loreMap.put(EnchantmentSection.class.getSimpleName(), new EnchantmentSection(1, textManager, sectionSizes, itemLore));
-        loreMap.put(AbilitySection.class.getSimpleName(), new AbilitySection(2, sectionSizes, itemLore));
+    private Map<Integer, LoreSection> initializeSections(int[] sectionSizes, List<Component> itemLore) {
+        Map<Integer, LoreSection> loreMap = new TreeMap<>();
+        loreMap.put(0, new EnchantmentSection(0, textManager, sectionSizes, itemLore));
+        loreMap.put(1, new AbilitySection(1, sectionSizes, itemLore));
         return loreMap;
     }
     
-    private List<Component> getLore(Map<String, LoreSection> loreMap) {
+    private List<Component> getLore(Map<Integer, LoreSection> loreMap) {
         for(LoreSection section : loreMap.values()) {
             List<Component> sectionLore = section.getLore();
             if(!sectionLore.isEmpty()) {
@@ -76,7 +75,7 @@ public class LoreManagerImpl implements LoreManager {
         return cleanLore;
     }
 
-    private void serializeLore(ItemStack item, Map<String, LoreSection> loreMap) {
+    private void serializeLore(ItemStack item, Map<Integer, LoreSection> loreMap) {
         ItemMeta meta = item.getItemMeta();
         PersistentDataContainer container = meta.getPersistentDataContainer();
         int[] sizes = loreMap.values().stream().map(section -> section.getSize()).mapToInt(Integer::intValue).toArray();
@@ -97,15 +96,15 @@ public class LoreManagerImpl implements LoreManager {
     public LoreSection getLoreSection(String sectionName, ItemStack item) {
         int[] sectionSizes = deserializeLore(item);        
         List<Component> itemLore = getCleanLore(item);
-        Map<String, LoreSection> loreMap = initializeSections(sectionSizes, itemLore);
-        return loreMap.get(sectionName);
+        Map<Integer, LoreSection> loreMap = initializeSections(sectionSizes, itemLore);
+        return loreMap.values().stream().filter(section -> section.getName().equals(sectionName)).findFirst().orElse(null);
     }
     
     @Override
-    public ItemStack applyLore(ItemStack item, Map<String, LoreSection> updates) {
+    public ItemStack applyLore(ItemStack item, Map<Integer, LoreSection> updates) {
         int[] sectionSizes = deserializeLore(item);        
         List<Component> itemLore = getCleanLore(item);
-        Map<String, LoreSection> loreMap = initializeSections(sectionSizes, itemLore);
+        Map<Integer, LoreSection> loreMap = initializeSections(sectionSizes, itemLore);
         loreMap.putAll(updates);
         serializeLore(item, loreMap);
         ItemMeta meta = item.getItemMeta();
@@ -118,8 +117,8 @@ public class LoreManagerImpl implements LoreManager {
     public ItemStack applyLore(ItemStack item, LoreSection update) {
         int[] sectionSizes = deserializeLore(item);        
         List<Component> itemLore = getCleanLore(item);
-        Map<String, LoreSection> loreMap = initializeSections(sectionSizes, itemLore);
-        loreMap.put(update.getName(), update);
+        Map<Integer, LoreSection> loreMap = initializeSections(sectionSizes, itemLore);
+        loreMap.put(update.getPosition(), update);
         serializeLore(item, loreMap);
         ItemMeta meta = item.getItemMeta();
         meta.lore(getLore(loreMap));

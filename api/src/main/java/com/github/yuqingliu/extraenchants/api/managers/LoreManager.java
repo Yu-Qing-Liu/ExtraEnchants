@@ -8,6 +8,6 @@ import com.github.yuqingliu.extraenchants.api.lore.LoreSection;
 
 public interface LoreManager {
     public LoreSection getLoreSection(String sectionName, ItemStack item);
-    public ItemStack applyLore(ItemStack item, Map<String, LoreSection> updates);
+    public ItemStack applyLore(ItemStack item, Map<Integer, LoreSection> updates);
     public ItemStack applyLore(ItemStack item, LoreSection update);
 }
