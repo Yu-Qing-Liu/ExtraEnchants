@@ -18,6 +18,7 @@ import com.github.yuqingliu.extraenchants.api.managers.NameSpacedKeyManager;
 import com.github.yuqingliu.extraenchants.api.managers.TextManager;
 import com.github.yuqingliu.extraenchants.lore.implementations.AbilitySection;
 import com.github.yuqingliu.extraenchants.lore.implementations.EnchantmentSection;
+import com.github.yuqingliu.extraenchants.lore.implementations.PreviousSection;
 import com.google.inject.Inject;
 
 import net.kyori.adventure.text.Component;
@@ -40,8 +41,15 @@ public class LoreManagerImpl implements LoreManager {
     
     private Map<Integer, LoreSection> initializeSections(int[] sectionSizes, List<Component> itemLore) {
         Map<Integer, LoreSection> loreMap = new TreeMap<>();
-        loreMap.put(0, new EnchantmentSection(0, textManager, sectionSizes, itemLore));
-        loreMap.put(1, new AbilitySection(1, sectionSizes, itemLore));
+        if(sectionSizes == null) {
+            PreviousSection prev = new PreviousSection(0, sectionSizes, itemLore);
+            prev.initialize(itemLore);
+            loreMap.put(0, prev);
+        } else {
+            loreMap.put(0, new PreviousSection(0, sectionSizes, itemLore));
+        }
+        loreMap.put(1, new EnchantmentSection(1, textManager, sectionSizes, itemLore));
+        loreMap.put(2, new AbilitySection(2, sectionSizes, itemLore));
         return loreMap;
     }
     
