@@ -18,6 +18,7 @@ public class AbilitySection extends AbstractLoreSection {
     }
     
     public void addOrUpdateAbilityFromSection(Component enchant, Component eLevel, Component action, Component description) {
+        removeAbilityFromSection(enchant);
         if(lore.isEmpty()) {
             lore.add(sectionTitle);
             lore.add(root.append(enchant).append(eLevel).append(action));

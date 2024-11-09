@@ -99,7 +99,7 @@ public class OfferMenuController {
         for (int i = 1; i <= selectedEnchantment.getMaxLevel(); i++) {
             int requiredLevel = enchantMenu.getManagerRepository(). getMathManager().evaluateExpression(selectedEnchantment.getRequiredLevelFormula(), i);
             int cost = enchantMenu.getManagerRepository().getMathManager().evaluateExpression(selectedEnchantment.getCostFormula(), i);
-            EnchantmentOffer offer = new EnchantmentOffer(enchantMenu.getManagerRepository().getSoundManager(), selectedEnchantment, i, requiredLevel, cost);
+            EnchantmentOffer offer = new EnchantmentOffer(enchantMenu.getLogger(), enchantMenu.getManagerRepository().getSoundManager(), selectedEnchantment, i, requiredLevel, cost);
             offers.offer(offer);
         }
         int maxPages = (int) Math.ceil((double) offers.size() / (double) enchantOptionsSize);
