@@ -25,16 +25,14 @@ public class CustomBlockRepositoryImpl implements CustomBlockRepository {
     @Override
     public void addCustomBlock(Location location) {
         customBlocks.add(location);
-        BlocksDTO data = new BlocksDTO();
-        data.setBlocks(customBlocks);
+        BlocksDTO data = new BlocksDTO(customBlocks);
         blocksDatabase.writeAsyncObject(blocksDatabase.getBlocksFile(), data);
     }
 
     @Override
     public void deleteCustomBlock(Location location) {
         customBlocks.remove(location);
-        BlocksDTO data = new BlocksDTO();
-        data.setBlocks(customBlocks);
+        BlocksDTO data = new BlocksDTO(customBlocks);
         blocksDatabase.writeAsyncObject(blocksDatabase.getBlocksFile(), data);
     }
 }

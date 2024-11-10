@@ -33,8 +33,7 @@ public class CustomBlockDatabase extends AbstractDatabase {
                 blockRepository.getCustomBlocks().addAll(blocks.getBlocks());
             } else {
                 // Populate with defaults
-                BlocksDTO blocks = new BlocksDTO();
-                blocks.setBlocks(blockRepository.getCustomBlocks());
+                BlocksDTO blocks = new BlocksDTO(blockRepository.getCustomBlocks());
                 writeObject(blocksFile, blocks);
             }
         } catch (Exception e) {

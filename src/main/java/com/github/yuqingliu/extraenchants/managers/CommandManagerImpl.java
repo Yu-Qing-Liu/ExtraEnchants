@@ -8,6 +8,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.yuqingliu.extraenchants.api.logger.Logger;
 import com.github.yuqingliu.extraenchants.api.managers.CommandManager;
+import com.github.yuqingliu.extraenchants.api.managers.NameSpacedKeyManager;
+import com.github.yuqingliu.extraenchants.commands.WandCommand;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -15,21 +17,27 @@ import com.google.inject.Singleton;
 public class CommandManagerImpl implements CommandManager {
     private final JavaPlugin plugin;
     private final Logger logger;
+    private final NameSpacedKeyManager nameSpacedKeyManager;
     private Map<String, CommandExecutor> commands = new HashMap<>();
         
     @Inject
     public CommandManagerImpl(
         JavaPlugin plugin,
-        Logger logger
-    ) {
+        Logger logger,
+        NameSpacedKeyManager nameSpacedKeyManager) {
         this.plugin = plugin;
         this.logger = logger;
+        this.nameSpacedKeyManager = nameSpacedKeyManager;
+    }
+    
+    @Inject
+    private void postConstruct() {
         initializeCommands();
         registerCommands();
     }
 
     private void initializeCommands() {
-
+        commands.put("wand", new WandCommand(logger, nameSpacedKeyManager));
     }
 
     private void registerCommands() {

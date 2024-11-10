@@ -2,11 +2,15 @@ package com.github.yuqingliu.extraenchants.persistence;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
+
+import org.bukkit.Location;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -58,6 +62,34 @@ public abstract class AbstractDatabase implements Database {
         }
     }
 
+    public class LocationSerializer extends JsonSerializer<Location> {
+        @Override
+        public void serialize(Location value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+            gen.writeStartObject();
+            Map<String, Object> locationMap = value.serialize();
+            for (Map.Entry<String, Object> entry : locationMap.entrySet()) {
+                gen.writeObjectField(entry.getKey(), entry.getValue());
+            }
+            gen.writeEndObject();
+        }
+    }
+
+    public class LocationDeserializer extends JsonDeserializer<Location> {
+        @Override
+        public Location deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+            JsonNode node = p.getCodec().readTree(p);
+            Map<String, Object> locationData = Map.of(
+                "world", node.get("world").asText(),
+                "x", node.get("x").asDouble(),
+                "y", node.get("y").asDouble(),
+                "z", node.get("z").asDouble(),
+                "yaw", (float) node.get("yaw").asDouble(),
+                "pitch", (float) node.get("pitch").asDouble()
+            );
+            return Location.deserialize(locationData);
+        }
+    }
+
     public AbstractDatabase(File rootDirectory) {
         this.rootDirectory = rootDirectory;
         this.objectMapper = new ObjectMapper();
@@ -66,6 +98,8 @@ public abstract class AbstractDatabase implements Database {
         module.addDeserializer(Component.class, new ComponentDeserializer());
         module.addSerializer(TextColor.class, new TextColorSerializer());
         module.addDeserializer(TextColor.class, new TextColorDeserializer());
+        module.addSerializer(Location.class, new LocationSerializer());
+        module.addDeserializer(Location.class, new LocationDeserializer());
         objectMapper.registerModule(module);
         objectMapper.registerModule(new JavaTimeModule());
     }

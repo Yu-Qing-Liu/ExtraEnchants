@@ -4,33 +4,27 @@ version: '1.0'
 main: com.github.yuqingliu.extraenchants.Main
 api-version: '1.13'
 commands:
-  ee:
-    description: Apply custom enchantments
-    usage: /ee <Enchantment> <Level>
-    aliases: [extraenchants]
-    permission: extraenchants.ee
-    permission-message: You do not have permission to use this command.
-  eelist:
-    description: List custom enchantments
-    usage: /eelist
-    aliases: [extraenchantslist]
-    permission: extraenchants.eelist
-    permission-message: You do not have permission to use this command.
-  eeget:
-    description: Gets a custom block that will open a custom menu
-    usage: /eeget <menu>
-    aliases: [extraenchantslist]
-    permission: extraenchants.eeget
-    permission-message: You do not have permission to use this command.
+  wand:
+    description: Mark blocks/entities which can view GUI, left-click to mark, right-click to unmark
+    usage: /wand etable; /wand anvil; /wand grindstone
+    permission: extraenchants.admin
+  enchant:
+    description: Enchant main hand item
+    usage: /enchant <EnchantID> <Level>
+    permission: extraenchants.admin
+  level:
+    description: Set an enchantment's maximum level
+    usage: /level set <EnchantID> <Level>
+    permission: extraenchants.admin
+  list:
+    description: List all available enchantemnts
+    usage: /list
+    permission: extraenchants.admin
 
 permissions:
-  extraenchants.ee:
-    description: Allows use of /ee
+  extraenchants.admin:
+    description: Allows use admin commands
     default: op
-  extraenchants.eelist:
-    description: Allows use of /eelist
-    default: op
-  extraenchants.eeget:
-    description: Allows use of /eeget
-    default: op
-
+  extraenchants.user:
+    description: Allows use regular commands
+    default: true
