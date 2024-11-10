@@ -8,10 +8,31 @@ Directory tree:
 plugins/
 │   ├── ExtraEnchants/
 │   │   └── anvilcombinations/  # Directory for anvil combinations
+│   │   │   └── [Allium].json  
+│   │   │   └── ...  
 │   │   └── enchantments/       # Directory for enchantments
 │   │       └── PUNCH.json
 │   │       └── ...
-│   ├── ExtraEnchants.jar
+│   │   └── customblocks/       # Directory for custom ui blocks
+│   │       └── BLOCKS.json
+│   ├── ExtraEnchants.jar       # Plugin binary
+│   ├── config.yml              # Config file
+```
+
+Example of config file:
+```
+EnableEtableGUIEverywhere: false        # Set to true if you want to set the etable UI to all etable blocks
+EnableAnvilGUIEverywhere: false         # Set to true if you want to set the anvil UI to all anvil blocks
+EnableGrindstoneGUIEverywhere: false    # Set to true if you want to set the grindstone UI to all grindstone blocks
+AnvilRepairCostPerMaterial: 1.5         # Anvil repair cost per material
+AnvilLevelUpgradeCost: 2.0              # Anvil level upgrade cost per enchantment level
+```
+
+Commands:
+```
+- /wand etable; /wand anvil; /wand grindstone
+    # Mark blocks/entities which can view GUI, Right Click to mark.
+    # Only works on anvils, etables and grindstone blocks as well as anything that is an entity (Villagers, ...).
 ```
 
 Example of an enchantment .json file:

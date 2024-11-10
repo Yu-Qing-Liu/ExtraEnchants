@@ -7,4 +7,5 @@ import org.bukkit.NamespacedKey;
 public interface NameSpacedKeyManager {
     NamespacedKey getEnchantKey(EnchantID enchant);
     NamespacedKey getLoreKey();
+    NamespacedKey getCustomUIKey();
 }

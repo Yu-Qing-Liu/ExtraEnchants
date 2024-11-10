@@ -32,12 +32,14 @@ public class MainMenuController {
     private final int[] placeholder1 = new int[]{2,2};
     private final int[] placeholder2 = new int[]{4,2};
     private final int[] placeholder3 = new int[]{6,2};
-    private final double repairCostPerResource = 1.5;
-    private final double anvilCostPerLevel = 2;
+    private final double repairCostPerResource;
+    private final double anvilCostPerLevel;
     private int cost = 0;
 
     public MainMenuController(AnvilMenu anvilMenu) {
         this.anvilMenu = anvilMenu;
+        repairCostPerResource = anvilMenu.getManagerRepository().getConfigurationManager().getAnvilRepairCost();
+        anvilCostPerLevel = anvilMenu.getManagerRepository().getConfigurationManager().getAnvilUpgradeCost();
     }
 
     public void openMenu(Player player, Inventory inv) {
