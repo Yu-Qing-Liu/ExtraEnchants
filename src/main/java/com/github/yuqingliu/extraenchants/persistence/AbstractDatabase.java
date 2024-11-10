@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.github.yuqingliu.extraenchants.api.Scheduler;
 import com.github.yuqingliu.extraenchants.api.persistence.Database;
 
 import net.kyori.adventure.text.Component;
@@ -93,5 +94,25 @@ public abstract class AbstractDatabase implements Database {
         if (file.exists()) {
             file.delete();
         } 
+    }
+
+    @Override
+    public <T> void writeAsyncObject(File file, T object) {
+        Scheduler.runAsync(t -> {
+            try {
+                objectMapper.writeValue(file, object);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+    
+    @Override
+    public void deleteAsyncObject(File file) {
+        Scheduler.runAsync(t -> {
+            if (file.exists()) {
+                file.delete();
+            } 
+        });
     }
 }

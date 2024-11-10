@@ -9,8 +9,6 @@ import com.github.yuqingliu.extraenchants.api.repositories.AnvilRepository;
 import com.github.yuqingliu.extraenchants.persistence.AbstractDatabase;
 import com.google.inject.Inject;
 
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-
 public class AnvilDatabase extends AbstractDatabase {
     private final AnvilRepository anvilRepository;
     private final File anvilDirectory = new File(rootDirectory, "anvilcombinations/");

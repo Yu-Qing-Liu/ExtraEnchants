@@ -6,6 +6,7 @@ import com.github.yuqingliu.extraenchants.api.managers.*;
 
 public interface ManagerRepository {
     JavaPlugin getPlugin();
+    ConfigurationManager getConfigurationManager();
     EventManager getEventManager();
     CommandManager getCommandManager();
     InventoryManager getInventoryManager();

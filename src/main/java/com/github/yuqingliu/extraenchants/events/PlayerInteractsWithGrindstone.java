@@ -7,7 +7,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.block.Block;
 
+import com.github.yuqingliu.extraenchants.api.managers.ConfigurationManager;
 import com.github.yuqingliu.extraenchants.api.managers.InventoryManager;
+import com.github.yuqingliu.extraenchants.api.repositories.CustomBlockRepository;
 import com.github.yuqingliu.extraenchants.view.grindstonemenu.GrindstoneMenu;
 import com.google.inject.Inject;
 
@@ -19,6 +21,10 @@ import org.bukkit.event.block.Action;
 public class PlayerInteractsWithGrindstone implements Listener {
     @Inject
     private final InventoryManager inventoryManager;
+    @Inject
+    private final CustomBlockRepository blockRepository;
+    @Inject
+    private final ConfigurationManager configurationManager;
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
@@ -26,8 +32,10 @@ public class PlayerInteractsWithGrindstone implements Listener {
         Player player = event.getPlayer();
         
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK && block != null && block.getType() == Material.GRINDSTONE) {
-            event.setCancelled(true);
-            inventoryManager.getInventory(GrindstoneMenu.class.getSimpleName()).open(player, block.getLocation());
+            if(configurationManager.enableGrindstone() || blockRepository.getCustomBlocks().contains(block.getLocation())) {
+                event.setCancelled(true);
+                inventoryManager.getInventory(GrindstoneMenu.class.getSimpleName()).open(player, block.getLocation());
+            }
         }
     }
 }

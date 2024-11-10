@@ -3,13 +3,13 @@ package com.github.yuqingliu.extraenchants.modules;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 import com.github.yuqingliu.extraenchants.api.logger.Logger;
-import com.github.yuqingliu.extraenchants.api.managers.*;
 import com.github.yuqingliu.extraenchants.api.persistence.Database;
+import com.github.yuqingliu.extraenchants.api.managers.*;
 import com.github.yuqingliu.extraenchants.managers.*;
 import com.github.yuqingliu.extraenchants.persistence.anvil.AnvilDatabase;
+import com.github.yuqingliu.extraenchants.persistence.blocks.CustomBlockDatabase;
 import com.github.yuqingliu.extraenchants.persistence.enchantments.EnchantmentDatabase;
 import com.github.yuqingliu.extraenchants.logger.LoggerImpl;
 import com.github.yuqingliu.extraenchants.api.repositories.*;
@@ -54,14 +54,17 @@ public class PluginModule extends AbstractModule {
         bind(NameSpacedKeyManager.class).to(NameSpacedKeyManagerImpl.class).in(Singleton.class);
         bind(SoundManager.class).to(SoundManagerImpl.class).in(Singleton.class);
         bind(TextManager.class).to(TextManagerImpl.class).in(Singleton.class);
+        bind(ConfigurationManager.class).to(ConfigurationManagerImpl.class).in(Singleton.class);
         // Repositories
         bind(EnchantmentRepository.class).to(EnchantmentRepositoryImpl.class).in(Singleton.class);
         bind(ItemRepository.class).to(ItemRepositoryImpl.class).in(Singleton.class);
         bind(AnvilRepository.class).to(AnvilRepositoryImpl.class).in(Singleton.class);
+        bind(CustomBlockRepository.class).to(CustomBlockRepositoryImpl.class).in(Singleton.class);
         bind(ManagerRepository.class).to(ManagerRepositoryImpl.class).in(Singleton.class);
         // Persistence
         bind(Database.class).annotatedWith(Names.named(EnchantmentDatabase.class.getSimpleName())).to(EnchantmentDatabase.class).in(Singleton.class);
         bind(Database.class).annotatedWith(Names.named(AnvilDatabase.class.getSimpleName())).to(AnvilDatabase.class).in(Singleton.class);
+        bind(Database.class).annotatedWith(Names.named(CustomBlockDatabase.class.getSimpleName())).to(CustomBlockDatabase.class).in(Singleton.class);
     }
 }
 
