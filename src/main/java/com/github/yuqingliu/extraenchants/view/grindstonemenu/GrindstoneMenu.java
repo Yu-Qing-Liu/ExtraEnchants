@@ -4,11 +4,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 import com.github.yuqingliu.extraenchants.api.logger.Logger;
-import com.github.yuqingliu.extraenchants.api.repositories.AnvilRepository;
 import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository;
 import com.github.yuqingliu.extraenchants.api.repositories.ManagerRepository;
 import com.github.yuqingliu.extraenchants.view.AbstractPlayerInventory;
@@ -42,7 +42,8 @@ public class GrindstoneMenu extends AbstractPlayerInventory {
     }
 
     @Override
-    public void open(Player player) {
+    public void open(Player player, Location location) {
+        inventoryLocations.put(player, location);
         Inventory inventory = Bukkit.createInventory(null, inventorySize, displayName);
         player.openInventory(inventory);
         mainMenu.getController().openMenu(player, inventory);

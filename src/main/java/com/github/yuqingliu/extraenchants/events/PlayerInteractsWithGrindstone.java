@@ -8,7 +8,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.block.Block;
 
 import com.github.yuqingliu.extraenchants.api.managers.InventoryManager;
-import com.github.yuqingliu.extraenchants.view.anvilmenu.AnvilMenu;
+import com.github.yuqingliu.extraenchants.view.grindstonemenu.GrindstoneMenu;
 import com.google.inject.Inject;
 
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.bukkit.event.block.Action;
 
 @RequiredArgsConstructor
-public class PlayerInteractsWithAnvil implements Listener {
+public class PlayerInteractsWithGrindstone implements Listener {
     @Inject
     private final InventoryManager inventoryManager;
 
@@ -25,9 +25,9 @@ public class PlayerInteractsWithAnvil implements Listener {
         Block block = event.getClickedBlock();
         Player player = event.getPlayer();
         
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && block != null && block.getType() == Material.ANVIL) {
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && block != null && block.getType() == Material.GRINDSTONE) {
             event.setCancelled(true);
-            inventoryManager.getInventory(AnvilMenu.class.getSimpleName()).open(player, block.getLocation());
+            inventoryManager.getInventory(GrindstoneMenu.class.getSimpleName()).open(player, block.getLocation());
         }
     }
 }

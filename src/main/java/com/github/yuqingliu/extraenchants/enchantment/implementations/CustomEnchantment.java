@@ -85,7 +85,7 @@ public abstract class CustomEnchantment extends AbstractEnchantment {
         item.setItemMeta(meta);
         meta = item.getItemMeta();
         if (meta != null) {
-            item = removeEnchantmentLore(item, getName(getEnchantmentLevel(item)));
+            item = removeEnchantmentLore(item, name);
         }
         return item;
     }

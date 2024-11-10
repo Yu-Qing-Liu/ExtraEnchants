@@ -12,6 +12,7 @@ import com.github.yuqingliu.extraenchants.api.view.PlayerInventory;
 import com.github.yuqingliu.extraenchants.view.AbstractPlayerInventory;
 import com.github.yuqingliu.extraenchants.view.anvilmenu.AnvilMenu;
 import com.github.yuqingliu.extraenchants.view.enchantmenu.EnchantMenu;
+import com.github.yuqingliu.extraenchants.view.grindstonemenu.GrindstoneMenu;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -47,7 +48,14 @@ public class InventoryManagerImpl implements InventoryManager {
             AnvilMenu.class.getSimpleName(),
             new AnvilMenu(
                 managerRepository, enchantmentRepository, anvilRepository, logger,
-                Component.text("Anvil Menu", NamedTextColor.GRAY)
+                Component.text("Anvil", NamedTextColor.GRAY)
+            )
+        );
+        inventories.put(
+            GrindstoneMenu.class.getSimpleName(),
+            new GrindstoneMenu(
+                managerRepository, enchantmentRepository, logger,
+                Component.text("Grindstone", NamedTextColor.DARK_GRAY)
             )
         );
     }

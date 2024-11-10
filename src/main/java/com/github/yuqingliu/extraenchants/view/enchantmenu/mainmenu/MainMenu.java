@@ -17,6 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 import com.github.yuqingliu.extraenchants.api.Scheduler;
+import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository.Rarity;
 import com.github.yuqingliu.extraenchants.view.enchantmenu.EnchantMenu;
 import com.github.yuqingliu.extraenchants.view.enchantmenu.EnchantMenu.MenuType;
 
@@ -87,17 +88,35 @@ public class MainMenu implements Listener {
                 wait(player, clickedInventory);
                 return;
             }
-            if(Arrays.equals(slot, controller.getVanillaEnchantsButton())) {
+            if(Arrays.equals(slot, controller.getCommon())) {
                 event.setCancelled(true);
-                controller.openVanillaSelectionMenu(player, clickedInventory);
+                controller.openRarityMenu(player, clickedInventory, Rarity.COMMON);
+                return;
             }
-            if(Arrays.equals(slot, controller.getCustomEnchantsButton())) {
+            if(Arrays.equals(slot, controller.getUncommon())) {
                 event.setCancelled(true);
-                controller.openCustomSelectionMenu(player, clickedInventory);
+                controller.openRarityMenu(player, clickedInventory, Rarity.UNCOMMON);
+                return;
             }
-            if(Arrays.equals(slot, controller.getAbilityEnchantsButton())) {
+            if(Arrays.equals(slot, controller.getRare())) {
                 event.setCancelled(true);
-                controller.openAbilitySelectionMenu(player, clickedInventory);
+                controller.openRarityMenu(player, clickedInventory, Rarity.RARE);
+                return;
+            }
+            if(Arrays.equals(slot, controller.getEpic())) {
+                event.setCancelled(true);
+                controller.openRarityMenu(player, clickedInventory, Rarity.EPIC);
+                return;
+            }
+            if(Arrays.equals(slot, controller.getLegendary())) {
+                event.setCancelled(true);
+                controller.openRarityMenu(player, clickedInventory, Rarity.LEGENDARY);
+                return;
+            }
+            if(Arrays.equals(slot, controller.getMythic())) {
+                event.setCancelled(true);
+                controller.openRarityMenu(player, clickedInventory, Rarity.MYTHIC);
+                return;
             }
             if(Arrays.equals(slot, controller.getExitMenuButton())) {
                 event.setCancelled(true);

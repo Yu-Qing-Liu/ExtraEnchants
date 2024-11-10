@@ -11,6 +11,7 @@ import com.github.yuqingliu.extraenchants.api.managers.EventManager;
 import com.github.yuqingliu.extraenchants.api.managers.InventoryManager;
 import com.github.yuqingliu.extraenchants.events.PlayerInteractsWithAnvil;
 import com.github.yuqingliu.extraenchants.events.PlayerInteractsWithEnchantingTable;
+import com.github.yuqingliu.extraenchants.events.PlayerInteractsWithGrindstone;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -30,6 +31,7 @@ public class EventManagerImpl implements EventManager {
     public void postConstruct() {
         listeners.put(PlayerInteractsWithEnchantingTable.class.getSimpleName(), new PlayerInteractsWithEnchantingTable(inventoryManager));
         listeners.put(PlayerInteractsWithAnvil.class.getSimpleName(), new PlayerInteractsWithAnvil(inventoryManager));
+        listeners.put(PlayerInteractsWithGrindstone.class.getSimpleName(), new PlayerInteractsWithGrindstone(inventoryManager));
         registerEvents();
     }
 

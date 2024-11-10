@@ -27,7 +27,7 @@ public class PlayerInteractsWithEnchantingTable implements Listener {
         
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK && block != null && block.getType() == Material.ENCHANTING_TABLE) {
             event.setCancelled(true);
-            inventoryManager.getInventory(EnchantMenu.class.getSimpleName()).open(player);
+            inventoryManager.getInventory(EnchantMenu.class.getSimpleName()).open(player, block.getLocation());
         }
     }
 }

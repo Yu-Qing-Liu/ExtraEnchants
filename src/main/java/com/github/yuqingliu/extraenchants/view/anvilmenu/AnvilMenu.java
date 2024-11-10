@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
@@ -44,7 +45,8 @@ public class AnvilMenu extends AbstractPlayerInventory {
     }
 
     @Override
-    public void open(Player player) {
+    public void open(Player player, Location location) {
+        inventoryLocations.put(player, location);
         Inventory inventory = Bukkit.createInventory(null, inventorySize, displayName);
         player.openInventory(inventory);
         mainMenu.getController().openMenu(player, inventory);

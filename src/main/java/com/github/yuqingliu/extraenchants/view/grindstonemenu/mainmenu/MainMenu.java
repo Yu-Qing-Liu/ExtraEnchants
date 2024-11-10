@@ -90,6 +90,7 @@ public class MainMenu implements Listener {
                 return;
             }
             if(grindstoneMenu.rectangleContains(slot, controller.getEnchantOptions())) {
+                event.setCancelled(true);
                 int pageNumber = controller.getPageNumbers().get(player)[0];
                 Enchantment selected = controller.getPageData().get(pageNumber).get(Arrays.asList(slot[0], slot[1]));
                 controller.removeEnchantment(player, clickedInventory, selected);

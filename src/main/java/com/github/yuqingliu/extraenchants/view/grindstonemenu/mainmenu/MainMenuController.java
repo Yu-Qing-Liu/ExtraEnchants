@@ -88,7 +88,8 @@ public class MainMenuController {
         ItemStack item = grindstoneMenu.getItem(inv, itemSlot);
         enchant.removeEnchantment(item);
         grindstoneMenu.getManagerRepository().getSoundManager().playGrindstoneSound(player);
-        player.getWorld().spawnEntity(player.getLocation(), EntityType.EXPERIENCE_ORB);
+        player.getWorld().spawnEntity(grindstoneMenu.getLocation(player), EntityType.EXPERIENCE_ORB);
+        reload(player, inv);
     }
 
     private void fetchOptions(Player player, Inventory inv) {

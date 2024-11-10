@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -39,6 +40,7 @@ public abstract class AbstractPlayerInventory implements PlayerInventory {
     protected final Component loadingComponent = Component.text("Loading...", NamedTextColor.RED);
     protected Map<Material, ItemStack> backgroundItems = new HashMap<>();
     protected Map<Material, ItemStack> unavailableItems = new HashMap<>();
+    protected Map<Player, Location> inventoryLocations = new ConcurrentHashMap<>();
     protected ItemStack nextPage;
     protected ItemStack prevPage;
     protected ItemStack prevMenu;
@@ -59,6 +61,11 @@ public abstract class AbstractPlayerInventory implements PlayerInventory {
         initializeBackgroundItems();
         initializeUnavailableItems();
         initializeCommonItems();
+    }
+
+    @Override
+    public Location getLocation(Player player) {
+        return inventoryLocations.get(player);
     }
 
     private void initializeBackgroundItems() {
@@ -282,5 +289,5 @@ public abstract class AbstractPlayerInventory implements PlayerInventory {
     public abstract Inventory load(Player player);
 
     @Override
-    public abstract void open(Player player);
+    public abstract void open(Player player, Location location);
 }

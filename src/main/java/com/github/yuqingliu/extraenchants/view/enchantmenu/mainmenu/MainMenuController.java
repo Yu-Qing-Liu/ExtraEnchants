@@ -1,14 +1,17 @@
 package com.github.yuqingliu.extraenchants.view.enchantmenu.mainmenu;
 
 import java.time.Duration;
-import java.util.Set;
+import java.util.Arrays;
+import java.util.List;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import com.github.yuqingliu.extraenchants.api.Scheduler;
 import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
+import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository.Rarity;
 import com.github.yuqingliu.extraenchants.view.enchantmenu.EnchantMenu;
 import com.github.yuqingliu.extraenchants.view.enchantmenu.EnchantMenu.MenuType;
 
@@ -22,9 +25,13 @@ public class MainMenuController {
     private final int[] exitMenuButton = new int[]{8,0};
     private final int[] itemSlot = new int[]{7,2};
     private final int[] decorationSlot = new int[]{7,3};
-    private final int[] vanillaEnchantsButton = new int[]{0,0};
-    private final int[] customEnchantsButton = new int[]{1,0};
-    private final int[] abilityEnchantsButton = new int[]{2,0};
+    private final int[] common = new int[]{1,2};
+    private final int[] uncommon = new int[]{2,2};
+    private final int[] rare = new int[]{3,2};
+    private final int[] epic = new int[]{4,2};
+    private final int[] legendary = new int[]{2,3};
+    private final int[] mythic = new int[]{3,3};
+    private final List<int[]> options = Arrays.asList(common, uncommon, rare, epic, legendary, mythic);
 
     public MainMenuController(EnchantMenu enchantMenu) {
         this.enchantMenu = enchantMenu;
@@ -41,14 +48,17 @@ public class MainMenuController {
     }
 
     public void reload(Inventory inv) {
-        if(enchantMenu.getEnchantmentRepository().getVanillaApplicableEnchantments(enchantMenu.getItem(inv, itemSlot)).length > 0) {
-            enchantMenu.setItem(inv, vanillaEnchantsButton, enchantMenu.createSlotItem(Material.WRITTEN_BOOK, Component.text("Vanilla Enchants", NamedTextColor.GREEN)));
+        ItemStack item = enchantMenu.getItem(inv, itemSlot);
+        if(enchantMenu.isItemNull(item)) {
+            return;
         }
-        if(enchantMenu.getEnchantmentRepository().getCustomApplicableEnchantments(enchantMenu.getItem(inv, itemSlot)).length > 0) {
-            enchantMenu.setItem(inv, customEnchantsButton, enchantMenu.createSlotItem(Material.WRITTEN_BOOK, Component.text("Custom Enchants", NamedTextColor.BLUE)));
-        }
-        if(enchantMenu.getEnchantmentRepository().getAbilityApplicableEnchantments(enchantMenu.getItem(inv, itemSlot)).length > 0) {
-            enchantMenu.setItem(inv, abilityEnchantsButton, enchantMenu.createSlotItem(Material.WRITTEN_BOOK, Component.text("Ability Enchants", NamedTextColor.LIGHT_PURPLE)));
+        int i = 0;
+        for(Rarity rarity : Rarity.values()) {
+            int numElements = enchantMenu.getEnchantmentRepository().getApplicableEnchantmentsByRarity(item, rarity).length;
+            Component title = Component.text(rarity.name() + " ENCHANTMENTS", rarity.color());
+            Component data = Component.text("Applicable: ", NamedTextColor.GOLD).append(Component.text(numElements, NamedTextColor.YELLOW));
+            enchantMenu.setItem(inv, options.get(i), enchantMenu.createSlotItem(Material.WRITTEN_BOOK, title, data));
+            i++;
         }
     }
 
@@ -56,18 +66,8 @@ public class MainMenuController {
         enchantMenu.fillRectangleArea(inv, new int[]{0,0}, 6, 6, enchantMenu.getUnavailable());
     }
 
-    public void openVanillaSelectionMenu(Player player, Inventory inv) {
-        Enchantment[] applicable = enchantMenu.getEnchantmentRepository().getVanillaApplicableEnchantments(enchantMenu.getItem(inv, itemSlot));
-        enchantMenu.getSelectionMenu().getController().openMenu(player, inv, applicable);
-    }
-
-    public void openCustomSelectionMenu(Player player, Inventory inv) {
-        Enchantment[] applicable = enchantMenu.getEnchantmentRepository().getCustomApplicableEnchantments(enchantMenu.getItem(inv, itemSlot));
-        enchantMenu.getSelectionMenu().getController().openMenu(player, inv, applicable);
-    }
-
-    public void openAbilitySelectionMenu(Player player, Inventory inv) {
-        Enchantment[] applicable = enchantMenu.getEnchantmentRepository().getAbilityApplicableEnchantments(enchantMenu.getItem(inv, itemSlot));
+    public void openRarityMenu(Player player, Inventory inv, Rarity rarity) {
+        Enchantment[] applicable = enchantMenu.getEnchantmentRepository().getApplicableEnchantmentsByRarity(enchantMenu.getItem(inv, itemSlot), rarity);
         enchantMenu.getSelectionMenu().getController().openMenu(player, inv, applicable);
     }
 
