@@ -1,25 +1,33 @@
 package com.github.yuqingliu.extraenchants.enchantment.implementations.vanilla;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 import org.bukkit.enchantments.Enchantment;
 
+import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository;
+import com.github.yuqingliu.extraenchants.api.repositories.ManagerRepository;
+import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository.EnchantID;
 import com.github.yuqingliu.extraenchants.enchantment.implementations.VanillaEnchantment;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class Multishot extends VanillaEnchantment {
-    public Multishot(TextColor nameColor, TextColor descriptionColor) {
+    public Multishot(ManagerRepository managerRepository, EnchantmentRepository enchantmentRepository, TextColor nameColor, TextColor descriptionColor) {
         super(
-            Enchantment.MULTISHOT,
+            managerRepository, enchantmentRepository,
+            EnchantID.MULTISHOT,
             Component.text("Multishot", nameColor),
-            Enchantment.MULTISHOT.getMaxLevel(),
             Component.text("Shoot 3 arrows at the cost of one; only one arrow can be recovered.", descriptionColor),
-            new ArrayList<>(),
-            new ArrayList<>(),
+            Enchantment.MULTISHOT.getMaxLevel(),
+            new HashSet<>(),
+            new HashSet<>(),
             "x^2",
-            "x"
+            "x",
+            Enchantment.MULTISHOT
         );
     }
+
+    @Override
+    public void postConstruct() {}
 }

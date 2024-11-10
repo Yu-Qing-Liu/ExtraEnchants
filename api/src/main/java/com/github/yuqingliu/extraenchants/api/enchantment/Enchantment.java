@@ -1,115 +1,46 @@
 package com.github.yuqingliu.extraenchants.api.enchantment;
 
-import lombok.Getter;
-
+import java.time.Duration;
 import java.util.List;
+import java.util.Set;
 
-import org.bukkit.Material;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
+
+import com.github.yuqingliu.extraenchants.api.item.Item;
+import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository.EnchantID;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
-public final class Enchantment {
-    @Getter private final Enchant definition;
-
-    public Enchantment(Enchant enchantment) {
-        this.definition = enchantment;
-    }
-
-    public Component getName() {
-        return definition.getName();
-    }
-
-    public Component getLeveledName(int level) {
-        return definition.getLeveledName(level);
-    }
-
-    public TextColor getLevelColor(int level) {
-        return definition.getLevelColor(level);
-    }
-
-    public TextColor getDescriptionColor() {
-        return definition.getDescriptionColor();
-    }
-
-    public Component getDescription() {
-        return definition.getDescription();
-    }
-
-    public Component getLeveledDescription(int level) {
-        return definition.getLeveledDescription(level);
-    }
-
-    public List<TextColor> getLeveledColors() {
-        return definition.getLeveledColors();
-    }
-
-    public int getMaxLevel() {
-        return definition.getMaxLevel();
-    }
-
-    public List<Material> getApplicableItems() {
-        return definition.getApplicable();
-    }
-
-    public List<Component> getApplicableDisplayNames() {
-        return definition.getApplicableDisplayNames();
-    }
-
-    public String getRequiredLevelFormula() {
-        return definition.getRequiredLevelFormula();
-    }
-
-    public String getCostFormula() {
-        return definition.getCostFormula();
-    }
-
-    public int getEnchantmentLevel(ItemStack item) {
-        return definition.getEnchantmentLevel(item);
-    }
-
-    public void setName(Component name) {
-        definition.setName(name);
-    }
-
-    public void setMaxLevel(int level) {
-        definition.setMaxLevel(level);
-    }
-
-    public void setDescription(Component description) {
-        definition.setDescription(description);
-    }
-
-    public void setApplicable(List<Material> applicable) {
-        definition.setApplicable(applicable);
-    }
-
-    public void setApplicableDisplayNames(List<Component> names) {
-        definition.setApplicableDisplayNames(names);
-    }
-
-    public void setRequiredLevelFormula(String formula) {
-        definition.setRequiredLevelFormula(formula);
-    }
-
-    public void setCostFormula(String formula) {
-        definition.setCostFormula(formula);
-    }
-
-    public void setLeveledColors(List<TextColor> colors) {
-        definition.setLeveledColors(colors);
-    }
-
-    public boolean canEnchant(ItemStack item) {
-        return definition.canEnchant(item);
-    }
-
-    public ItemStack applyEnchantment(ItemStack item, int level) {
-        return definition.applyEnchantment(item, level);
-    }
-
-    public ItemStack removeEnchantment(ItemStack item) {
-        return definition.removeEnchantment(item);
-    }
+public interface Enchantment extends Listener {
+    EnchantID getId();
+    Component getName();
+    Component getLeveledName(int level);
+    TextColor getLevelColor(int level);
+    TextColor getDescriptionColor();
+    List<TextColor> getLeveledColors();
+    int getMaxLevel();
+    Component getDescription();
+    Duration getCooldown();
+    Set<Item> getApplicable();
+    String getRequiredLevelFormula();
+    String getCostFormula();
+    Component getLeveledDescription(int level);
+    int getEnchantmentLevel(ItemStack item);
+    Set<EnchantID> getConflicting();
+    void setName(Component name);
+    void setDescription(Component description);
+    void setCooldown(Duration cooldown);
+    void setApplicable(Set<Item> applicable);
+    void setConflicting(Set<EnchantID> conflicting);
+    void setRequiredLevelFormula(String formula);
+    void setCostFormula(String formula);
+    void setMaxLevel(int level);
+    void setLeveledColors(List<TextColor> colors);
+    boolean canEnchant(ItemStack item);
+    boolean conflictsWith(EnchantID id);
+    ItemStack applyEnchantment(ItemStack item, int level);
+    ItemStack removeEnchantment(ItemStack item);
+    void postConstruct();
 }

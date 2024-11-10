@@ -1,7 +1,7 @@
 package com.github.yuqingliu.extraenchants.enchantment.implementations;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -15,17 +15,21 @@ import org.bukkit.persistence.PersistentDataType;
 
 import net.kyori.adventure.text.Component;
 
-import com.github.yuqingliu.extraenchants.api.Keys;
+import com.github.yuqingliu.extraenchants.api.item.Item;
+import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository;
+import com.github.yuqingliu.extraenchants.api.repositories.ManagerRepository;
+import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository.EnchantID;
 import com.github.yuqingliu.extraenchants.enchantment.AbstractEnchantment;
-import com.github.yuqingliu.extraenchants.api.utils.TextUtils;
+import com.github.yuqingliu.extraenchants.item.ItemImpl;
 
-public class VanillaEnchantment extends AbstractEnchantment {
-    private Enchantment enchantment;  
-    private NamespacedKey key = Keys.itemEnchant(TextUtils.componentToString(name));
-    
-    public VanillaEnchantment(Enchantment enchantment, Component name, int maxLevel, Component description, List<Material> applicable, List<Component> applicableDisplayNames, String levelFormula, String costFormula) {
-        super(name, maxLevel, description, applicable, applicableDisplayNames, levelFormula, costFormula);
+public abstract class VanillaEnchantment extends AbstractEnchantment {
+    private Enchantment enchantment;
+    private NamespacedKey key;
+
+    public VanillaEnchantment(ManagerRepository managerRepository, EnchantmentRepository enchantmentRepository, EnchantID id, Component name, Component description, int maxLevel, Set<Item> applicable, Set<EnchantID> conflicting, String requiredLevelFormula, String costFormula, Enchantment enchantment) {
+        super(managerRepository, enchantmentRepository, id, name, description, maxLevel, applicable, conflicting, requiredLevelFormula, costFormula);
         this.enchantment = enchantment;
+        this.key = keyManager.getEnchantKey(id);
     }
 
     @Override
@@ -47,9 +51,13 @@ public class VanillaEnchantment extends AbstractEnchantment {
         }
         if(item.getType() == Material.BOOK || item.getType() == Material.ENCHANTED_BOOK) {
             return true;
-        } 
-        Component displayName = item.displayName();
-        return enchantment.canEnchantItem(item) || applicable.contains(item.getType()) || applicableDisplayNames.contains(displayName);
+        }
+        Item i = new ItemImpl(item);
+        Set<EnchantID> keySet = enchantmentRepository.getEnchantments(item).keySet().stream().map(enchant -> enchant.getId()).collect(Collectors.toSet());
+        if (keySet.retainAll(conflicting) && keySet.size() > 0) {
+            return false;
+        }
+        return enchantment.canEnchantItem(item) || applicable.contains(i);
     }
     
     @Override

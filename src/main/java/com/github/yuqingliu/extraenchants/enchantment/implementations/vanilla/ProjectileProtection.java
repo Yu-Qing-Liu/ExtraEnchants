@@ -1,25 +1,33 @@
 package com.github.yuqingliu.extraenchants.enchantment.implementations.vanilla;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 import org.bukkit.enchantments.Enchantment;
 
+import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository;
+import com.github.yuqingliu.extraenchants.api.repositories.ManagerRepository;
+import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository.EnchantID;
 import com.github.yuqingliu.extraenchants.enchantment.implementations.VanillaEnchantment;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class ProjectileProtection extends VanillaEnchantment {
-    public ProjectileProtection(TextColor nameColor, TextColor descriptionColor) {
+    public ProjectileProtection(ManagerRepository managerRepository, EnchantmentRepository enchantmentRepository, TextColor nameColor, TextColor descriptionColor) {
         super(
-            Enchantment.PROJECTILE_PROTECTION,
+            managerRepository, enchantmentRepository,
+            EnchantID.PROJECTILE_PROTECTION,
             Component.text("Projectile Protection", nameColor),
-            Enchantment.PROJECTILE_PROTECTION.getMaxLevel(),
             Component.text("Reduces projectile damage.", descriptionColor),
-            new ArrayList<>(),
-            new ArrayList<>(),
+            Enchantment.PROJECTILE_PROTECTION.getMaxLevel(),
+            new HashSet<>(),
+            new HashSet<>(),
             "x^2",
-            "x"
+            "x",
+            Enchantment.PROJECTILE_PROTECTION
         );
     }
+
+    @Override
+    public void postConstruct() {}
 }

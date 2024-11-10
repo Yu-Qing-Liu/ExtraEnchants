@@ -1,25 +1,33 @@
 package com.github.yuqingliu.extraenchants.enchantment.implementations.vanilla;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 import org.bukkit.enchantments.Enchantment;
 
+import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository;
+import com.github.yuqingliu.extraenchants.api.repositories.ManagerRepository;
+import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository.EnchantID;
 import com.github.yuqingliu.extraenchants.enchantment.implementations.VanillaEnchantment;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class Protection extends VanillaEnchantment {
-    public Protection(TextColor nameColor, TextColor descriptionColor) {
+    public Protection(ManagerRepository managerRepository, EnchantmentRepository enchantmentRepository, TextColor nameColor, TextColor descriptionColor) {
         super(
-            Enchantment.PROTECTION,
+            managerRepository, enchantmentRepository,
+            EnchantID.PROTECTION,
             Component.text("Protection", nameColor),
-            Enchantment.PROTECTION.getMaxLevel(),
             Component.text("Reduces most types of damage by 4% per level.", descriptionColor),
-            new ArrayList<>(),
-            new ArrayList<>(),
+            Enchantment.PROTECTION.getMaxLevel(),
+            new HashSet<>(),
+            new HashSet<>(),
             "x^2",
-            "x"
+            "x",
+            Enchantment.PROTECTION
         );
     }
+
+    @Override
+    public void postConstruct() {}
 }

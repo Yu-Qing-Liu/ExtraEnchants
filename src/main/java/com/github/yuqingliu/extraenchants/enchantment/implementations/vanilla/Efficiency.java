@@ -1,25 +1,33 @@
 package com.github.yuqingliu.extraenchants.enchantment.implementations.vanilla;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 import org.bukkit.enchantments.Enchantment;
 
+import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository;
+import com.github.yuqingliu.extraenchants.api.repositories.ManagerRepository;
+import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository.EnchantID;
 import com.github.yuqingliu.extraenchants.enchantment.implementations.VanillaEnchantment;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class Efficiency extends VanillaEnchantment {
-    public Efficiency(TextColor nameColor, TextColor descriptionColor) {
+    public Efficiency(ManagerRepository managerRepository, EnchantmentRepository enchantmentRepository, TextColor nameColor, TextColor descriptionColor) {
         super(
-            Enchantment.EFFICIENCY,
+            managerRepository, enchantmentRepository,
+            EnchantID.EFFICIENCY,
             Component.text("Efficiency", nameColor),
-            Enchantment.EFFICIENCY.getMaxLevel(),
             Component.text("When applied to an axe it increases the chance that the axe may stun a shield.", descriptionColor),
-            new ArrayList<>(),
-            new ArrayList<>(),
+            Enchantment.EFFICIENCY.getMaxLevel(),
+            new HashSet<>(),
+            new HashSet<>(),
             "x^2",
-            "x"
+            "x",
+            Enchantment.EFFICIENCY
         );
     }
+
+    @Override
+    public void postConstruct() {}
 }

@@ -1,25 +1,33 @@
 package com.github.yuqingliu.extraenchants.enchantment.implementations.vanilla;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 import org.bukkit.enchantments.Enchantment;
 
+import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository;
+import com.github.yuqingliu.extraenchants.api.repositories.ManagerRepository;
+import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository.EnchantID;
 import com.github.yuqingliu.extraenchants.enchantment.implementations.VanillaEnchantment;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class SweepingEdge extends VanillaEnchantment {
-    public SweepingEdge(TextColor nameColor, TextColor descriptionColor) {
+    public SweepingEdge(ManagerRepository managerRepository, EnchantmentRepository enchantmentRepository, TextColor nameColor, TextColor descriptionColor) {
         super(
-            Enchantment.SWEEPING_EDGE,
+            managerRepository, enchantmentRepository,
+            EnchantID.SWEEPING_EDGE,
             Component.text("Sweeping Edge", nameColor),
-            Enchantment.SWEEPING_EDGE.getMaxLevel(),
             Component.text("Increases sweeping attack damage.", descriptionColor),
-            new ArrayList<>(),
-            new ArrayList<>(),
+            Enchantment.SWEEPING_EDGE.getMaxLevel(),
+            new HashSet<>(),
+            new HashSet<>(),
             "x^2",
-            "x"
+            "x",
+            Enchantment.SWEEPING_EDGE
         );
     }
+
+    @Override
+    public void postConstruct() {}
 }

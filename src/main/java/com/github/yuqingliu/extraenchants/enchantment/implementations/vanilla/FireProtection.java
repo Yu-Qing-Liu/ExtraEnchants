@@ -1,25 +1,33 @@
 package com.github.yuqingliu.extraenchants.enchantment.implementations.vanilla;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 import org.bukkit.enchantments.Enchantment;
 
+import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository;
+import com.github.yuqingliu.extraenchants.api.repositories.ManagerRepository;
+import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository.EnchantID;
 import com.github.yuqingliu.extraenchants.enchantment.implementations.VanillaEnchantment;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class FireProtection extends VanillaEnchantment {
-    public FireProtection(TextColor nameColor, TextColor descriptionColor) {
+    public FireProtection(ManagerRepository managerRepository, EnchantmentRepository enchantmentRepository, TextColor nameColor, TextColor descriptionColor) {
         super(
-            Enchantment.FIRE_PROTECTION,
+            managerRepository, enchantmentRepository,
+            EnchantID.FIRE_PROTECTION,
             Component.text("Fire Protection", nameColor),
-            Enchantment.FIRE_PROTECTION.getMaxLevel(),
             Component.text("Reduces fire damage and burn time.", descriptionColor),
-            new ArrayList<>(),
-            new ArrayList<>(),
+            Enchantment.FIRE_PROTECTION.getMaxLevel(),
+            new HashSet<>(),
+            new HashSet<>(),
             "x^2",
-            "x"
+            "x",
+            Enchantment.FIRE_PROTECTION
         );
     }
+
+    @Override
+    public void postConstruct() {}
 }

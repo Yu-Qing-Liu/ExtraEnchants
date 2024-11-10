@@ -6,39 +6,43 @@ import org.bukkit.NamespacedKey;
 
 import net.kyori.adventure.text.Component;
 
-import java.util.List;
+import java.time.Duration;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-import com.github.yuqingliu.extraenchants.api.Keys;
+import com.github.yuqingliu.extraenchants.api.item.Item;
+import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository;
+import com.github.yuqingliu.extraenchants.api.repositories.ManagerRepository;
+import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository.EnchantID;
 import com.github.yuqingliu.extraenchants.enchantment.AbstractEnchantment;
-import com.github.yuqingliu.extraenchants.item.lore.Lore;
-import com.github.yuqingliu.extraenchants.item.lore.implementations.AbilitySection;
-import com.github.yuqingliu.extraenchants.api.utils.TextUtils;
+import com.github.yuqingliu.extraenchants.item.ItemImpl;
+import com.github.yuqingliu.extraenchants.lore.implementations.AbilitySection;
 
-public class AbilityEnchantment extends AbstractEnchantment {
+public abstract class AbilityEnchantment extends AbstractEnchantment {
     private Component action;
-    private NamespacedKey key = Keys.itemEnchant(TextUtils.componentToString(name));
+    private NamespacedKey key;
 
-    public AbilityEnchantment(Component action, Component name, int maxLevel, Component description, List<Material> applicable, List<Component> applicableDisplayNames, String levelFormula, String costFormula) {
-        super(name, maxLevel, description, applicable, applicableDisplayNames, levelFormula, costFormula);
+    public AbilityEnchantment(ManagerRepository managerRepository, EnchantmentRepository enchantmentRepository, EnchantID id, Component name, Component description, int maxLevel, Set<Item> applicable, Set<EnchantID> conflicting, String requiredLevelFormula, String costFormula, Component action, Duration cooldown) {
+        super(managerRepository, enchantmentRepository, id, name, description, maxLevel, applicable, conflicting, requiredLevelFormula, costFormula);
         this.action = action;
+        super.cooldown = cooldown;
+        this.key = keyManager.getEnchantKey(id);
     }
 
     private ItemStack addOrUpdateAbilityLore(ItemStack item, Component enchant, Component eLevel) {
-        Lore lore = new Lore(item);
-        AbilitySection abilitySection = (AbilitySection) lore.getLoreSection("AbilitySection");
+        AbilitySection abilitySection = (AbilitySection) loreManager.getLoreSection(AbilitySection.class.getSimpleName(), item);
         abilitySection.addOrUpdateAbilityFromSection(enchant, eLevel, action, description);
-        return lore.applyLore();
+        return loreManager.applyLore(item, abilitySection);
     }
 
     private ItemStack removeAbilityLore(ItemStack item, Component enchant) {
-        Lore lore = new Lore(item);
-        AbilitySection abilitySection = (AbilitySection) lore.getLoreSection("AbilitySection");
+        AbilitySection abilitySection = (AbilitySection) loreManager.getLoreSection(AbilitySection.class.getSimpleName(), item);
         abilitySection.removeAbilityFromSection(enchant);
-        return lore.applyLore();
+        return loreManager.applyLore(item, abilitySection);
     }
 
     @Override
@@ -59,11 +63,15 @@ public class AbilityEnchantment extends AbstractEnchantment {
         if(item == null || item.getType() == Material.AIR) {
             return false;
         }
-        Component displayName = item.displayName();
         if(item.getType() == Material.BOOK || item.getType() == Material.ENCHANTED_BOOK) {
             return true;
-        } 
-        return applicable.contains(item.getType()) || applicableDisplayNames.contains(displayName);
+        }
+        Item i = new ItemImpl(item);
+        Set<EnchantID> keySet = enchantmentRepository.getEnchantments(item).keySet().stream().map(enchant -> enchant.getId()).collect(Collectors.toSet());
+        if (keySet.retainAll(conflicting) && keySet.size() > 0) {
+            return false;
+        }
+        return applicable.contains(i);
     }
     
     @Override

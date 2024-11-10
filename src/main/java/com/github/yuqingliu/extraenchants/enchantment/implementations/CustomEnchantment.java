@@ -6,23 +6,28 @@ import org.bukkit.NamespacedKey;
 
 import net.kyori.adventure.text.Component;
 
-import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-import com.github.yuqingliu.extraenchants.api.Keys;
+import com.github.yuqingliu.extraenchants.api.item.Item;
+import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository;
+import com.github.yuqingliu.extraenchants.api.repositories.ManagerRepository;
+import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository.EnchantID;
 import com.github.yuqingliu.extraenchants.enchantment.AbstractEnchantment;
-import com.github.yuqingliu.extraenchants.api.utils.TextUtils;
+import com.github.yuqingliu.extraenchants.item.ItemImpl;
 
-public class CustomEnchantment extends AbstractEnchantment {
-    private NamespacedKey key = Keys.itemEnchant(TextUtils.componentToString(name));
+public abstract class CustomEnchantment extends AbstractEnchantment {
+    private NamespacedKey key;
 
-    public CustomEnchantment(Component name, int maxLevel, Component description, List<Material> applicable, List<Component> applicableDisplayNames, String levelFormula, String costFormula) {
-        super(name, maxLevel, description, applicable, applicableDisplayNames, levelFormula, costFormula);
+    public CustomEnchantment(ManagerRepository managerRepository, EnchantmentRepository enchantmentRepository, EnchantID id, Component name, Component description, int maxLevel, Set<Item> applicable, Set<EnchantID> conflicting, String requiredLevelFormula, String costFormula) {
+        super(managerRepository, enchantmentRepository, id, name, description, maxLevel, applicable, conflicting, requiredLevelFormula, costFormula);
+        this.key = keyManager.getEnchantKey(id);
     }
-    
+
     @Override
     public int getEnchantmentLevel(ItemStack item) {
         if(item == null || item.getType() == Material.AIR) {
@@ -41,11 +46,15 @@ public class CustomEnchantment extends AbstractEnchantment {
         if(item == null || item.getType() == Material.AIR) {
             return false;
         }
-        Component displayName = item.displayName();
         if(item.getType() == Material.BOOK || item.getType() == Material.ENCHANTED_BOOK) {
             return true;
-        } 
-        return applicable.contains(item.getType()) || applicableDisplayNames.contains(displayName);
+        }
+        Item i = new ItemImpl(item);
+        Set<EnchantID> keySet = enchantmentRepository.getEnchantments(item).keySet().stream().map(enchant -> enchant.getId()).collect(Collectors.toSet());
+        if (keySet.retainAll(conflicting) && keySet.size() > 0) {
+            return false;
+        }
+        return applicable.contains(i);
     }
     
     @Override
@@ -76,7 +85,7 @@ public class CustomEnchantment extends AbstractEnchantment {
         item.setItemMeta(meta);
         meta = item.getItemMeta();
         if (meta != null) {
-            item = removeEnchantmentLore(item, getName(getEnchantmentLevel(item)));
+            item = removeEnchantmentLore(item, name);
         }
         return item;
     }

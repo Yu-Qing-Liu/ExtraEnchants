@@ -1,25 +1,33 @@
 package com.github.yuqingliu.extraenchants.enchantment.implementations.vanilla;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 import org.bukkit.enchantments.Enchantment;
 
+import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository;
+import com.github.yuqingliu.extraenchants.api.repositories.ManagerRepository;
+import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository.EnchantID;
 import com.github.yuqingliu.extraenchants.enchantment.implementations.VanillaEnchantment;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class Thorns extends VanillaEnchantment {
-    public Thorns(TextColor nameColor, TextColor descriptionColor) {
+    public Thorns(ManagerRepository managerRepository, EnchantmentRepository enchantmentRepository, TextColor nameColor, TextColor descriptionColor) {
         super(
-            Enchantment.THORNS,
+            managerRepository, enchantmentRepository,
+            EnchantID.THORNS,
             Component.text("Thorns", nameColor),
-            Enchantment.THORNS.getMaxLevel(),
             Component.text("Reflects some of the damage taken when hit, at the cost of reducing durability.", descriptionColor),
-            new ArrayList<>(),
-            new ArrayList<>(),
+            Enchantment.THORNS.getMaxLevel(),
+            new HashSet<>(),
+            new HashSet<>(),
             "x^2",
-            "x"
+            "x",
+            Enchantment.THORNS
         );
     }
+
+    @Override
+    public void postConstruct() {}
 }

@@ -1,25 +1,33 @@
 package com.github.yuqingliu.extraenchants.enchantment.implementations.vanilla;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 import org.bukkit.enchantments.Enchantment;
 
+import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository;
+import com.github.yuqingliu.extraenchants.api.repositories.ManagerRepository;
+import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository.EnchantID;
 import com.github.yuqingliu.extraenchants.enchantment.implementations.VanillaEnchantment;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class Respiration extends VanillaEnchantment {
-    public Respiration(TextColor nameColor, TextColor descriptionColor) {
+    public Respiration(ManagerRepository managerRepository, EnchantmentRepository enchantmentRepository, TextColor nameColor, TextColor descriptionColor) {
         super(
-            Enchantment.RESPIRATION,
+            managerRepository, enchantmentRepository,
+            EnchantID.RESPIRATION,
             Component.text("Respiration", nameColor),
-            Enchantment.RESPIRATION.getMaxLevel(),
             Component.text("Extends underwater breathing time.", descriptionColor),
-            new ArrayList<>(),
-            new ArrayList<>(),
+            Enchantment.RESPIRATION.getMaxLevel(),
+            new HashSet<>(),
+            new HashSet<>(),
             "x^2",
-            "x"
+            "x",
+            Enchantment.RESPIRATION
         );
     }
+
+    @Override
+    public void postConstruct() {}
 }

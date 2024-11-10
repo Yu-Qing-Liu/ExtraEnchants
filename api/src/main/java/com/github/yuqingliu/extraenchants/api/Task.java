@@ -14,6 +14,7 @@ public class Task {
     private final Plugin plugin;
     private final Consumer<Task> taskConsumer;
     @Getter private BukkitTask task;
+    private boolean cancelled = false;
 
     public Task(Plugin plugin, Consumer<Task> taskConsumer) {
         this.plugin = plugin;
@@ -44,9 +45,14 @@ public class Task {
         this.task = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> taskConsumer.accept(this), toTicks(delay), toTicks(interval));
     }
 
+    public boolean isCancelled() {
+        return cancelled;
+    }
+
     public void cancel() {
         if (task != null) {
             this.task.cancel();
+            cancelled = true;
         }
     }
 

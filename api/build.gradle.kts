@@ -17,8 +17,6 @@ dependencies {
 
     compileOnly("org.projectlombok:lombok:${project.property("lombok_version")}")
     annotationProcessor("org.projectlombok:lombok:${project.property("lombok_version")}")
-
-    implementation("net.objecthunter:exp4j:0.4.8")
 }
 
 tasks.test {

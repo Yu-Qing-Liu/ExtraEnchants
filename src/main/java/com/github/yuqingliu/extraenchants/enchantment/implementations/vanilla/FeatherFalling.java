@@ -1,25 +1,33 @@
 package com.github.yuqingliu.extraenchants.enchantment.implementations.vanilla;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 import org.bukkit.enchantments.Enchantment;
 
+import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository;
+import com.github.yuqingliu.extraenchants.api.repositories.ManagerRepository;
+import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository.EnchantID;
 import com.github.yuqingliu.extraenchants.enchantment.implementations.VanillaEnchantment;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class FeatherFalling extends VanillaEnchantment {
-    public FeatherFalling(TextColor nameColor, TextColor descriptionColor) {
+    public FeatherFalling(ManagerRepository managerRepository, EnchantmentRepository enchantmentRepository, TextColor nameColor, TextColor descriptionColor) {
         super(
-            Enchantment.FEATHER_FALLING,
+            managerRepository, enchantmentRepository,
+            EnchantID.FEATHER_FALLING,
             Component.text("Feather Falling", nameColor),
-            Enchantment.FEATHER_FALLING.getMaxLevel(),
             Component.text("Reduces fall damage.", descriptionColor),
-            new ArrayList<>(),
-            new ArrayList<>(),
+            Enchantment.FEATHER_FALLING.getMaxLevel(),
+            new HashSet<>(),
+            new HashSet<>(),
             "x^2",
-            "x"
+            "x",
+            Enchantment.FEATHER_FALLING
         );
     }
+
+    @Override
+    public void postConstruct() {}
 }
