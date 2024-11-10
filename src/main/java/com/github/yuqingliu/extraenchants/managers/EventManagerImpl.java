@@ -47,7 +47,7 @@ public class EventManagerImpl implements EventManager {
     @Inject
     public void postConstruct() {
         listeners.put(InventoryEvents.class.getSimpleName(), new InventoryEvents(inventoryManager, blockRepository, configurationManager));
-        listeners.put(WandEvents.class.getSimpleName(), new WandEvents(logger, blockRepository, nameSpacedKeyManager));
+        listeners.put(WandEvents.class.getSimpleName(), new WandEvents(logger, blockRepository, nameSpacedKeyManager, inventoryManager));
         registerEvents();
     }
 
