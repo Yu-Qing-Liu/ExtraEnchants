@@ -52,7 +52,8 @@ public interface EnchantmentRepository {
                 // RARE RARITY
                 case MENDING, VANISHING_CURSE, BINDING_CURSE, GROWTH, VENOM, WITHER -> Rarity.RARE;
                 // EPIC RARITY
-                case IMMOLATE, LIFESTEAL, MITIGATION, POWER_STRIKE, SNIPE, WARPED -> Rarity.EPIC;
+                case LIFESTEAL, POWER_STRIKE, SNIPE, WARPED -> Rarity.EPIC;
+                case HOMING, IMMOLATE, MITIGATION -> Rarity.LEGENDARY;
                 // MYTHIC RARITY
                 case FOCUS, RAPID_FIRE, SONIC_BOOM -> Rarity.MYTHIC;
                 // Default to COMMON if no match
