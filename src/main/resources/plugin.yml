@@ -5,7 +5,7 @@ main: com.github.yuqingliu.extraenchants.Main
 api-version: '1.13'
 commands:
   wand:
-    description: Mark blocks/entities which can view GUI, left-click to mark, right-click to unmark
+    description: Mark blocks/entities which can view GUI, Right Click to mark.
     usage: /wand etable; /wand anvil; /wand grindstone
     permission: extraenchants.admin
   enchant:

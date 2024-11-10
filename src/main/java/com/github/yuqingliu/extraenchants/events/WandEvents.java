@@ -1,11 +1,13 @@
 package com.github.yuqingliu.extraenchants.events;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -96,4 +98,28 @@ public class WandEvents implements Listener {
             }
         }
     }
+
+    @EventHandler
+    public void onBlockBreak(BlockBreakEvent event) {
+        Player player = event.getPlayer();
+        Block block = event.getBlock();
+
+        if(blockRepository.getCustomBlocks().contains(block.getLocation())) {
+            blockRepository.deleteCustomBlock(block.getLocation());
+            switch (event.getBlock().getType()) {
+                case ANVIL -> {
+                    logger.sendPlayerErrorMessage(player, String.format("Custom anvil removed at %s", block.getLocation().toString()));
+                }
+                case ENCHANTING_TABLE -> {
+                    logger.sendPlayerErrorMessage(player, String.format("Custom enchanting table removed at %s", block.getLocation().toString()));
+                }
+                case GRINDSTONE -> {
+                    logger.sendPlayerErrorMessage(player, String.format("Custom grindstone removed at %s", block.getLocation().toString()));
+                }
+                default -> {
+                    return;
+                }
+            }
+        }
+    } 
 }
