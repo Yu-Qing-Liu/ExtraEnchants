@@ -19,6 +19,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 @Getter
@@ -115,6 +116,18 @@ public class EnchantmentRepositoryImpl implements EnchantmentRepository {
     }
 
     @Override
+    public Enchantment getEnchantment(Component enchantName) {
+        return enchantments.stream().filter(enchant -> {
+            for(int i = 1; i <= enchant.getMaxLevel(); i++) {
+                if(enchant.getName(i).equals(enchantName)) {
+                    return true;
+                }
+            }
+            return false;
+        }).findFirst().orElse(null);
+    }
+
+    @Override
     public Map<Enchantment, Integer> getEnchantments(ItemStack item) {
         Map<Enchantment, Integer> enchants = new HashMap<>();
         getEnchantments().stream().forEach(enchant -> {
@@ -140,4 +153,5 @@ public class EnchantmentRepositoryImpl implements EnchantmentRepository {
             EnchantID.getEnchantmentIdsByRarity(rarity).contains(enchant.getId()) && enchant.canEnchant(item) && (itemEnchants.containsKey(enchant) ? (itemEnchants.get(enchant) < enchant.getMaxLevel()) : true)
         ).toArray(Enchantment[]::new);
     }
+    
 }
