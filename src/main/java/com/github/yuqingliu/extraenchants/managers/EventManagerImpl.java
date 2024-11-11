@@ -70,6 +70,5 @@ public class EventManagerImpl implements EventManager {
     @Override
     public void unregisterEvent(String className) {
         HandlerList.unregisterAll(listeners.get(className));
-        ;
     }
 }
