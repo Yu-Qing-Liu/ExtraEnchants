@@ -16,6 +16,10 @@ import net.kyori.adventure.text.format.TextColor;
 public interface Enchantment extends Listener {
     EnchantID getId();
     Component getName();
+    Component getName(int colorLevel);
+    public Component getLevel(int colorLevel);
+    public Component getLevel(int level, int colorLevel);
+    public int getLevel(Component name);
     Component getLeveledName(int level);
     TextColor getLevelColor(int level);
     TextColor getDescriptionColor();

@@ -16,6 +16,7 @@ import com.github.yuqingliu.extraenchants.api.lore.LoreSection;
 import com.github.yuqingliu.extraenchants.api.managers.LoreManager;
 import com.github.yuqingliu.extraenchants.api.managers.NameSpacedKeyManager;
 import com.github.yuqingliu.extraenchants.api.managers.TextManager;
+import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository;
 import com.github.yuqingliu.extraenchants.lore.implementations.AbilitySection;
 import com.github.yuqingliu.extraenchants.lore.implementations.EnchantmentSection;
 import com.github.yuqingliu.extraenchants.lore.implementations.PreviousSection;
@@ -31,12 +32,14 @@ public class LoreManagerImpl implements LoreManager {
     private final TextManager textManager;
     private final Component seperator = Component.empty();
     private final NamespacedKey loreKey;
+    private final EnchantmentRepository enchantmentRepository;
     
     @Inject
-    public LoreManagerImpl(JavaPlugin plugin, TextManager textManager, NameSpacedKeyManager keyManager) {
+    public LoreManagerImpl(JavaPlugin plugin, TextManager textManager, NameSpacedKeyManager keyManager, EnchantmentRepository enchantmentRepository) {
         this.plugin = plugin;
         this.textManager = textManager;
         this.loreKey = keyManager.getLoreKey();
+        this.enchantmentRepository = enchantmentRepository;
     }
     
     private Map<Integer, LoreSection> initializeSections(int[] sectionSizes, List<Component> itemLore) {
@@ -48,7 +51,7 @@ public class LoreManagerImpl implements LoreManager {
         } else {
             loreMap.put(0, new PreviousSection(0, sectionSizes, itemLore));
         }
-        loreMap.put(1, new EnchantmentSection(1, textManager, sectionSizes, itemLore));
+        loreMap.put(1, new EnchantmentSection(1, textManager, sectionSizes, itemLore, enchantmentRepository));
         loreMap.put(2, new AbilitySection(2, sectionSizes, itemLore));
         return loreMap;
     }

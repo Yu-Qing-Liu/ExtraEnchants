@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
 
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public interface EnchantmentRepository {
@@ -76,6 +77,7 @@ public interface EnchantmentRepository {
     }
 
     Enchantment getEnchantment(EnchantID enchantment);
+    Enchantment getEnchantment(Component enchantName);
     Set<Enchantment> getEnchantments();
     Map<Enchantment, Integer> getEnchantments(ItemStack item);
     Enchantment[] getApplicableEnchantments(ItemStack item);

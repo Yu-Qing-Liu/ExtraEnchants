@@ -139,6 +139,31 @@ public abstract class AbstractEnchantment implements Enchantment {
     }
     
     @Override
+    public Component getName(int colorLevel) {
+        return this.name.color(getLevelColor(colorLevel));
+    }
+    
+    @Override
+    public Component getLevel(int colorLevel) {
+        return Component.text(" " + textManager.toRoman(colorLevel), getLevelColor(colorLevel));
+    }
+    
+    @Override
+    public Component getLevel(int level, int colorLevel) {
+        return Component.text(" " + textManager.toRoman(level), getLevelColor(colorLevel));
+    }
+    
+    @Override
+    public int getLevel(Component name) {
+        for (int i = 1; i < maxLevel; i++) {
+            if(name.equals(getName(i))) {
+                return i;
+            }
+        }
+        return 0;
+    }
+    
+    @Override
     public abstract int getEnchantmentLevel(ItemStack item);
     
     @Override
@@ -169,16 +194,5 @@ public abstract class AbstractEnchantment implements Enchantment {
         enchantmentSection.removeEnchantmentFromSection(enchant);
         return loreManager.applyLore(item, enchantmentSection);
     }
-    
-    protected Component getName(int colorLevel) {
-        return this.name.color(getLevelColor(colorLevel));
-    }
 
-    protected Component getLevel(int colorLevel) {
-        return Component.text(" " + textManager.toRoman(colorLevel), getLevelColor(colorLevel));
-    }
-
-    protected Component getLevel(int level, int colorLevel) {
-        return Component.text(" " + textManager.toRoman(level), getLevelColor(colorLevel));
-    }
 }
