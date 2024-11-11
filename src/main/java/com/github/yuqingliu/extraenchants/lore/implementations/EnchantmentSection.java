@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
 import com.github.yuqingliu.extraenchants.api.managers.TextManager;
 import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository;
 import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository.Rarity;
@@ -15,6 +14,7 @@ import com.google.inject.Inject;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 public class EnchantmentSection extends AbstractLoreSection {
     private final EnchantmentRepository enchantmentRepository;
@@ -22,8 +22,7 @@ public class EnchantmentSection extends AbstractLoreSection {
     private final int maxComponents = 3;
 
     @Inject
-    public EnchantmentSection(int position, TextManager textManager, int[] sectionSizes, List<Component> itemLore,
-            EnchantmentRepository enchantmentRepository) {
+    public EnchantmentSection(int position, TextManager textManager, int[] sectionSizes, List<Component> itemLore, EnchantmentRepository enchantmentRepository) {
         super(position, textManager, sectionSizes, itemLore);
         this.enchantmentRepository = enchantmentRepository;
         name = this.getClass().getSimpleName();
@@ -39,7 +38,7 @@ public class EnchantmentSection extends AbstractLoreSection {
         public Enchant(Component name, Component eLevel) {
             this.name = name;
             this.eLevel = eLevel;
-            this.level = textManager.fromRoman(textManager.componentToString(eLevel));
+            this.level = textManager.fromRoman(PlainTextComponentSerializer.plainText().serialize(eLevel).substring(1));
             this.rarity = enchantmentRepository.getEnchantment(name).getId().rarity();
         }
     }

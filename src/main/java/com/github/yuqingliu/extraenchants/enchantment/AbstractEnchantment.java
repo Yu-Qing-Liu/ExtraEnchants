@@ -154,6 +154,16 @@ public abstract class AbstractEnchantment implements Enchantment {
     }
     
     @Override
+    public int getLevel(Component name) {
+        for (int i = 1; i < maxLevel; i++) {
+            if(name.equals(getName(i))) {
+                return i;
+            }
+        }
+        return 0;
+    }
+    
+    @Override
     public abstract int getEnchantmentLevel(ItemStack item);
     
     @Override

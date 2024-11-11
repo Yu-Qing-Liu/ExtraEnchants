@@ -19,6 +19,7 @@ public interface Enchantment extends Listener {
     Component getName(int colorLevel);
     public Component getLevel(int colorLevel);
     public Component getLevel(int level, int colorLevel);
+    public int getLevel(Component name);
     Component getLeveledName(int level);
     TextColor getLevelColor(int level);
     TextColor getDescriptionColor();
