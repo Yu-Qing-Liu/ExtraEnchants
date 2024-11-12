@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "com.github.yuqingliu.extraenchants"
-version = "2.0.2-SNAPSHOT"
+version = "2.1.4-SNAPSHOT"
 
 repositories {
     maven("https://repo.papermc.io/repository/maven-public/") // Paper
