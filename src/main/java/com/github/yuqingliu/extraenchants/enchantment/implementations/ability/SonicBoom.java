@@ -2,10 +2,10 @@ package com.github.yuqingliu.extraenchants.enchantment.implementations.ability;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -34,7 +34,7 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 
 public class SonicBoom extends AbilityEnchantment {
-    private Map<UUID, Long> cooldowns = new HashMap<>();
+    private Map<UUID, Long> cooldowns = new ConcurrentHashMap<>();
 
     public SonicBoom(ManagerRepository managerRepository, EnchantmentRepository enchantmentRepository, ItemRepository itemRepository, TextColor nameColor, TextColor descriptionColor) {
         super(

@@ -110,6 +110,7 @@ public class EnchantmentRepositoryImpl implements EnchantmentRepository {
         enchantments.add(new Homing(managerRepository, this, itemRepository, legendary, descriptionColor));
         enchantments.add(new Immolate(managerRepository, this, itemRepository, legendary, descriptionColor));
         enchantments.add(new Mitigation(managerRepository, this, itemRepository, legendary, descriptionColor));
+        enchantments.add(new Thunder(managerRepository, this, itemRepository, legendary, descriptionColor));
         // mythic enchants
         enchantments.add(new Focus(managerRepository, this, itemRepository, mythic, descriptionColor));
         enchantments.add(new RapidFire(managerRepository, this, itemRepository, mythic, descriptionColor));
