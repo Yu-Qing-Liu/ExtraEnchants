@@ -31,8 +31,34 @@ AnvilLevelUpgradeCost: 2.0              # Anvil level upgrade cost per enchantme
 Commands:
 ```
 - /wand etable; /wand anvil; /wand grindstone
-    # Mark blocks/entities which can view GUI, Right Click to mark.
-    # Only works on anvils, etables and grindstone blocks as well as anything that is an entity (Villagers, ...).
+
+Mark blocks/entities which can view GUI, Right Click to mark.
+Only works on anvils, etables and grindstone blocks as well as anything that is an entity (Villagers, ...).
+```
+```
+- /enchant <EnchantID> <Level>
+
+Enchant main hand item
+```
+```
+- /level set <EnchantID> <MaxLevel>
+
+Set an enchantment's maximum level
+```
+```
+- /list 
+
+List all available enchantments
+```
+```
+- /anvil add
+
+Add item in main hand and item in off hand as valid combinable items in the anvil.
+```
+```
+- /enchantable <EnchantID>
+
+Make item in main hand enchantable by EnchantID
 ```
 
 Example of an enchantment .json file:
