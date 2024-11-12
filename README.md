@@ -7,12 +7,12 @@ Directory tree:
 ```
 plugins/
 │   ├── ExtraEnchants/
-│   │   └── anvilcombinations/  # Directory for anvil combinations
+│   │   ├── anvilcombinations/  # Directory for anvil combinations
 │   │   │   └── [Allium].json  
 │   │   │   └── ...  
-│   │   └── enchantments/       # Directory for enchantments
-│   │       └── PUNCH.json
-│   │       └── ...
+│   │   ├── enchantments/       # Directory for enchantments
+│   │   │   └── PUNCH.json
+│   │   │   └── ...
 │   │   └── customblocks/       # Directory for custom ui blocks
 │   │       └── BLOCKS.json
 │   ├── ExtraEnchants.jar       # Plugin binary
