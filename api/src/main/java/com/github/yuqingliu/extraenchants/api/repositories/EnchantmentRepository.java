@@ -9,6 +9,7 @@ import java.util.Set;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
+import com.github.yuqingliu.extraenchants.api.persistence.Database;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -97,5 +98,7 @@ public interface EnchantmentRepository {
     Map<Enchantment, Integer> getSortedEnchantments(ItemStack item, Enchantment newEnchant, int newEnchantLevel);
     Enchantment[] getApplicableEnchantments(ItemStack item);
     Enchantment[] getApplicableEnchantmentsByRarity(ItemStack item, Rarity rarity);
+    void setDatabase(Database database);
+    void setEnchantmentMaxLevel(EnchantID id, int maxLevel);
     void postConstruct();
 }

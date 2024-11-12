@@ -56,6 +56,7 @@ public class Main extends ExtraEnchants {
     }
 
     private void databasePostConstruct() {
-        blockRepository.postConstruct(blockDatabase);
+        blockRepository.setDatabase(blockDatabase);
+        enchantmentRepository.setDatabase(enchantmentDatabase);
     }
 }

@@ -19,7 +19,7 @@ public class EnchantmentDatabase extends AbstractDatabase {
         super(rootDirectory);
         this.enchantmentRepository = enchantmentRepository;
     }
-    
+
     @Inject
     public void postConstruct() {
         try {
@@ -37,7 +37,7 @@ public class EnchantmentDatabase extends AbstractDatabase {
             } else {
                 // Populate with defaults
                 enchantmentRepository.getEnchantments().forEach(enchant -> {
-                    File enchantmentFile = new File(enchantmentDirectory, enchant.getId().name() + ".json");
+                    File enchantmentFile = getEnchantmentFile(enchant.getId());
                     EnchantmentDTO data = new EnchantmentDTO(enchant.getId(), enchant.getName(),
                             enchant.getDescription(), enchant.getCooldown(), enchant.getMaxLevel(), enchant.getApplicable(),
                             enchant.getConflicting(), enchant.getRequiredLevelFormula(), enchant.getCostFormula(),
@@ -48,6 +48,10 @@ public class EnchantmentDatabase extends AbstractDatabase {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public File getEnchantmentFile(EnchantID id) {
+        return new File(enchantmentDirectory, id.name() + ".json");
     }
 
     private void mergeData(EnchantmentDTO data, Enchantment enchantment) {

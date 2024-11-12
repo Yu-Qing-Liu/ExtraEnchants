@@ -79,6 +79,12 @@ public abstract class AbstractEnchantment implements Enchantment {
     }
 
     @Override
+    public void setMaxLevel(int maxLevel) {
+        this.maxLevel = maxLevel;
+        this.leveledColors = colorManager.generateMonochromaticGradient(this.name.color(), maxLevel);
+    }
+
+    @Override
     public Component getDescription() {
         Pattern replace = Pattern.compile("(\\d+%?)");
         TextReplacementConfig replacementConfig = TextReplacementConfig.builder()
