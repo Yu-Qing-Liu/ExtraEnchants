@@ -9,6 +9,8 @@ import java.util.Set;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
+import com.github.yuqingliu.extraenchants.api.item.Item;
+import com.github.yuqingliu.extraenchants.api.persistence.Database;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -26,6 +28,18 @@ public interface EnchantmentRepository {
                 case LEGENDARY -> NamedTextColor.GOLD;
                 case MYTHIC -> NamedTextColor.AQUA;
                 default -> NamedTextColor.WHITE;
+            };
+        }
+
+        public int rank() {
+            return switch(this) {
+                case COMMON -> 1;
+                case UNCOMMON -> 2;
+                case RARE -> 3;
+                case EPIC -> 4;
+                case LEGENDARY -> 5;
+                case MYTHIC -> 6;
+                default -> 0;
             };
         }
     }
@@ -80,7 +94,13 @@ public interface EnchantmentRepository {
     Enchantment getEnchantment(Component enchantName);
     Set<Enchantment> getEnchantments();
     Map<Enchantment, Integer> getEnchantments(ItemStack item);
+    Map<Enchantment, Integer> getSortedEnchantments();
+    Map<Enchantment, Integer> getSortedEnchantments(ItemStack item);
+    Map<Enchantment, Integer> getSortedEnchantments(ItemStack item, Enchantment newEnchant, int newEnchantLevel);
     Enchantment[] getApplicableEnchantments(ItemStack item);
     Enchantment[] getApplicableEnchantmentsByRarity(ItemStack item, Rarity rarity);
+    void setDatabase(Database database);
+    void setEnchantmentMaxLevel(EnchantID id, int maxLevel);
+    void addApplicable(EnchantID id, Item item);
     void postConstruct();
 }

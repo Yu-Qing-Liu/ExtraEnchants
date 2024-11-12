@@ -9,5 +9,5 @@ public interface CustomBlockRepository {
     Set<Location> getCustomBlocks(); 
     void addCustomBlock(Location location);
     void deleteCustomBlock(Location location);
-    void postConstruct(Database database);
+    void setDatabase(Database database);
 }

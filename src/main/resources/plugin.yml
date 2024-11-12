@@ -14,11 +14,19 @@ commands:
     permission: extraenchants.admin
   level:
     description: Set an enchantment's maximum level
-    usage: /level set <EnchantID> <Level>
+    usage: /level set <EnchantID> <MaxLevel>
     permission: extraenchants.admin
   list:
     description: List all available enchantemnts
     usage: /list
+    permission: extraenchants.admin
+  anvil:
+    description: Add item in main hand and item in off hand as valid combinable items in the anvil.
+    usage: /anvil add
+    permission: extraenchants.admin
+  enchantable:
+    description: Make item in main hand enchantable by enchantID
+    usage: /enchantable <EnchantID>
     permission: extraenchants.admin
 
 permissions:

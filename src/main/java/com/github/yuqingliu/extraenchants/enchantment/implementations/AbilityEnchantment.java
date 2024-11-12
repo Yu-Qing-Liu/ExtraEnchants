@@ -86,7 +86,7 @@ public abstract class AbilityEnchantment extends AbstractEnchantment {
             item.setItemMeta(meta);
             meta = item.getItemMeta();
             if (meta != null) {
-                item = addOrUpdateAbilityLore(item, getName(1), getLevel(level, 1));
+                item = addOrUpdateAbilityLore(item, getName(level), getLevel(level));
             }
         }
         return item;

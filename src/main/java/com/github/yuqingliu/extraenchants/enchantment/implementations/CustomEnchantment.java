@@ -6,6 +6,7 @@ import org.bukkit.NamespacedKey;
 
 import net.kyori.adventure.text.Component;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -13,6 +14,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
 import com.github.yuqingliu.extraenchants.api.item.Item;
 import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository;
 import com.github.yuqingliu.extraenchants.api.repositories.ManagerRepository;
@@ -69,7 +71,7 @@ public abstract class CustomEnchantment extends AbstractEnchantment {
             item.setItemMeta(meta);
             meta = item.getItemMeta();
             if (meta != null) {
-                item = addOrUpdateEnchantmentLore(item, getName(level), getLevel(level));
+                item = addOrUpdateEnchantmentLore(item, enchantmentRepository.getSortedEnchantments(item, this, level));
             }
         }
         return item;
@@ -85,7 +87,9 @@ public abstract class CustomEnchantment extends AbstractEnchantment {
         item.setItemMeta(meta);
         meta = item.getItemMeta();
         if (meta != null) {
-            item = removeEnchantmentLore(item, name);
+            Map<Enchantment, Integer> enchants = enchantmentRepository.getSortedEnchantments(item);
+            enchants.remove(this);
+            item = addOrUpdateEnchantmentLore(item, enchants);
         }
         return item;
     }

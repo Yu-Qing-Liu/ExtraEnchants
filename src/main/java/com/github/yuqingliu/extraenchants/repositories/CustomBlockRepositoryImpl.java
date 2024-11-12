@@ -18,7 +18,7 @@ public class CustomBlockRepositoryImpl implements CustomBlockRepository {
     Set<Location> customBlocks = Sets.newConcurrentHashSet();
     
     @Override
-    public void postConstruct(Database blocksDatabase) {
+    public void setDatabase(Database blocksDatabase) {
         this.blocksDatabase = (CustomBlockDatabase) blocksDatabase;
     }
 

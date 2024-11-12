@@ -1,7 +1,11 @@
 package com.github.yuqingliu.extraenchants.repositories;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -9,22 +13,26 @@ import java.util.stream.Collectors;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
+import com.github.yuqingliu.extraenchants.api.item.Item;
+import com.github.yuqingliu.extraenchants.api.persistence.Database;
 import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository;
 import com.github.yuqingliu.extraenchants.api.repositories.ItemRepository;
 import com.github.yuqingliu.extraenchants.api.repositories.ManagerRepository;
 import com.github.yuqingliu.extraenchants.enchantment.implementations.custom.*;
+import com.github.yuqingliu.extraenchants.enchantment.implementations.AbilityEnchantment;
 import com.github.yuqingliu.extraenchants.enchantment.implementations.ability.*;
 import com.github.yuqingliu.extraenchants.enchantment.implementations.vanilla.*;
+import com.github.yuqingliu.extraenchants.persistence.enchantments.EnchantmentDTO;
+import com.github.yuqingliu.extraenchants.persistence.enchantments.EnchantmentDatabase;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-@Getter
 @Singleton
 public class EnchantmentRepositoryImpl implements EnchantmentRepository {
+    private EnchantmentDatabase enchantmentDatabase;
     private final Set<Enchantment> enchantments = new LinkedHashSet<>();
     private final ItemRepository itemRepository;
     private final ManagerRepository managerRepository;
@@ -109,15 +117,45 @@ public class EnchantmentRepositoryImpl implements EnchantmentRepository {
         // Register enchantments
         enchantments.forEach(enchant -> enchant.postConstruct());
     }
+
+    @Override
+    public void setDatabase(Database database) {
+        this.enchantmentDatabase = (EnchantmentDatabase) database;
+    }
     
     @Override
+    public Set<Enchantment> getEnchantments() {
+        return enchantments.stream().filter(enchant -> enchant.getMaxLevel() > 0).collect(Collectors.toSet());
+    }
+
+    @Override
+    public void setEnchantmentMaxLevel(EnchantID id, int maxLevel) {
+        enchantments.forEach(enchant -> {
+            if(enchant.getId() == id) {
+                enchant.setMaxLevel(maxLevel);
+                writeToDatabase(enchant);
+            }
+        });
+    }
+
+    @Override
+    public void addApplicable(EnchantID id, Item item) {
+        enchantments.forEach(enchant -> {
+            if(enchant.getId() == id) {
+                enchant.getApplicable().add(item);
+                writeToDatabase(enchant);
+            }
+        });       
+    }
+
+    @Override
     public Enchantment getEnchantment(EnchantID id) {
-        return enchantments.stream().filter(enchant -> enchant.getId() == id).findFirst().orElse(null);
+        return getEnchantments().stream().filter(enchant -> enchant.getId() == id).findFirst().orElse(null);
     }
 
     @Override
     public Enchantment getEnchantment(Component enchantName) {
-        return enchantments.stream().filter(enchant -> {
+        return getEnchantments().stream().filter(enchant -> {
             for(int i = 1; i <= enchant.getMaxLevel(); i++) {
                 if(enchant.getName(i).equals(enchantName)) {
                     return true;
@@ -137,11 +175,64 @@ public class EnchantmentRepositoryImpl implements EnchantmentRepository {
         });
         return enchants;
     }
+
+    @Override
+    public Map<Enchantment, Integer> getSortedEnchantments() {
+        Map<Enchantment, Integer> enchants = new HashMap<>();
+        getEnchantments().stream().forEach(enchant -> enchants.put(enchant, enchant.getMaxLevel()));
+        List<Map.Entry<Enchantment, Integer>> sortedEntries = new ArrayList<>(enchants.entrySet());
+        sortedEntries.sort(Comparator
+            .comparingInt((Map.Entry<Enchantment, Integer> entry) -> entry.getKey().getId().rarity().rank())
+            .thenComparing((Map.Entry<Enchantment, Integer> entry) -> entry.getValue())
+        );
+        Map<Enchantment, Integer> sortedEnchants = new LinkedHashMap<>();
+        for (Map.Entry<Enchantment, Integer> entry : sortedEntries) {
+            sortedEnchants.put(entry.getKey(), entry.getValue());
+        }
+        return sortedEnchants;
+    }
+
+    @Override
+    public Map<Enchantment, Integer> getSortedEnchantments(ItemStack item) {
+        Map<Enchantment, Integer> enchants = new HashMap<>();
+        getEnchantments().stream()
+            .filter(enchant -> enchant.getEnchantmentLevel(item) > 0 && !(enchant instanceof AbilityEnchantment))
+            .forEach(enchant -> enchants.put(enchant, enchant.getEnchantmentLevel(item)));
+        List<Map.Entry<Enchantment, Integer>> sortedEntries = new ArrayList<>(enchants.entrySet());
+        sortedEntries.sort(Comparator
+            .comparingInt((Map.Entry<Enchantment, Integer> entry) -> entry.getKey().getId().rarity().rank())
+            .thenComparing((Map.Entry<Enchantment, Integer> entry) -> entry.getValue())
+        );
+        Map<Enchantment, Integer> sortedEnchants = new LinkedHashMap<>();
+        for (Map.Entry<Enchantment, Integer> entry : sortedEntries) {
+            sortedEnchants.put(entry.getKey(), entry.getValue());
+        }
+        return sortedEnchants;
+    }
+
+    @Override
+    public Map<Enchantment, Integer> getSortedEnchantments(ItemStack item, Enchantment newEnchant, int newEnchantLevel) {
+        Map<Enchantment, Integer> enchants = new HashMap<>();
+        getEnchantments().stream()
+            .filter(enchant -> enchant.getEnchantmentLevel(item) > 0 && !(enchant instanceof AbilityEnchantment))
+            .forEach(enchant -> enchants.put(enchant, enchant.getEnchantmentLevel(item)));
+        enchants.put(newEnchant, newEnchantLevel);
+        List<Map.Entry<Enchantment, Integer>> sortedEntries = new ArrayList<>(enchants.entrySet());
+        sortedEntries.sort(Comparator
+            .comparingInt((Map.Entry<Enchantment, Integer> entry) -> entry.getKey().getId().rarity().rank())
+            .thenComparing((Map.Entry<Enchantment, Integer> entry) -> entry.getValue())
+        );
+        Map<Enchantment, Integer> sortedEnchants = new LinkedHashMap<>();
+        for (Map.Entry<Enchantment, Integer> entry : sortedEntries) {
+            sortedEnchants.put(entry.getKey(), entry.getValue());
+        }
+        return sortedEnchants;
+    }
     
     @Override
     public Enchantment[] getApplicableEnchantments(ItemStack item) {
         Map<Enchantment, Integer> itemEnchants = getEnchantments(item);
-        return enchantments.stream().filter(enchant -> 
+        return getEnchantments().stream().filter(enchant -> 
             enchant.canEnchant(item) && (itemEnchants.containsKey(enchant) ? (itemEnchants.get(enchant) < enchant.getMaxLevel()) : true)
         ).toArray(Enchantment[]::new);
     }
@@ -149,9 +240,25 @@ public class EnchantmentRepositoryImpl implements EnchantmentRepository {
     @Override
     public Enchantment[] getApplicableEnchantmentsByRarity(ItemStack item, Rarity rarity) {
         Map<Enchantment, Integer> itemEnchants = getEnchantments(item);
-        return enchantments.stream().filter(enchant -> 
+        return getEnchantments().stream().filter(enchant -> 
             EnchantID.getEnchantmentIdsByRarity(rarity).contains(enchant.getId()) && enchant.canEnchant(item) && (itemEnchants.containsKey(enchant) ? (itemEnchants.get(enchant) < enchant.getMaxLevel()) : true)
         ).toArray(Enchantment[]::new);
     }
-    
+
+    private void writeToDatabase(Enchantment enchant) {
+        enchantmentDatabase.writeAsyncObject(enchantmentDatabase.getEnchantmentFile(
+            enchant.getId()), new EnchantmentDTO (
+                enchant.getId(),
+                enchant.getName(),
+                enchant.getDescription(),
+                enchant.getCooldown(),
+                enchant.getMaxLevel(),
+                enchant.getApplicable(),
+                enchant.getConflicting(),
+                enchant.getRequiredLevelFormula(),
+                enchant.getCostFormula(),
+                enchant.getLeveledColors()
+            )
+        );
+    }
 }
