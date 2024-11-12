@@ -46,4 +46,8 @@ public class AnvilDatabase extends AbstractDatabase {
             e.printStackTrace();
         }
     }
+
+    public File getItemFile(Item item) {
+        return new File(anvilDirectory, item.getDisplayName() + ".json");
+    }
 }

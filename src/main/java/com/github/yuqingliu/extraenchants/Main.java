@@ -25,6 +25,7 @@ public class Main extends ExtraEnchants {
     private EnchantmentRepository enchantmentRepository;
     private ManagerRepository managerRepository;
     private CustomBlockRepository blockRepository;
+    private AnvilRepository anvilRepository;
 
     private Database enchantmentDatabase;
     private Database anvilDatabase;
@@ -42,6 +43,7 @@ public class Main extends ExtraEnchants {
         enchantmentRepository = injector.getInstance(EnchantmentRepository.class);
         itemRepository = injector.getInstance(ItemRepository.class);
         blockRepository = injector.getInstance(CustomBlockRepository.class);
+        anvilRepository = injector.getInstance(AnvilRepository.class);
         repositoryPostConstruct();
 
         enchantmentDatabase = injector.getInstance(EnchantmentDatabase.class);
@@ -58,5 +60,6 @@ public class Main extends ExtraEnchants {
     private void databasePostConstruct() {
         blockRepository.setDatabase(blockDatabase);
         enchantmentRepository.setDatabase(enchantmentDatabase);
+        anvilRepository.setDatabase(anvilDatabase);
     }
 }

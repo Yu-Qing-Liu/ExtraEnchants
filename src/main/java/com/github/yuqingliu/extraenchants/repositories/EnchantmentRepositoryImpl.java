@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
+import com.github.yuqingliu.extraenchants.api.item.Item;
 import com.github.yuqingliu.extraenchants.api.persistence.Database;
 import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository;
 import com.github.yuqingliu.extraenchants.api.repositories.ItemRepository;
@@ -132,19 +133,19 @@ public class EnchantmentRepositoryImpl implements EnchantmentRepository {
         enchantments.forEach(enchant -> {
             if(enchant.getId() == id) {
                 enchant.setMaxLevel(maxLevel);
-                enchantmentDatabase.writeAsyncObject(enchantmentDatabase.getEnchantmentFile(id), new EnchantmentDTO(
-                    enchant.getId(),
-                    enchant.getName(),
-                    enchant.getDescription(),
-                    enchant.getCooldown(),
-                    maxLevel,
-                    enchant.getApplicable(),
-                    enchant.getConflicting(),
-                    enchant.getRequiredLevelFormula(),
-                    enchant.getCostFormula(),
-                    enchant.getLeveledColors()));
+                writeToDatabase(enchant);
             }
         });
+    }
+
+    @Override
+    public void addApplicable(EnchantID id, Item item) {
+        enchantments.forEach(enchant -> {
+            if(enchant.getId() == id) {
+                enchant.getApplicable().add(item);
+                writeToDatabase(enchant);
+            }
+        });       
     }
 
     @Override
@@ -242,5 +243,22 @@ public class EnchantmentRepositoryImpl implements EnchantmentRepository {
         return getEnchantments().stream().filter(enchant -> 
             EnchantID.getEnchantmentIdsByRarity(rarity).contains(enchant.getId()) && enchant.canEnchant(item) && (itemEnchants.containsKey(enchant) ? (itemEnchants.get(enchant) < enchant.getMaxLevel()) : true)
         ).toArray(Enchantment[]::new);
+    }
+
+    private void writeToDatabase(Enchantment enchant) {
+        enchantmentDatabase.writeAsyncObject(enchantmentDatabase.getEnchantmentFile(
+            enchant.getId()), new EnchantmentDTO (
+                enchant.getId(),
+                enchant.getName(),
+                enchant.getDescription(),
+                enchant.getCooldown(),
+                enchant.getMaxLevel(),
+                enchant.getApplicable(),
+                enchant.getConflicting(),
+                enchant.getRequiredLevelFormula(),
+                enchant.getCostFormula(),
+                enchant.getLeveledColors()
+            )
+        );
     }
 }

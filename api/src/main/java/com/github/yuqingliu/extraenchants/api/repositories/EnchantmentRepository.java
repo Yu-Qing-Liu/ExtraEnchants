@@ -9,6 +9,7 @@ import java.util.Set;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
+import com.github.yuqingliu.extraenchants.api.item.Item;
 import com.github.yuqingliu.extraenchants.api.persistence.Database;
 
 import net.kyori.adventure.text.Component;
@@ -100,5 +101,6 @@ public interface EnchantmentRepository {
     Enchantment[] getApplicableEnchantmentsByRarity(ItemStack item, Rarity rarity);
     void setDatabase(Database database);
     void setEnchantmentMaxLevel(EnchantID id, int maxLevel);
+    void addApplicable(EnchantID id, Item item);
     void postConstruct();
 }
