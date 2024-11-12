@@ -107,11 +107,6 @@ public class Focus extends AbilityEnchantment {
         }
     }
 
-    private Location getRightSide(Location location, double distance) {
-        float angle = location.getYaw() / 60;
-        return location.clone().subtract(new Vector(Math.cos(angle), 0, Math.sin(angle)).normalize().multiply(distance));
-    }
-
     private void startBeamTask(Player player, Entity target) {
         Scheduler.runTimer(task -> {
             if (!target.isValid() || target.isDead()) {
@@ -128,7 +123,7 @@ public class Focus extends AbilityEnchantment {
                 task.cancel();
                 return;
             }
-            Location rightHand = getRightSide(player.getEyeLocation(), 0.45).subtract(0, .2, 0);
+            Location rightHand = mathManager.getRightSide(player.getEyeLocation(), 0.45).subtract(0, .2, 0);
             double height = target.getHeight();
             Location targetLocation = target.getLocation().add(0, height/2.0, 0); // Center the beam a bit better on the target
             Vector direction = targetLocation.toVector().subtract(rightHand.toVector()).normalize();

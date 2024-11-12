@@ -12,8 +12,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
 import com.github.yuqingliu.extraenchants.api.item.Item;
 import com.github.yuqingliu.extraenchants.api.managers.ColorManager;
+import com.github.yuqingliu.extraenchants.api.managers.CooldownManager;
 import com.github.yuqingliu.extraenchants.api.managers.EventManager;
 import com.github.yuqingliu.extraenchants.api.managers.LoreManager;
+import com.github.yuqingliu.extraenchants.api.managers.MathManager;
 import com.github.yuqingliu.extraenchants.api.managers.NameSpacedKeyManager;
 import com.github.yuqingliu.extraenchants.api.managers.SoundManager;
 import com.github.yuqingliu.extraenchants.api.managers.TextManager;
@@ -35,7 +37,9 @@ import net.kyori.adventure.text.format.TextColor;
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public abstract class AbstractEnchantment implements Enchantment {
+    protected final CooldownManager cooldownManager;
     protected final TextManager textManager;
+    protected final MathManager mathManager;
     protected final LoreManager loreManager;
     protected final ColorManager colorManager;
     protected final SoundManager soundManager;
@@ -59,7 +63,9 @@ public abstract class AbstractEnchantment implements Enchantment {
     
     @Inject
     public AbstractEnchantment(ManagerRepository managerRepository, EnchantmentRepository enchantmentRepository, EnchantID id, Component name, Component description, int maxLevel, Set<Item> applicable, Set<EnchantID> conflicting, String requiredLevelFormula, String costFormula) {
+        this.cooldownManager = managerRepository.getCooldownManager();
         this.textManager = managerRepository.getTextManager();
+        this.mathManager = managerRepository.getMathManager();
         this.loreManager = managerRepository.getLoreManager();
         this.colorManager = managerRepository.getColorManager();
         this.soundManager = managerRepository.getSoundManager();

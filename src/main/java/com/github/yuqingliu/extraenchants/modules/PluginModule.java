@@ -55,6 +55,7 @@ public class PluginModule extends AbstractModule {
         bind(SoundManager.class).to(SoundManagerImpl.class).in(Singleton.class);
         bind(TextManager.class).to(TextManagerImpl.class).in(Singleton.class);
         bind(ConfigurationManager.class).to(ConfigurationManagerImpl.class).in(Singleton.class);
+        bind(CooldownManager.class).to(CooldownManagerImpl.class).in(Singleton.class);
         // Repositories
         bind(EnchantmentRepository.class).to(EnchantmentRepositoryImpl.class).in(Singleton.class);
         bind(ItemRepository.class).to(ItemRepositoryImpl.class).in(Singleton.class);

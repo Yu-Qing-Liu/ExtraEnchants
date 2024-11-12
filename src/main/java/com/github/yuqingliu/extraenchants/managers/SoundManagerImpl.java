@@ -37,4 +37,9 @@ public class SoundManagerImpl implements SoundManager {
     public void playGrindstoneSound(Player player) {
         player.playSound(player.getLocation(), Sound.BLOCK_GRINDSTONE_USE, 1.0f, 1.0f);
     }
+
+    @Override
+    public void playWaveSound(Player player) {
+        player.playSound(player.getLocation(), Sound.ENTITY_DOLPHIN_SWIM, 3.0f, 1.0f);
+    }
 }

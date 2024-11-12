@@ -48,6 +48,12 @@ public class ItemRepositoryImpl implements ItemRepository {
             )
         );
 
+        items.put(ItemCategory.TRIDENT,
+            Set.of(
+                new ItemImpl(new ItemStack(Material.TRIDENT))
+            )
+        );
+
         // Ranged Weapons (Bow & Crossbow)
         items.put(ItemCategory.RANGED,
             Set.of(
@@ -56,7 +62,7 @@ public class ItemRepositoryImpl implements ItemRepository {
             )
         );
         
-        // Melee Weapons (Sword & Axe & Mace)
+        // Melee Weapons (Sword & Axe & Mace & Trident)
         items.put(ItemCategory.MELEE, 
             Set.of(
                 new ItemImpl(new ItemStack(Material.WOODEN_SWORD)),
@@ -71,7 +77,8 @@ public class ItemRepositoryImpl implements ItemRepository {
                 new ItemImpl(new ItemStack(Material.GOLDEN_AXE)),
                 new ItemImpl(new ItemStack(Material.DIAMOND_AXE)),
                 new ItemImpl(new ItemStack(Material.NETHERITE_AXE)),
-                new ItemImpl(new ItemStack(Material.MACE))
+                new ItemImpl(new ItemStack(Material.MACE)),
+                new ItemImpl(new ItemStack(Material.TRIDENT))
             )
         );
 
@@ -92,7 +99,8 @@ public class ItemRepositoryImpl implements ItemRepository {
                 new ItemImpl(new ItemStack(Material.GOLDEN_AXE)),
                 new ItemImpl(new ItemStack(Material.DIAMOND_AXE)),
                 new ItemImpl(new ItemStack(Material.NETHERITE_AXE)),
-                new ItemImpl(new ItemStack(Material.MACE))
+                new ItemImpl(new ItemStack(Material.MACE)),
+                new ItemImpl(new ItemStack(Material.TRIDENT))
             )
         );
 
@@ -282,6 +290,7 @@ public class ItemRepositoryImpl implements ItemRepository {
                 new ItemImpl(new ItemStack(Material.BOW)),
                 new ItemImpl(new ItemStack(Material.CROSSBOW)),
                 new ItemImpl(new ItemStack(Material.MACE)),
+                new ItemImpl(new ItemStack(Material.TRIDENT)),
                 new ItemImpl(new ItemStack(Material.WOODEN_PICKAXE)),
                 new ItemImpl(new ItemStack(Material.STONE_PICKAXE)),
                 new ItemImpl(new ItemStack(Material.IRON_PICKAXE)),

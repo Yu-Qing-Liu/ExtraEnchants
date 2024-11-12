@@ -7,6 +7,7 @@ import org.bukkit.NamespacedKey;
 import net.kyori.adventure.text.Component;
 
 import java.time.Duration;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -14,6 +15,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
 import com.github.yuqingliu.extraenchants.api.item.Item;
 import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository;
 import com.github.yuqingliu.extraenchants.api.repositories.ManagerRepository;
@@ -22,6 +24,9 @@ import com.github.yuqingliu.extraenchants.enchantment.AbstractEnchantment;
 import com.github.yuqingliu.extraenchants.item.ItemImpl;
 import com.github.yuqingliu.extraenchants.lore.implementations.AbilitySection;
 
+import lombok.Getter;
+
+@Getter
 public abstract class AbilityEnchantment extends AbstractEnchantment {
     private Component action;
     private NamespacedKey key;
@@ -33,15 +38,9 @@ public abstract class AbilityEnchantment extends AbstractEnchantment {
         this.key = keyManager.getEnchantKey(id);
     }
 
-    private ItemStack addOrUpdateAbilityLore(ItemStack item, Component enchant, Component eLevel) {
+    private ItemStack addOrUpdateAbilityLore(ItemStack item, Map<Enchantment, Integer> newEnchants) {
         AbilitySection abilitySection = (AbilitySection) loreManager.getLoreSection(AbilitySection.class.getSimpleName(), item);
-        abilitySection.addOrUpdateAbilityFromSection(enchant, eLevel, action, description);
-        return loreManager.applyLore(item, abilitySection);
-    }
-
-    private ItemStack removeAbilityLore(ItemStack item, Component enchant) {
-        AbilitySection abilitySection = (AbilitySection) loreManager.getLoreSection(AbilitySection.class.getSimpleName(), item);
-        abilitySection.removeAbilityFromSection(enchant);
+        abilitySection.addOrUpdateAbilityFromSection(newEnchants);
         return loreManager.applyLore(item, abilitySection);
     }
 
@@ -86,7 +85,7 @@ public abstract class AbilityEnchantment extends AbstractEnchantment {
             item.setItemMeta(meta);
             meta = item.getItemMeta();
             if (meta != null) {
-                item = addOrUpdateAbilityLore(item, getName(level), getLevel(level));
+                item = addOrUpdateAbilityLore(item, enchantmentRepository.getSortedAbilityEnchantments(item, this, level));
             }
         }
         return item;
@@ -102,8 +101,11 @@ public abstract class AbilityEnchantment extends AbstractEnchantment {
         item.setItemMeta(meta);
         meta = item.getItemMeta();
         if (meta != null) {
-            item = removeAbilityLore(item, name);
+            Map<Enchantment, Integer> enchants = enchantmentRepository.getSortedAbilityEnchantments(item);
+            enchants.remove(this);
+            item = addOrUpdateAbilityLore(item, enchants);
         }
+        item.setItemMeta(meta);
         return item;
     }
 }

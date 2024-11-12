@@ -9,4 +9,5 @@ public interface SoundManager {
     void playSonicBoomSound(Player player);
     void playMitigationSound(Player player);
     void playGrindstoneSound(Player player);
+    void playWaveSound(Player player);
 }

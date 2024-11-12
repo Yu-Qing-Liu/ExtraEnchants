@@ -13,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -88,7 +89,8 @@ public class MainMenuController {
         ItemStack item = grindstoneMenu.getItem(inv, itemSlot);
         enchant.removeEnchantment(item);
         grindstoneMenu.getManagerRepository().getSoundManager().playGrindstoneSound(player);
-        player.getWorld().spawnEntity(grindstoneMenu.getLocation(player), EntityType.EXPERIENCE_ORB);
+        ExperienceOrb orb = player.getWorld().spawn(grindstoneMenu.getLocation(player), ExperienceOrb.class);
+        orb.setExperience(3);
         reload(player, inv);
     }
 

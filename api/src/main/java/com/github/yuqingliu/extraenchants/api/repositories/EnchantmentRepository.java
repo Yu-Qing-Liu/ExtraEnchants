@@ -51,9 +51,9 @@ public interface EnchantmentRepository {
         MULTISHOT, PIERCING, POWER, PROJECTILE_PROTECTION, PROTECTION, PUNCH, QUICK_CHARGE, RESPIRATION, RIPTIDE, SHARPNESS,
         SILK_TOUCH, SMITE, SOUL_SPEED, SWEEPING_EDGE, SWIFT_SNEAK, THORNS, UNBREAKING, VANISHING_CURSE,
         // Custom enchants ids
-        AUTO_LOOTING, DELICATE, GROWTH, HOMING, IMMOLATE, LIFESTEAL, MITIGATION, POWER_STRIKE, REPLANT, SMELTING, SNIPE, VENOM, WARPED, WITHER,
+        AUTO_LOOTING, DELICATE, GROWTH, HOMING, IMMOLATE, LIFESTEAL, MITIGATION, POWER_STRIKE, REPLANT, SMELTING, SNIPE, VENOM, WARPED, WITHER, THUNDER,
         // Ability enchants ids
-        FOCUS, RAPID_FIRE, SONIC_BOOM;
+        FOCUS, RAPID_FIRE, SONIC_BOOM, WAVE;
         
         public Rarity rarity() {
             return switch (this) {
@@ -68,9 +68,10 @@ public interface EnchantmentRepository {
                 case MENDING, VANISHING_CURSE, BINDING_CURSE, GROWTH, VENOM, WITHER -> Rarity.RARE;
                 // EPIC RARITY
                 case LIFESTEAL, POWER_STRIKE, SNIPE, WARPED -> Rarity.EPIC;
-                case HOMING, IMMOLATE, MITIGATION -> Rarity.LEGENDARY;
+                // LEGENDARY RARITY
+                case HOMING, IMMOLATE, MITIGATION, THUNDER -> Rarity.LEGENDARY;
                 // MYTHIC RARITY
-                case FOCUS, RAPID_FIRE, SONIC_BOOM -> Rarity.MYTHIC;
+                case FOCUS, RAPID_FIRE, SONIC_BOOM, WAVE -> Rarity.MYTHIC;
                 // Default to COMMON if no match
                 default -> Rarity.COMMON;
             };
@@ -97,6 +98,8 @@ public interface EnchantmentRepository {
     Map<Enchantment, Integer> getSortedEnchantments();
     Map<Enchantment, Integer> getSortedEnchantments(ItemStack item);
     Map<Enchantment, Integer> getSortedEnchantments(ItemStack item, Enchantment newEnchant, int newEnchantLevel);
+    Map<Enchantment, Integer> getSortedAbilityEnchantments(ItemStack item);
+    Map<Enchantment, Integer> getSortedAbilityEnchantments(ItemStack item, Enchantment newEnchant, int newEnchantLevel);
     Enchantment[] getApplicableEnchantments(ItemStack item);
     Enchantment[] getApplicableEnchantmentsByRarity(ItemStack item, Rarity rarity);
     void setDatabase(Database database);

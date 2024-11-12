@@ -2,7 +2,10 @@ package com.github.yuqingliu.extraenchants.lore.implementations;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
+import com.github.yuqingliu.extraenchants.enchantment.implementations.AbilityEnchantment;
 import com.github.yuqingliu.extraenchants.lore.AbstractLoreSection;
 
 import net.kyori.adventure.text.Component;
@@ -17,37 +20,22 @@ public class AbilitySection extends AbstractLoreSection {
         name = this.getClass().getSimpleName();
     }
     
-    public void addOrUpdateAbilityFromSection(Component enchant, Component eLevel, Component action, Component description) {
-        removeAbilityFromSection(enchant);
-        if(lore.isEmpty()) {
-            lore.add(sectionTitle);
-            lore.add(root.append(enchant).append(eLevel).append(action));
-            lore.add(description);
-        } else {
-            lore.add(root.append(enchant).append(eLevel).append(action));
-            lore.add(description);
-        }
-    }
-
-    public void removeAbilityFromSection(Component enchant) {
+    public void addOrUpdateAbilityFromSection(Map<Enchantment, Integer> abilityEnchantments) {
         List<Component> newLore = new ArrayList<>();
-        for (int i = 1; i < lore.size(); i++) {
-            Component line = lore.get(i);
-            boolean found = false;
-            for(Component child : line.children()) {
-                if(child.equals(enchant)) {
-                    found = true;
-                } 
-            }
-            if(found) {
-                i++; // Skip description
+        for(Map.Entry<Enchantment, Integer> entry : abilityEnchantments.entrySet()) {
+            AbilityEnchantment e = (AbilityEnchantment) entry.getKey();
+            Component enchant = e.getLeveledName(entry.getValue());
+            Component action = e.getAction();
+            Component description = e.getLeveledDescription(entry.getValue());
+            if(newLore.isEmpty()) {
+                newLore.add(sectionTitle);
+                newLore.add(root.append(enchant).append(action));
+                newLore.add(description);
             } else {
-                newLore.add(line);
+                newLore.add(root.append(enchant).append(action));
+                newLore.add(description);
             }
         }
-        if(!newLore.isEmpty()) {
-            newLore.add(0, sectionTitle);
-        }
-        lore = newLore;
+        this.lore = newLore;
     }
 }

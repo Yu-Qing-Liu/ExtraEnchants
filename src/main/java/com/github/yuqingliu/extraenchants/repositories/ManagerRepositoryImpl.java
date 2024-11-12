@@ -24,6 +24,7 @@ public class ManagerRepositoryImpl implements ManagerRepository {
     private final ColorManager colorManager;
     private final LoreManager loreManager;
     private final MathManager mathManager;
+    private final CooldownManager cooldownManager;
 
     @Inject
     public ManagerRepositoryImpl(
@@ -38,7 +39,9 @@ public class ManagerRepositoryImpl implements ManagerRepository {
         TextManager textManager,
         ColorManager colorManager,
         LoreManager loreManager,
-        MathManager mathManager) {
+        MathManager mathManager,
+        CooldownManager cooldownManager
+    ) {
         this.plugin = plugin;
         this.configurationManager = configurationManager;
         this.mathManager = mathManager;
@@ -50,6 +53,7 @@ public class ManagerRepositoryImpl implements ManagerRepository {
         this.loreManager = loreManager;
         this.inventoryManager = inventoryManager;
         this.eventManager = eventManager;
+        this.cooldownManager = cooldownManager;
     }
 }
 

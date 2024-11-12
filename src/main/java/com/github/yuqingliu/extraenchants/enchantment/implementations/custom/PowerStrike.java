@@ -1,9 +1,9 @@
 package com.github.yuqingliu.extraenchants.enchantment.implementations.custom;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -23,7 +23,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public class PowerStrike extends CustomEnchantment {
-    private Map<UUID, HashSet<UUID>> playerEntityHits = new HashMap<>();
+    private Map<UUID, HashSet<UUID>> playerEntityHits = new ConcurrentHashMap<>();
 
     public PowerStrike(ManagerRepository managerRepository, EnchantmentRepository enchantmentRepository, ItemRepository itemRepository, TextColor nameColor, TextColor descriptionColor) {
         super(
