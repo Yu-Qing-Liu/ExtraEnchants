@@ -122,9 +122,7 @@ public class Homing extends CustomEnchantment {
                 targetLocation = player.getEyeLocation().add(player.getEyeLocation().getDirection().multiply(maxDistance));
             }
             Vector direction = targetLocation.toVector().subtract(arrow.getLocation().toVector()).normalize();
-            Scheduler.runSync(t -> {
-                arrow.setVelocity(direction);
-            });
+            arrow.setVelocity(direction);
         }, Duration.ofMillis(50), Duration.ofSeconds(0));
     }
 }

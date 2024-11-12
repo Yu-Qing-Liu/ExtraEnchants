@@ -16,4 +16,5 @@ public interface ManagerRepository {
     ColorManager getColorManager();
     LoreManager getLoreManager();
     MathManager getMathManager();
+    CooldownManager getCooldownManager();
 }

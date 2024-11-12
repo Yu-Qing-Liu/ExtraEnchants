@@ -27,24 +27,26 @@ public class EnchantmentDatabase extends AbstractDatabase {
                 enchantmentDirectory.mkdir();
             }
             File[] files = enchantmentDirectory.listFiles();
-            if (files.length > 0) {
-                // Update data
+            if (files != null && files.length > 0) {
                 for (File enchantmentFile : files) {
                     EnchantmentDTO data = readObject(enchantmentFile, EnchantmentDTO.class);
                     EnchantID enchantID = data.getEnchantID();
                     mergeData(data, enchantmentRepository.getEnchantment(enchantID));
                 }
-            } else {
-                // Populate with defaults
-                enchantmentRepository.getEnchantments().forEach(enchant -> {
-                    File enchantmentFile = getEnchantmentFile(enchant.getId());
-                    EnchantmentDTO data = new EnchantmentDTO(enchant.getId(), enchant.getName(),
-                            enchant.getDescription(), enchant.getCooldown(), enchant.getMaxLevel(), enchant.getApplicable(),
-                            enchant.getConflicting(), enchant.getRequiredLevelFormula(), enchant.getCostFormula(),
-                            enchant.getLeveledColors());
-                    writeObject(enchantmentFile, data);
-                });
             }
+            enchantmentRepository.getEnchantments().forEach(enchant -> {
+                File enchantmentFile = getEnchantmentFile(enchant.getId());
+                if (!enchantmentFile.exists()) {
+                    EnchantmentDTO data = new EnchantmentDTO(
+                        enchant.getId(), enchant.getName(),
+                        enchant.getDescription(), enchant.getCooldown(),
+                        enchant.getMaxLevel(), enchant.getApplicable(),
+                        enchant.getConflicting(), enchant.getRequiredLevelFormula(),
+                        enchant.getCostFormula(), enchant.getLeveledColors()
+                    );
+                    writeObject(enchantmentFile, data);
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }

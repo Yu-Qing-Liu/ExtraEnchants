@@ -37,6 +37,7 @@ public class MeleeWeapon extends AbstractWeapon {
             case IRON_AXE -> 6.0;
             case DIAMOND_AXE -> 7.0;
             case NETHERITE_AXE -> 8.0;
+            case TRIDENT -> 9.0;
             default -> 1.0;
         };
     }

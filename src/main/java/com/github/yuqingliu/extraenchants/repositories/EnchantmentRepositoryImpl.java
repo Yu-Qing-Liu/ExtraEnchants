@@ -115,6 +115,7 @@ public class EnchantmentRepositoryImpl implements EnchantmentRepository {
         enchantments.add(new Focus(managerRepository, this, itemRepository, mythic, descriptionColor));
         enchantments.add(new RapidFire(managerRepository, this, itemRepository, mythic, descriptionColor));
         enchantments.add(new SonicBoom(managerRepository, this, itemRepository, mythic, descriptionColor));
+        enchantments.add(new Wave(managerRepository, this, itemRepository, mythic, descriptionColor));
         // Register enchantments
         enchantments.forEach(enchant -> enchant.postConstruct());
     }
@@ -216,6 +217,43 @@ public class EnchantmentRepositoryImpl implements EnchantmentRepository {
         Map<Enchantment, Integer> enchants = new HashMap<>();
         getEnchantments().stream()
             .filter(enchant -> enchant.getEnchantmentLevel(item) > 0 && !(enchant instanceof AbilityEnchantment))
+            .forEach(enchant -> enchants.put(enchant, enchant.getEnchantmentLevel(item)));
+        enchants.put(newEnchant, newEnchantLevel);
+        List<Map.Entry<Enchantment, Integer>> sortedEntries = new ArrayList<>(enchants.entrySet());
+        sortedEntries.sort(Comparator
+            .comparingInt((Map.Entry<Enchantment, Integer> entry) -> entry.getKey().getId().rarity().rank())
+            .thenComparing((Map.Entry<Enchantment, Integer> entry) -> entry.getValue())
+        );
+        Map<Enchantment, Integer> sortedEnchants = new LinkedHashMap<>();
+        for (Map.Entry<Enchantment, Integer> entry : sortedEntries) {
+            sortedEnchants.put(entry.getKey(), entry.getValue());
+        }
+        return sortedEnchants;
+    }
+
+    @Override
+    public Map<Enchantment, Integer> getSortedAbilityEnchantments(ItemStack item) {
+        Map<Enchantment, Integer> enchants = new HashMap<>();
+        getEnchantments().stream()
+            .filter(enchant -> enchant.getEnchantmentLevel(item) > 0 && (enchant instanceof AbilityEnchantment))
+            .forEach(enchant -> enchants.put(enchant, enchant.getEnchantmentLevel(item)));
+        List<Map.Entry<Enchantment, Integer>> sortedEntries = new ArrayList<>(enchants.entrySet());
+        sortedEntries.sort(Comparator
+            .comparingInt((Map.Entry<Enchantment, Integer> entry) -> entry.getKey().getId().rarity().rank())
+            .thenComparing((Map.Entry<Enchantment, Integer> entry) -> entry.getValue())
+        );
+        Map<Enchantment, Integer> sortedEnchants = new LinkedHashMap<>();
+        for (Map.Entry<Enchantment, Integer> entry : sortedEntries) {
+            sortedEnchants.put(entry.getKey(), entry.getValue());
+        }
+        return sortedEnchants;
+    }
+
+    @Override
+    public Map<Enchantment, Integer> getSortedAbilityEnchantments(ItemStack item, Enchantment newEnchant, int newEnchantLevel) {
+        Map<Enchantment, Integer> enchants = new HashMap<>();
+        getEnchantments().stream()
+            .filter(enchant -> enchant.getEnchantmentLevel(item) > 0 && (enchant instanceof AbilityEnchantment))
             .forEach(enchant -> enchants.put(enchant, enchant.getEnchantmentLevel(item)));
         enchants.put(newEnchant, newEnchantLevel);
         List<Map.Entry<Enchantment, Integer>> sortedEntries = new ArrayList<>(enchants.entrySet());

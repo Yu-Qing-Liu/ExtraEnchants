@@ -27,21 +27,20 @@ public class AnvilDatabase extends AbstractDatabase {
             }
             File[] files = anvilDirectory.listFiles();
             if (files.length > 0) {
-                // Update data
                 for(File anvilFile : files) {
                     AnvilDTO data = readObject(anvilFile, AnvilDTO.class);
                     Item key = data.getItem();
                     Set<Item> value = data.getCombinable();
                     anvilRepository.getAnvilCombinations().put(key, value);
                 }
-            } else {
-                // Populate with defaults
-                for(Map.Entry<Item, Set<Item>> entry : anvilRepository.getAnvilCombinations().entrySet()) {
-                    File anvilFile = new File(anvilDirectory, entry.getKey().getDisplayName() + ".json");
+            } 
+            for(Map.Entry<Item, Set<Item>> entry : anvilRepository.getAnvilCombinations().entrySet()) {
+                File anvilFile = new File(anvilDirectory, entry.getKey().getDisplayName() + ".json");
+                if(!anvilFile.exists()) {
                     AnvilDTO data = new AnvilDTO(entry.getKey(), entry.getValue());
                     writeObject(anvilFile, data);
-                }   
-            }
+                }
+            }   
         } catch (Exception e) {
             e.printStackTrace();
         }

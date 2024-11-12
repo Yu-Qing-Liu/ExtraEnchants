@@ -1,11 +1,7 @@
 package com.github.yuqingliu.extraenchants.enchantment.implementations.ability;
 
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -20,11 +16,13 @@ import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
 import com.github.yuqingliu.extraenchants.api.Scheduler;
+import com.github.yuqingliu.extraenchants.api.cooldown.Cooldown;
 import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository;
 import com.github.yuqingliu.extraenchants.api.repositories.ItemRepository;
 import com.github.yuqingliu.extraenchants.api.repositories.ManagerRepository;
 import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository.EnchantID;
 import com.github.yuqingliu.extraenchants.api.repositories.ItemRepository.ItemCategory;
+import com.github.yuqingliu.extraenchants.cooldown.CooldownImpl;
 import com.github.yuqingliu.extraenchants.enchantment.implementations.AbilityEnchantment;
 import com.github.yuqingliu.extraenchants.weapon.implementations.MeleeWeapon;
 
@@ -34,8 +32,6 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 
 public class SonicBoom extends AbilityEnchantment {
-    private Map<UUID, Long> cooldowns = new ConcurrentHashMap<>();
-
     public SonicBoom(ManagerRepository managerRepository, EnchantmentRepository enchantmentRepository, ItemRepository itemRepository, TextColor nameColor, TextColor descriptionColor) {
         super(
             managerRepository, enchantmentRepository,
@@ -66,10 +62,11 @@ public class SonicBoom extends AbilityEnchantment {
             if(item != null) {
                 int SonicBoomLevel = this.getEnchantmentLevel(item);
                 if(SonicBoomLevel > 0) {
-                    long remainingTime = getRemainingCooldownTime(player);
+                    Cooldown cooldown = cooldownManager.computeIfAbsent(player.getUniqueId(), new CooldownImpl(this.id.name(), this.cooldown));
+                    long remainingTime = cooldown.getRemainingSeconds();
                     if (remainingTime <= 0) {
                         fireSonicBoom(player);
-                        cooldowns.put(player.getUniqueId(), System.currentTimeMillis());
+                        cooldown.start();
                     } else {
                         player.sendMessage("Sonic Boom is on cooldown. Please wait " + remainingTime + " more seconds.");
                     }
@@ -128,11 +125,5 @@ public class SonicBoom extends AbilityEnchantment {
             LivingEntity livingEntity = (LivingEntity) entity;
             item.applyHit(player, livingEntity);
         }, Duration.ofMillis(delay));
-    }
-
-    private long getRemainingCooldownTime(Player player) {
-        long lastUsed = cooldowns.getOrDefault(player.getUniqueId(), 0L);
-        long elapsed = System.currentTimeMillis() - lastUsed;
-        return cooldown.minus(elapsed, ChronoUnit.MILLIS).toSeconds();
     }
 }
