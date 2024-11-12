@@ -28,6 +28,18 @@ public interface EnchantmentRepository {
                 default -> NamedTextColor.WHITE;
             };
         }
+
+        public int rank() {
+            return switch(this) {
+                case COMMON -> 1;
+                case UNCOMMON -> 2;
+                case RARE -> 3;
+                case EPIC -> 4;
+                case LEGENDARY -> 5;
+                case MYTHIC -> 6;
+                default -> 0;
+            };
+        }
     }
 
     public enum EnchantID {
@@ -80,6 +92,9 @@ public interface EnchantmentRepository {
     Enchantment getEnchantment(Component enchantName);
     Set<Enchantment> getEnchantments();
     Map<Enchantment, Integer> getEnchantments(ItemStack item);
+    Map<Enchantment, Integer> getSortedEnchantments();
+    Map<Enchantment, Integer> getSortedEnchantments(ItemStack item);
+    Map<Enchantment, Integer> getSortedEnchantments(ItemStack item, Enchantment newEnchant, int newEnchantLevel);
     Enchantment[] getApplicableEnchantments(ItemStack item);
     Enchantment[] getApplicableEnchantmentsByRarity(ItemStack item, Rarity rarity);
     void postConstruct();

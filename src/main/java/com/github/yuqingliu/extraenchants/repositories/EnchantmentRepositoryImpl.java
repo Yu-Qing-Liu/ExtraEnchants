@@ -1,10 +1,14 @@
 package com.github.yuqingliu.extraenchants.repositories;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.TreeMap;
 
 import org.bukkit.inventory.ItemStack;
 
@@ -13,6 +17,7 @@ import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository
 import com.github.yuqingliu.extraenchants.api.repositories.ItemRepository;
 import com.github.yuqingliu.extraenchants.api.repositories.ManagerRepository;
 import com.github.yuqingliu.extraenchants.enchantment.implementations.custom.*;
+import com.github.yuqingliu.extraenchants.enchantment.implementations.AbilityEnchantment;
 import com.github.yuqingliu.extraenchants.enchantment.implementations.ability.*;
 import com.github.yuqingliu.extraenchants.enchantment.implementations.vanilla.*;
 import com.google.inject.Inject;
@@ -130,12 +135,65 @@ public class EnchantmentRepositoryImpl implements EnchantmentRepository {
     @Override
     public Map<Enchantment, Integer> getEnchantments(ItemStack item) {
         Map<Enchantment, Integer> enchants = new HashMap<>();
-        getEnchantments().stream().forEach(enchant -> {
+        enchantments.stream().forEach(enchant -> {
             if(enchant.getEnchantmentLevel(item) > 0) {
                 enchants.put(enchant, enchant.getEnchantmentLevel(item));
             }
         });
         return enchants;
+    }
+
+    @Override
+    public Map<Enchantment, Integer> getSortedEnchantments() {
+        Map<Enchantment, Integer> enchants = new HashMap<>();
+        enchantments.stream().forEach(enchant -> enchants.put(enchant, enchant.getMaxLevel()));
+        List<Map.Entry<Enchantment, Integer>> sortedEntries = new ArrayList<>(enchants.entrySet());
+        sortedEntries.sort(Comparator
+            .comparingInt((Map.Entry<Enchantment, Integer> entry) -> entry.getKey().getId().rarity().rank())
+            .thenComparing((Map.Entry<Enchantment, Integer> entry) -> entry.getValue())
+        );
+        Map<Enchantment, Integer> sortedEnchants = new LinkedHashMap<>();
+        for (Map.Entry<Enchantment, Integer> entry : sortedEntries) {
+            sortedEnchants.put(entry.getKey(), entry.getValue());
+        }
+        return sortedEnchants;
+    }
+
+    @Override
+    public Map<Enchantment, Integer> getSortedEnchantments(ItemStack item) {
+        Map<Enchantment, Integer> enchants = new HashMap<>();
+        enchantments.stream()
+            .filter(enchant -> enchant.getEnchantmentLevel(item) > 0 && !(enchant instanceof AbilityEnchantment))
+            .forEach(enchant -> enchants.put(enchant, enchant.getEnchantmentLevel(item)));
+        List<Map.Entry<Enchantment, Integer>> sortedEntries = new ArrayList<>(enchants.entrySet());
+        sortedEntries.sort(Comparator
+            .comparingInt((Map.Entry<Enchantment, Integer> entry) -> entry.getKey().getId().rarity().rank())
+            .thenComparing((Map.Entry<Enchantment, Integer> entry) -> entry.getValue())
+        );
+        Map<Enchantment, Integer> sortedEnchants = new LinkedHashMap<>();
+        for (Map.Entry<Enchantment, Integer> entry : sortedEntries) {
+            sortedEnchants.put(entry.getKey(), entry.getValue());
+        }
+        return sortedEnchants;
+    }
+
+    @Override
+    public Map<Enchantment, Integer> getSortedEnchantments(ItemStack item, Enchantment newEnchant, int newEnchantLevel) {
+        Map<Enchantment, Integer> enchants = new HashMap<>();
+        enchantments.stream()
+            .filter(enchant -> enchant.getEnchantmentLevel(item) > 0 && !(enchant instanceof AbilityEnchantment))
+            .forEach(enchant -> enchants.put(enchant, enchant.getEnchantmentLevel(item)));
+        enchants.put(newEnchant, newEnchantLevel);
+        List<Map.Entry<Enchantment, Integer>> sortedEntries = new ArrayList<>(enchants.entrySet());
+        sortedEntries.sort(Comparator
+            .comparingInt((Map.Entry<Enchantment, Integer> entry) -> entry.getKey().getId().rarity().rank())
+            .thenComparing((Map.Entry<Enchantment, Integer> entry) -> entry.getValue())
+        );
+        Map<Enchantment, Integer> sortedEnchants = new LinkedHashMap<>();
+        for (Map.Entry<Enchantment, Integer> entry : sortedEntries) {
+            sortedEnchants.put(entry.getKey(), entry.getValue());
+        }
+        return sortedEnchants;
     }
     
     @Override

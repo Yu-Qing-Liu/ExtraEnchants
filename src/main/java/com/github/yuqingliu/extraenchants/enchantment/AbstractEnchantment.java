@@ -2,6 +2,7 @@ package com.github.yuqingliu.extraenchants.enchantment;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -120,8 +121,8 @@ public abstract class AbstractEnchantment implements Enchantment {
     
     @Override
     public Component getLeveledName(int level) {
-        Component name = this.name.color(getLevelColor(level));
-        Component eLevel = Component.text(" " + textManager.toRoman(level), getLevelColor(level));
+        Component name = getName(level);
+        Component eLevel = getLevel(level);
         return name.append(eLevel);
     }
     
@@ -149,18 +150,8 @@ public abstract class AbstractEnchantment implements Enchantment {
     }
     
     @Override
-    public Component getLevel(int level, int colorLevel) {
-        return Component.text(" " + textManager.toRoman(level), getLevelColor(colorLevel));
-    }
-    
-    @Override
-    public int getLevel(Component name) {
-        for (int i = 1; i < maxLevel; i++) {
-            if(name.equals(getName(i))) {
-                return i;
-            }
-        }
-        return 0;
+    public Component getComma(int colorLevel) {
+        return Component.text(", ", getLevelColor(colorLevel));
     }
     
     @Override
@@ -182,17 +173,10 @@ public abstract class AbstractEnchantment implements Enchantment {
     public boolean conflictsWith(EnchantID id) {
         return conflicting.contains(id);
     }
-    
-    protected ItemStack addOrUpdateEnchantmentLore(ItemStack item, Component enchant, Component eLevel) {
+
+    protected ItemStack addOrUpdateEnchantmentLore(ItemStack item, Map<Enchantment, Integer> newEnchants) {
         EnchantmentSection enchantmentSection = (EnchantmentSection) loreManager.getLoreSection(EnchantmentSection.class.getSimpleName(), item);
-        enchantmentSection.addOrUpdateEnchantmentFromSection(enchant, eLevel);
+        enchantmentSection.addOrUpdateEnchantmentFromSection(newEnchants);
         return loreManager.applyLore(item, enchantmentSection);
     }
-
-    protected ItemStack removeEnchantmentLore(ItemStack item, Component enchant) {
-        EnchantmentSection enchantmentSection = (EnchantmentSection) loreManager.getLoreSection(EnchantmentSection.class.getSimpleName(), item);
-        enchantmentSection.removeEnchantmentFromSection(enchant);
-        return loreManager.applyLore(item, enchantmentSection);
-    }
-
 }

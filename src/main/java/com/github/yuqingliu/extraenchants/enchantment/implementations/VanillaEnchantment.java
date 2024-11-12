@@ -1,11 +1,11 @@
 package com.github.yuqingliu.extraenchants.enchantment.implementations;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
@@ -16,6 +16,7 @@ import org.bukkit.persistence.PersistentDataType;
 import net.kyori.adventure.text.Component;
 
 import com.github.yuqingliu.extraenchants.api.item.Item;
+import com.github.yuqingliu.extraenchants.api.enchantment.Enchantment;
 import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository;
 import com.github.yuqingliu.extraenchants.api.repositories.ManagerRepository;
 import com.github.yuqingliu.extraenchants.api.repositories.EnchantmentRepository.EnchantID;
@@ -23,10 +24,10 @@ import com.github.yuqingliu.extraenchants.enchantment.AbstractEnchantment;
 import com.github.yuqingliu.extraenchants.item.ItemImpl;
 
 public abstract class VanillaEnchantment extends AbstractEnchantment {
-    private Enchantment enchantment;
+    private org.bukkit.enchantments.Enchantment enchantment;
     private NamespacedKey key;
 
-    public VanillaEnchantment(ManagerRepository managerRepository, EnchantmentRepository enchantmentRepository, EnchantID id, Component name, Component description, int maxLevel, Set<Item> applicable, Set<EnchantID> conflicting, String requiredLevelFormula, String costFormula, Enchantment enchantment) {
+    public VanillaEnchantment(ManagerRepository managerRepository, EnchantmentRepository enchantmentRepository, EnchantID id, Component name, Component description, int maxLevel, Set<Item> applicable, Set<EnchantID> conflicting, String requiredLevelFormula, String costFormula, org.bukkit.enchantments.Enchantment enchantment) {
         super(managerRepository, enchantmentRepository, id, name, description, maxLevel, applicable, conflicting, requiredLevelFormula, costFormula);
         this.enchantment = enchantment;
         this.key = keyManager.getEnchantKey(id);
@@ -66,7 +67,7 @@ public abstract class VanillaEnchantment extends AbstractEnchantment {
             if(item.getType() == Material.BOOK) {
                 item = new ItemStack(Material.ENCHANTED_BOOK);
             }
-            item = addOrUpdateEnchantmentLore(item, getName(level), getLevel(level));
+            item = addOrUpdateEnchantmentLore(item, enchantmentRepository.getSortedEnchantments(item, this, level));
             ItemMeta meta = item.getItemMeta();
             PersistentDataContainer container = meta.getPersistentDataContainer();
             container.set(key, PersistentDataType.INTEGER, level);
@@ -96,7 +97,9 @@ public abstract class VanillaEnchantment extends AbstractEnchantment {
             container.remove(key);
         }
         item.setItemMeta(meta);
-        item = removeEnchantmentLore(item, name);
+        Map<Enchantment, Integer> enchants = enchantmentRepository.getSortedEnchantments(item);
+        enchants.remove(this);
+        item = addOrUpdateEnchantmentLore(item, enchants);
         if(item.getItemMeta() instanceof EnchantmentStorageMeta) {
             EnchantmentStorageMeta smeta = (EnchantmentStorageMeta) item.getItemMeta();
             smeta.removeEnchant(enchantment);
