@@ -64,8 +64,8 @@ public class Growth extends CustomEnchantment {
         double extraHealth = extraHearts;
         double baseHealth = 20.0;
         double newMaxHealth = baseHealth + extraHealth;
-        if (player.getAttribute(Attribute.GENERIC_MAX_HEALTH) != null) {
-            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(newMaxHealth);
+        if (player.getAttribute(Attribute.MAX_HEALTH) != null) {
+            player.getAttribute(Attribute.MAX_HEALTH).setBaseValue(newMaxHealth);
         }
     }
     

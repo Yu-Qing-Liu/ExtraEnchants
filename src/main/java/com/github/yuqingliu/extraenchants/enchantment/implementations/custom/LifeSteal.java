@@ -49,7 +49,7 @@ public class LifeSteal extends CustomEnchantment {
                 LivingEntity target = (LivingEntity) event.getEntity();
                 double targetCurrentHealth = target.getHealth();
                 double healthToSteal = targetCurrentHealth * 0.01 * level;
-                double newPlayerHealth = Math.min(player.getHealth() + healthToSteal, player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+                double newPlayerHealth = Math.min(player.getHealth() + healthToSteal, player.getAttribute(Attribute.MAX_HEALTH).getValue());
                 event.setDamage(event.getDamage() + Math.ceil(healthToSteal));
                 player.setHealth(newPlayerHealth);
             }
