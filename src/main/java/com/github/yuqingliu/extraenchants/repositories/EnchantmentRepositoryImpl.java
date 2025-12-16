@@ -42,7 +42,7 @@ public class EnchantmentRepositoryImpl implements EnchantmentRepository {
     private final NamedTextColor epic = Rarity.EPIC.color();
     private final NamedTextColor legendary = Rarity.LEGENDARY.color();
     private final NamedTextColor mythic = Rarity.MYTHIC.color();
-    private final NamedTextColor descriptionColor = NamedTextColor.DARK_GRAY;
+    private final NamedTextColor descriptionColor = NamedTextColor.GRAY;
     
     @Inject
     public EnchantmentRepositoryImpl(ManagerRepository managerRepository, ItemRepository itemRepository) {
@@ -94,6 +94,8 @@ public class EnchantmentRepositoryImpl implements EnchantmentRepository {
         enchantments.add(new SwiftSneak(managerRepository, this, uncommon, descriptionColor));
         enchantments.add(new Thorns(managerRepository, this, uncommon, descriptionColor));
         enchantments.add(new Unbreaking(managerRepository, this, uncommon, descriptionColor));
+        enchantments.add(new Density(managerRepository, this, uncommon, descriptionColor));
+        enchantments.add(new WindBurst(managerRepository, this, uncommon, descriptionColor));
         // rare enchants
         enchantments.add(new Mending(managerRepository, this, rare, descriptionColor));
         enchantments.add(new VanishingCurse(managerRepository, this, rare, descriptionColor));

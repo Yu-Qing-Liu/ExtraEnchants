@@ -46,7 +46,7 @@ public class Thunder extends CustomEnchantment {
                 EnchantID.THUNDER,
                 Component.text("Thunder", nameColor),
                 Component.text(
-                        "Strike target with lightning every %d consecutive hits. Increases lignthing damage per level.",
+                        "Strike target with lightning every 3rd consecutive hits. Increases lightning damage per level.",
                         descriptionColor),
                 5,
                 itemRepository.getItems().get(ItemCategory.MELEE),

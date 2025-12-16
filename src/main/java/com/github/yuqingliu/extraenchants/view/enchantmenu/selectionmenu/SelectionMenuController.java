@@ -111,7 +111,7 @@ public class SelectionMenuController {
             if(option == null) {
                 enchantMenu.setItem(inv, coords, enchantMenu.getUnavailable());
             } else {
-                enchantMenu.setItem(inv, coords, enchantMenu.createSlotItem(Material.ENCHANTED_BOOK, option.getName()));
+                enchantMenu.setItem(inv, coords, enchantMenu.createSlotItem(Material.ENCHANTED_BOOK, option.getName(), Arrays.asList(option.getDescription())));
             }
         }
     }

@@ -126,9 +126,10 @@ public class OfferMenuController {
                 enchantMenu.setItem(inv, coords, enchantMenu.getUnavailable());
             } else {
                 Component displayName = offer.getEnchantment().getLeveledName(offer.getLevel());
+                Component description = offer.getEnchantment().getLeveledDescription(offer.getLevel());
                 Component levelRequired = Component.text("LEVEL REQUIRED: ", NamedTextColor.GREEN).append(Component.text(offer.getRequiredLevel(), NamedTextColor.DARK_GREEN));
                 Component enchantCost = Component.text("EXP COST: ", NamedTextColor.GREEN).append(Component.text(offer.getCost(), NamedTextColor.DARK_GREEN));
-                ItemStack icon = enchantMenu.createSlotItem(Material.ENCHANTED_BOOK, displayName, Arrays.asList(levelRequired, enchantCost));
+                ItemStack icon = enchantMenu.createSlotItem(Material.ENCHANTED_BOOK, displayName, Arrays.asList(description, levelRequired, enchantCost));
                 enchantMenu.setItem(inv, coords, icon);
             }
         }
